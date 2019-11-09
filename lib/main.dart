@@ -45,35 +45,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  static const platform = const MethodChannel('samples.flutter.dev/battery');
+  //receiving messages from native code.
+  String _messageFromNative = 'no messages from native yet';
+  static const mainActivityFromPlatform = const MethodChannel(
+      'com.else.apis.from.native.mainActivity');
+  _MyHomePageState() {
+    mainActivityFromPlatform.setMethodCallHandler(_handleMethod);
+  }
+  Future<dynamic> _handleMethod(MethodCall call) async {
 
-  String _batteryLevel = 'native bridge not verified yet.';
+    switch(call.method) {
+      case "foundBeacons":
+        setState(() {
+          _messageFromNative = call.arguments;
+        });
+        return new Future.value("");
+    }
+  }
 
+  //invoking native methods from dart code.
+  String _bridgeStatus = 'native bridge not verified yet.';
+  static const mainActivityToPlatform = const MethodChannel('com.else.apis.to.native.mainActivity');
   Future<void> _getBridgeStatus() async {
     String bridgeStatus;
     try {
-      final String result = await platform.invokeMethod('nativeBrigding');
+      final String result = await mainActivityToPlatform.invokeMethod('nativeBridging');
       bridgeStatus = 'Bridge status : '+result;
     } on PlatformException catch (e) {
       bridgeStatus = "Failed to bridge to native '${e.message}'.";
     }
 
     setState(() {
-      _batteryLevel = bridgeStatus;
+      _bridgeStatus = bridgeStatus;
     });
   }
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,21 +119,10 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text('Get native bridge status'),
               onPressed: _getBridgeStatus,
             ),
-            Text(_batteryLevel),
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
+            Text(_bridgeStatus),
+            Text(_messageFromNative),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
