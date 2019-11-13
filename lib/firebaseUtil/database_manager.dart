@@ -3,21 +3,31 @@ import 'package:firebase_database/firebase_database.dart';
 
 class DatabaseManager {
   Firestore store;
-  DatabaseReference eventDatabase;
-  DatabaseManager(){
-    if(store==null) {
+  DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
+
+  DatabaseManager() {
+    if (store == null) {
       store = Firestore.instance;
     }
-    if(eventDatabase==null) {
-      eventDatabase = FirebaseDatabase.instance.reference().child('unityOneRohini').child('eventStaticData');
+    if (baseDatabase == null) {
+      baseDatabase =
+          FirebaseDatabase.instance.reference().child('unityOneRohini');
+      //make the above child path as variable that can be injected at app startup
     }
   }
+
   void addUser() async {
-    await store.collection("users").document("1").setData({
-      'username': 'suhail'
-    });
+    await store
+        .collection("users")
+        .document("1")
+        .setData({'username': 'suhail'});
   }
-  DatabaseReference getEventsDBRef(){
-    return eventDatabase;
+
+  DatabaseReference getEventsDBRef() {
+    return baseDatabase.child('eventStaticData');
+  }
+
+  DatabaseReference getDealsDBRef() {
+    return baseDatabase.child('dealsStaticData');
   }
 }

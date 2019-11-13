@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:else_app_two/Models/deals_model.dart';
 import 'package:else_app_two/basicElements/bottom_nav_bar.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -54,12 +55,16 @@ class _MyHomePageState extends State<MyHomePage> {
   DatabaseManager manager = new DatabaseManager();
   final List<String> headings = ['Events', 'Deals', 'Trending'];
   final List<EventModel> eventList = new List();
+  final List<DealModel> dealList = new List();
   final logger = Logger();
+
   @override
   void initState() {
     super.initState();
     manageEventList();
+    manageDealsList();
   }
+
   //receiving messages from native code.
   String _messageFromNative = 'no messages from native yet';
   static const mainActivityFromPlatform =
@@ -78,9 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
         return new Future.value("");
     }
   }
-
-//status check
-
+  void manageDealsList(){
+    manager.getDealsDBRef().onChildAdded.listen(_newDealAdded);
+  }
+  void _newDealAdded(Event event){
+    DealModel newDeal = new DealModel(event.snapshot);
+    if(newDeal.status=='active'){
+      setState(() {
+        dealList.add(newDeal);
+      });
+    }
+  }
   void manageEventList() {
     manager.getEventsDBRef().onChildAdded.listen(_newEventAdded);
     manager.getEventsDBRef().onChildChanged.listen(_updateEvent);
@@ -89,10 +102,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _updateEvent(Event event) {
     EventModel newEvent = new EventModel(event.snapshot);
     if (eventList.contains(newEvent)) {
-      if(newEvent.status=='inactive')
-      setState(() {
-        eventList.remove(newEvent);
-      });
+      if (newEvent.status == 'inactive')
+        setState(() {
+          eventList.remove(newEvent);
+        });
     }
   }
 
@@ -107,7 +120,6 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           eventList.remove(newEvent);
         });
-
       }
     }
   }
@@ -150,9 +162,9 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(8),
         children: <Widget>[
           Text('Events'),
-         HorizontalList(eventList),
-          Text('Deals'),
           HorizontalList(eventList),
+          Text('Deals'),
+          HorizontalList(dealList),
           Text('Trending'),
           HorizontalList(eventList),
         ],
