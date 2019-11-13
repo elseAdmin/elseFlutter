@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:else_app_two/Models/deals_model.dart';
-import 'package:else_app_two/basicElements/bottom_nav_bar.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/service/BottomNavigatorViewHandler.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:else_app_two/basicElements/horizontal_list.dart';
+import 'package:else_app_two/basicElements/event_horizontal_list.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 
@@ -52,23 +52,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DatabaseManager manager = new DatabaseManager();
-  final List<String> headings = ['Events', 'Deals', 'Trending'];
-  final List<EventModel> eventList = new List();
-  final List<DealModel> dealList = new List();
+  BottomNavigatorViewHandler handler= new BottomNavigatorViewHandler();
+  int bottomNavIndex=0;
   final logger = Logger();
-
   @override
   void initState() {
     super.initState();
-    manageEventList();
-    manageDealsList();
   }
 
   //receiving messages from native code.
   String _messageFromNative = 'no messages from native yet';
   static const mainActivityFromPlatform =
-      const MethodChannel('com.else.apis.from.native.mainActivity');
+  const MethodChannel('com.else.apis.from.native.mainActivity');
 
   _MyHomePageState() {
     mainActivityFromPlatform.setMethodCallHandler(_handleMethod);
@@ -83,46 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return new Future.value("");
     }
   }
-  void manageDealsList(){
-    manager.getDealsDBRef().onChildAdded.listen(_newDealAdded);
-  }
-  void _newDealAdded(Event event){
-    DealModel newDeal = new DealModel(event.snapshot);
-    if(newDeal.status=='active'){
-      setState(() {
-        dealList.add(newDeal);
-      });
-    }
-  }
-  void manageEventList() {
-    manager.getEventsDBRef().onChildAdded.listen(_newEventAdded);
-    manager.getEventsDBRef().onChildChanged.listen(_updateEvent);
-  }
 
-  void _updateEvent(Event event) {
-    EventModel newEvent = new EventModel(event.snapshot);
-    if (eventList.contains(newEvent)) {
-      if (newEvent.status == 'inactive')
-        setState(() {
-          eventList.remove(newEvent);
-        });
-    }
-  }
-
-  void _newEventAdded(Event event) {
-    EventModel newEvent = new EventModel(event.snapshot);
-    if (newEvent.status == 'active') {
-      setState(() {
-        eventList.add(newEvent);
-      });
-    } else if (newEvent.status == 'inactive') {
-      if (eventList.contains(newEvent)) {
-        setState(() {
-          eventList.remove(newEvent);
-        });
-      }
-    }
-  }
 
   //invoking native methods from dart code.
   String _bridgeStatus = 'native bridge not verified yet.';
@@ -143,39 +99,59 @@ class _MyHomePageState extends State<MyHomePage> {
       _bridgeStatus = bridgeStatus;
     });
   }
+  _handleBottomNavigationTab(int index){
+    setState(() {
+      bottomNavIndex=index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(8),
-        children: <Widget>[
-          Text('Events'),
-          HorizontalList(eventList),
-          Text('Deals'),
-          HorizontalList(dealList),
-          Text('Trending'),
-          HorizontalList(eventList),
+      body: handler.getViewForNavigationBarIndex(bottomNavIndex),
+      bottomNavigationBar:BottomNavigationBar(
+        currentIndex: bottomNavIndex,
+        type: BottomNavigationBarType.fixed ,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Home', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.navigation,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Navigate', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_parking,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Parking', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Notify', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.verified_user,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Profile', style: TextStyle(
+                color: Colors.blue,
+              ))
+          )
         ],
+        onTap: (index){
+          _handleBottomNavigationTab(index);
+        },
       ),
-      bottomNavigationBar: BottomNavBar(context),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-/*Wrap(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        children: <Widget>[Text('Events'), HorizontalList(eventList), Text('Deals'),HorizontalList(eventList)],
-      )*/
