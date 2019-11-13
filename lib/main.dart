@@ -1,7 +1,22 @@
+import 'dart:developer';
+
+import 'package:else_app_two/basicElements/bottom_nav_bar.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:else_app_two/basicElements/horizontal_list.dart';
 import 'package:flutter/services.dart';
-void main() => runApp(MyApp());
+import 'package:logger/logger.dart';
+
+import 'Models/events_model.dart';
+
+void main() {
+  runApp(MaterialApp(
+    title: 'Else',
+    home: MyApp(),
+  ));
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -10,18 +25,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Else'),
     );
   }
 }
@@ -45,16 +51,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DatabaseManager manager = new DatabaseManager();
+  final List<String> headings = ['Events', 'Deals', 'Trending'];
+  final List<EventModel> eventList = new List();
+  final logger = Logger();
+  @override
+  void initState() {
+    super.initState();
+    manageEventList();
+  }
   //receiving messages from native code.
   String _messageFromNative = 'no messages from native yet';
-  static const mainActivityFromPlatform = const MethodChannel(
-      'com.else.apis.from.native.mainActivity');
+  static const mainActivityFromPlatform =
+      const MethodChannel('com.else.apis.from.native.mainActivity');
+
   _MyHomePageState() {
     mainActivityFromPlatform.setMethodCallHandler(_handleMethod);
   }
-  Future<dynamic> _handleMethod(MethodCall call) async {
 
-    switch(call.method) {
+  Future<dynamic> _handleMethod(MethodCall call) async {
+    switch (call.method) {
       case "foundBeacons":
         setState(() {
           _messageFromNative = call.arguments;
@@ -63,14 +79,50 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+//status check
+
+  void manageEventList() {
+    manager.getEventsDBRef().onChildAdded.listen(_newEventAdded);
+    manager.getEventsDBRef().onChildChanged.listen(_updateEvent);
+  }
+
+  void _updateEvent(Event event) {
+    EventModel newEvent = new EventModel(event.snapshot);
+    if (eventList.contains(newEvent)) {
+      if(newEvent.status=='inactive')
+      setState(() {
+        eventList.remove(newEvent);
+      });
+    }
+  }
+
+  void _newEventAdded(Event event) {
+    EventModel newEvent = new EventModel(event.snapshot);
+    if (newEvent.status == 'active') {
+      setState(() {
+        eventList.add(newEvent);
+      });
+    } else if (newEvent.status == 'inactive') {
+      if (eventList.contains(newEvent)) {
+        setState(() {
+          eventList.remove(newEvent);
+        });
+
+      }
+    }
+  }
+
   //invoking native methods from dart code.
   String _bridgeStatus = 'native bridge not verified yet.';
-  static const mainActivityToPlatform = const MethodChannel('com.else.apis.to.native.mainActivity');
+  static const mainActivityToPlatform =
+      const MethodChannel('com.else.apis.to.native.mainActivity');
+
   Future<void> _getBridgeStatus() async {
     String bridgeStatus;
     try {
-      final String result = await mainActivityToPlatform.invokeMethod('nativeBridging');
-      bridgeStatus = 'Bridge status : '+result;
+      final String result =
+          await mainActivityToPlatform.invokeMethod('nativeBridging');
+      bridgeStatus = 'Bridge status : ' + result;
     } on PlatformException catch (e) {
       bridgeStatus = "Failed to bridge to native '${e.message}'.";
     }
@@ -79,7 +131,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _bridgeStatus = bridgeStatus;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -95,35 +146,24 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              child: Text('Get native bridge status'),
-              onPressed: _getBridgeStatus,
-            ),
-            Text(_bridgeStatus),
-            Text(_messageFromNative),
-          ],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: ListView(
+        padding: const EdgeInsets.all(8),
+        children: <Widget>[
+          Text('Events'),
+         HorizontalList(eventList),
+          Text('Deals'),
+          HorizontalList(eventList),
+          Text('Trending'),
+          HorizontalList(eventList),
+        ],
+      ),
+      bottomNavigationBar: BottomNavBar(context),
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+/*Wrap(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        children: <Widget>[Text('Events'), HorizontalList(eventList), Text('Deals'),HorizontalList(eventList)],
+      )*/
