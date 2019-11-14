@@ -1,16 +1,8 @@
-import 'dart:developer';
-
-import 'package:else_app_two/Models/deals_model.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/service/BottomNavigatorViewHandler.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:else_app_two/basicElements/event_horizontal_list.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
-
-import 'Models/events_model.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -58,23 +50,22 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
   }
 
   //receiving messages from native code.
-  String _messageFromNative = 'no messages from native yet';
-  static const mainActivityFromPlatform =
+  String _appTitle = 'Else';
+  static const nativeMessageReceivingChannel =
   const MethodChannel('com.else.apis.from.native.mainActivity');
 
   _MyHomePageState() {
-    mainActivityFromPlatform.setMethodCallHandler(_handleMethod);
+
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
-      case "foundBeacons":
-        setState(() {
-          _messageFromNative = call.arguments;
-        });
+      case "universeIdentified":
+        _updateTitleIfNeeded(call.arguments);
         return new Future.value("");
     }
   }
@@ -109,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(_appTitle),
       ),
       body: handler.getViewForNavigationBarIndex(bottomNavIndex),
       bottomNavigationBar:BottomNavigationBar(
@@ -153,5 +144,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _updateTitleIfNeeded(arguments) {
+    if(_appTitle.compareTo(arguments.toString())==0){
+      //no need to update as previous title has been called
+    }else{
+      setState(() {
+        _appTitle = arguments;
+      });
+    }
   }
 }

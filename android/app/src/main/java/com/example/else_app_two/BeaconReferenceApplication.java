@@ -23,7 +23,7 @@ public class BeaconReferenceApplication extends FlutterApplication implements Bo
     private static final String TAG = "BeaconReferenceApplication";
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
-
+    MainActivity.BridgeHelper helper;//=MainActivity.helper.getHelper();
     public void onCreate() {
         super.onCreate();
         BeaconManager beaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this);
@@ -93,13 +93,17 @@ public class BeaconReferenceApplication extends FlutterApplication implements Bo
 
     @Override
     public void didEnterRegion(Region region) {
+        helper=MainActivity.helper.getHelper();
         // In this example, this class sends a notification to the user whenever a Beacon
         // matching a Region (defined above) are first seen.
         Log.i(TAG, "Enter Region: "+region.toString());
+        helper.invokeDartMethod("universeIdentified","UnityOne");
     }
 
     @Override
     public void didExitRegion(Region region) {
+        helper=MainActivity.helper.getHelper();
+        helper.invokeDartMethod("universeIdentified","Else");
         Log.i(TAG, "Exit Region: "+region.toString());
     }
 
