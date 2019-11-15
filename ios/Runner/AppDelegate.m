@@ -6,18 +6,42 @@
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   [GeneratedPluginRegistrant registerWithRegistry:self];
-  // Override point for customization after application launch.
-    [super application:application didFinishLaunchingWithOptions:launchOptions];
+    
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     [self initRegion];
-    return YES;
+    
+    
+    FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
+    FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
+                                        methodChannelWithName:@"com.else.apis.from.native"
+                                          binaryMessenger:controller];
+  
+    FlutterMethodChannel* recieveMessagesFromDart = [FlutterMethodChannel
+                                            methodChannelWithName:@"com.else.apis.to.native"
+                                            binaryMessenger:controller];
+    
+    [super application:application didFinishLaunchingWithOptions:launchOptions];
+    
+    [invokeDartMethod invokeMethod:@"universeIdentified"
+                         arguments:@"UnityOne"];
+    
+    [recieveMessagesFromDart setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
+        // Note: this method is invoked on the UI thread.
+        // TODO
+        if ([call.method isEqualToString:@"nativeBridging"]) {
+            NSLog(@"Native Method invoked by flutter");
+        }
+    }];
+   return YES;
+    // should/can initRegion be called before didFinishLaunchingWithOptions ????
 }
+
 - (void)initRegion
 {
     static NSString *const kBeaconIdentifier = @"00000000-0000-0000-0000-000000000000";
     static NSString *const kCompanyIdentifier = @"00000000-0000-0000-0000-000000000000";//@"com.ustwo.myRegion";
-    // Open Terminal on Mac and type uuidgen. Paste value here
+
     NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:kBeaconIdentifier];
     
     // Setup the beacon region we want to look for. Comprises all beacons in that region
@@ -25,6 +49,7 @@
                                                            identifier:kCompanyIdentifier];
     
     // Start looking for beacon regions
+    NSLog(@"Monitoring is starting now");
     [self.locationManager startMonitoringForRegion:self.beaconRegion];
 }
 

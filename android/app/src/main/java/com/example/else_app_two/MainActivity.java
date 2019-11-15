@@ -30,8 +30,8 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
     MethodChannel invokingDartMethods;
     private BeaconManager beaconManager = null;
 
-    private static final String CHANNEL_TO_NATIVE = "com.else.apis.to.native.mainActivity";
-    private static final String CHANNEL_FROM_NATIVE = "com.else.apis.from.native.mainActivity";
+    private static final String CHANNEL_TO_NATIVE = "com.else.apis.to.native";
+    private static final String CHANNEL_FROM_NATIVE = "com.else.apis.from.native";
     public static BridgeHelper helper ;
 
     public class BridgeHelper{
