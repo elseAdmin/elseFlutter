@@ -2,11 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Can I use the PhotoLibrary please?</string><key>NSMicrophoneUsageDescription</key>
-<string>Can I use the mic please?</string>
-<key>NSCameraUsageDescription</key>
-<string>Can I use camera please?</string>
+	<key>NSCameraUsageDescription</key>
+	<string>camera access</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>mic access</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>access photos</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>location access 3</string>
+	<key>NSLocationUsageDescription</key>
+	<string>location access 1</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>location access 2</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>location access</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

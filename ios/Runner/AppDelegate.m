@@ -10,7 +10,12 @@
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     [self initRegion];
-    
+
+    if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways) {
+        [self.locationManager requestAlwaysAuthorization];
+     } else {
+        NSLog(@"permission already granted");
+     }
     
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
