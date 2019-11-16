@@ -20,6 +20,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		F1B5B83B237B57A000E179EB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F1B5B83A237B57A000E179EB /* GoogleService-Info.plist */; };
+		F1B5C2B72380788E0070E712 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F1B5C2B62380788E0070E712 /* Default-568h@2x.png */; };
 		F7BEBF111A8187FE7CE84DC9 /* libPods-Runner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B94ADAF49A67AB3698B86695 /* libPods-Runner.a */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +61,7 @@
 		BD7ACDB708201442F606C637 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		DB29FC1BB5A78F37EBF826C2 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		F1B5B83A237B57A000E179EB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F1B5C2B62380788E0070E712 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				F1B5C2B62380788E0070E712 /* Default-568h@2x.png */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -231,6 +234,7 @@
 				9740EEB41CF90195004384FC /* Debug.xcconfig in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				F1B5C2B72380788E0070E712 /* Default-568h@2x.png in Resources */,
 				F1B5B83B237B57A000E179EB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
