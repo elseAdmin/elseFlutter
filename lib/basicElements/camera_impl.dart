@@ -73,7 +73,7 @@ class CameraImplState extends State<CameraImpl>{
     }else if(source.compareTo("camera")==0) {
       openCamera().then((filePath) {
         changeState(filePath);
-      }).catchError((error){logger.e("Error in open camera Future in ccamera impl "+error);});
+      }).catchError((error){logger.e("Error in open camera Future in camera impl "+error);});
     }
   }
 
