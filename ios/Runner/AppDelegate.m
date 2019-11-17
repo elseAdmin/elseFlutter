@@ -5,28 +5,35 @@
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  [GeneratedPluginRegistrant registerWithRegistry:self];
+    [GeneratedPluginRegistrant registerWithRegistry:self];
+    [super application:application didFinishLaunchingWithOptions:launchOptions];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
-    [self initRegion];
-
+    
+    //permission
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways) {
         [self.locationManager requestAlwaysAuthorization];
-     } else {
+        [self.locationManager requestWhenInUseAuthorization];
+    } else {
         NSLog(@"permission already granted");
-     }
+    }
+    if([CLLocationManager isMonitoringAvailableForClass:self.beaconRegion]){
+        NSLog(@"device found capable");
+    }
+    [self initRegion];
+    [self.locationManager startUpdatingLocation];
+
+    
     
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
-                                        methodChannelWithName:@"com.else.apis.from.native"
-                                          binaryMessenger:controller];
-  
-    FlutterMethodChannel* recieveMessagesFromDart = [FlutterMethodChannel
-                                            methodChannelWithName:@"com.else.apis.to.native"
-                                            binaryMessenger:controller];
+                                              methodChannelWithName:@"com.else.apis.from.native"
+                                              binaryMessenger:controller];
     
-    [super application:application didFinishLaunchingWithOptions:launchOptions];
+    FlutterMethodChannel* recieveMessagesFromDart = [FlutterMethodChannel
+                                                     methodChannelWithName:@"com.else.apis.to.native"
+                                                     binaryMessenger:controller];
     
     [invokeDartMethod invokeMethod:@"universeIdentified"
                          arguments:@"UnityOne"];
@@ -41,7 +48,11 @@
    return YES;
     // should/can initRegion be called before didFinishLaunchingWithOptions ????
 }
-
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    NSLog(@"inside didUpdateLocations");
+    NSLog(@"%@", [locations lastObject]);
+}
 - (void)initRegion
 {
     static NSString *const kBeaconIdentifier = @"00000000-0000-0000-0000-000000000000";
@@ -73,9 +84,10 @@
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
+    NSLog(@"inside didRangeBeacons method");
     // Pick the last beacon from the set of beacons we discovered
     CLBeacon *beacon = [[CLBeacon alloc] init];
-    beacon = [beacons lastObject]; // Note. assuming one beacon this is sufficient
+    beacon = [beacons firstObject]; // Note. assuming one beacon this is sufficient
     
     // Update UI
     NSLog(@"%@", beacon.proximityUUID.UUIDString);
