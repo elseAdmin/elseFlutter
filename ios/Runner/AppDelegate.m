@@ -16,11 +16,11 @@
     
     if (self.peripheralManager.state == CBPeripheralManagerStatePoweredOn)
     {
-        NSLog(@"Powered On");
+        NSLog(@"peripheral Powered On");
     }
     else if (self.peripheralManager.state == CBPeripheralManagerStatePoweredOff)
     {
-        NSLog(@"Powered Off");
+        NSLog(@"peripheral Powered Off");
     }
     NSLog(@"fetching authorization status code");
     CBPeripheralManagerAuthorizationStatus status = [CBPeripheralManager authorizationStatus];
@@ -31,16 +31,16 @@
         [self.locationManager requestAlwaysAuthorization];
         [self.locationManager requestWhenInUseAuthorization];
     } else {
-        NSLog(@"permission already granted");
+        NSLog(@"location permission already granted");
     }
     if([CLLocationManager isMonitoringAvailableForClass:self.beaconRegion]){
-        NSLog(@"device found capable");
+        NSLog(@"device found capable of monitoring beacons");
     }
     [self initRegion];
     [self.locationManager startUpdatingLocation];
     NSArray *services = [NSArray arrayWithObjects:[CBUUID UUIDWithString:DEVICE_INFO_SERVICE_UUID], nil];
-    [self.centralManager scanForPeripheralsWithServices:services options:nil];
- /*   FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
+   
+   FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
                                               methodChannelWithName:@"com.else.apis.from.native"
                                               binaryMessenger:controller];
@@ -58,7 +58,7 @@
         if ([call.method isEqualToString:@"nativeBridging"]) {
             NSLog(@"Native Method invoked by flutter");
         }
-    }];*/
+    }];
    return [super application:application didFinishLaunchingWithOptions:launchOptions];;
     // should/can initRegion be called before didFinishLaunchingWithOptions ????
 }
@@ -67,7 +67,36 @@
     NSLog(@"inside didUpdateLocations");
     NSLog(@"%@", [locations lastObject]);
 }
-- (void)peripheralManager:(CBPeripheralManager *)manager peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral{
+
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+    
+    NSLog(@"Check BT status");
+    
+    switch (central.state) {
+        case CBCentralManagerStatePoweredOff:
+            NSLog(@"CoreBluetooth BLE hardware is powered off");
+            break;
+        case CBCentralManagerStateResetting:
+            NSLog(@"CoreBluetooth BLE hardware is resetting");
+            break;
+        case CBCentralManagerStateUnauthorized:
+            NSLog(@"CoreBluetooth BLE state is unauthorized");
+            break;
+        case CBCentralManagerStateUnknown:
+            NSLog(@"CoreBluetooth BLE state is unknown");
+            break;
+        case CBCentralManagerStateUnsupported:
+            NSLog(@"CoreBluetooth BLE hardware is unsupported on this platform");
+            break;
+        case CBCentralManagerStatePoweredOn:
+            NSLog(@"CoreBluetooth BLE hardware is powered on and ready");
+            NSArray *services = [NSArray arrayWithObjects:[CBUUID UUIDWithString:DEVICE_INFO_SERVICE_UUID], nil];
+            [self.centralManager scanForPeripheralsWithServices:services options:nil];
+    }
+    
+}
+
+- (void)peripheralManager:(CBPeripheralManager *)perimanager peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral{
     NSLog(@"%@",peripheral.state);
 }
 - (void)initRegion
