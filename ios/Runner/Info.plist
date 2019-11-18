@@ -12,6 +12,10 @@
 	<string>photo reqrd</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>bluetooth required</string>
+	<key>NSCameraUsageDescription</key>
+	<string>camera access</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>mic access</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
