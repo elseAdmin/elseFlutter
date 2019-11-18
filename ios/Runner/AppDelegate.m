@@ -9,7 +9,9 @@
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
-    
+    if([CBPeripheralManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways){
+        NSLog(@"no bluetooth permissions");
+    }
     //permission
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways) {
         [self.locationManager requestAlwaysAuthorization];
