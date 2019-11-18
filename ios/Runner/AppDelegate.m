@@ -9,11 +9,25 @@
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
-    if([CBPeripheralManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways){
-        NSLog(@"no bluetooth permissions");
+    
+    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self
+                                                                     queue:nil
+                                                                   options:nil];
+    NSLog(@"peripheral manager initialized");
+    if (self.peripheralManager.state == CBPeripheralManagerStatePoweredOn)
+    {
+        NSLog(@"Powered On");
     }
+    else if (self.peripheralManager.state == CBPeripheralManagerStatePoweredOff)
+    {
+        NSLog(@"Powered Off");
+    }
+    NSLog(@"fetching authorization status code");
+    CBPeripheralManagerAuthorizationStatus status = [CBPeripheralManager authorizationStatus];
+    NSLog(@"%@",status);
     //permission
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways) {
+         NSLog(@"location permission not granted");
         [self.locationManager requestAlwaysAuthorization];
         [self.locationManager requestWhenInUseAuthorization];
     } else {
@@ -25,7 +39,7 @@
     [self initRegion];
     [self.locationManager startUpdatingLocation];
 
-    FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
+ /*   FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
                                               methodChannelWithName:@"com.else.apis.from.native"
                                               binaryMessenger:controller];
@@ -43,7 +57,7 @@
         if ([call.method isEqualToString:@"nativeBridging"]) {
             NSLog(@"Native Method invoked by flutter");
         }
-    }];
+    }];*/
    return [super application:application didFinishLaunchingWithOptions:launchOptions];;
     // should/can initRegion be called before didFinishLaunchingWithOptions ????
 }
@@ -84,10 +98,9 @@
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
     NSLog(@"inside didRangeBeacons method");
-      for (CLBeacon *beacon in beacons) {
-  
+    for(int i = 0; i < [beacons count]; i++){
         CLBeacon *beacon = [[CLBeacon alloc] init];
-        beacon = [beacons firstObject];
+        beacon = [beacons objectAtIndex:i];
     
     // Update UI
     NSLog(@"%@", beacon.proximityUUID.UUIDString);
