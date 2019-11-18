@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
 #include "GeneratedPluginRegistrant.h"
-
+#define DEVICE_INFO_SERVICE_UUID @"00000000-0000-0000-0000-000000000000"
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
@@ -9,11 +9,11 @@
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
+    self.centralManager = [[CBCentralManager alloc] init];
+    self.peripheralManager = [[CBPeripheralManager alloc] init];
     
-    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self
-                                                                     queue:nil
-                                                                   options:nil];
-    NSLog(@"peripheral manager initialized");
+    NSLog(@"peripheral manager and central manager initialized");
+    
     if (self.peripheralManager.state == CBPeripheralManagerStatePoweredOn)
     {
         NSLog(@"Powered On");
@@ -38,7 +38,8 @@
     }
     [self initRegion];
     [self.locationManager startUpdatingLocation];
-
+    NSArray *services = [NSArray arrayWithObjects:[CBUUID UUIDWithString:DEVICE_INFO_SERVICE_UUID], nil];
+    [self.centralManager scanForPeripheralsWithServices:services options:nil];
  /*   FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
                                               methodChannelWithName:@"com.else.apis.from.native"
@@ -65,6 +66,9 @@
 {
     NSLog(@"inside didUpdateLocations");
     NSLog(@"%@", [locations lastObject]);
+}
+- (void)peripheralManager:(CBPeripheralManager *)manager peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral{
+    NSLog(@"%@",peripheral.state);
 }
 - (void)initRegion
 {
@@ -95,7 +99,7 @@
     NSLog(@"Exit region called");
 }
 
-- (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
+- (void)locationManager:(CLLocationManager *)locationManager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
     NSLog(@"inside didRangeBeacons method");
     for(int i = 0; i < [beacons count]; i++){
