@@ -10,8 +10,6 @@
 	<string>loc1</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>photo reqrd</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>bluetooth required</string>
 	<key>NSCameraUsageDescription</key>
 	<string>camera access</string>
 	<key>NSMicrophoneUsageDescription</key>
