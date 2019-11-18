@@ -6,7 +6,6 @@
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GeneratedPluginRegistrant registerWithRegistry:self];
-    [super application:application didFinishLaunchingWithOptions:launchOptions];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -24,8 +23,6 @@
     [self initRegion];
     [self.locationManager startUpdatingLocation];
 
-    
-    
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
                                               methodChannelWithName:@"com.else.apis.from.native"
@@ -45,7 +42,7 @@
             NSLog(@"Native Method invoked by flutter");
         }
     }];
-   return YES;
+   return [super application:application didFinishLaunchingWithOptions:launchOptions];;
     // should/can initRegion be called before didFinishLaunchingWithOptions ????
 }
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
@@ -85,9 +82,10 @@
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
 {
     NSLog(@"inside didRangeBeacons method");
-    // Pick the last beacon from the set of beacons we discovered
-    CLBeacon *beacon = [[CLBeacon alloc] init];
-    beacon = [beacons firstObject]; // Note. assuming one beacon this is sufficient
+      for (CLBeacon *beacon in beacons) {
+  
+        CLBeacon *beacon = [[CLBeacon alloc] init];
+        beacon = [beacons firstObject];
     
     // Update UI
     NSLog(@"%@", beacon.proximityUUID.UUIDString);
@@ -112,5 +110,6 @@
     {
         NSLog(@"Far");
     }
+}
 }
 @end
