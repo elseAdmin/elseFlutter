@@ -50,13 +50,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    const nativeMessageReceivingChannel =
+    const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
+    _getBridgeStatus();
   }
 
   //receiving messages from native code.
   String _appTitle = 'Else';
-  static const nativeMessageReceivingChannel =
-  const MethodChannel('com.else.apis.from.native.mainActivity');
+
 
   _MyHomePageState() {
 
@@ -74,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //invoking native methods from dart code.
   String _bridgeStatus = 'native bridge not verified yet.';
   static const mainActivityToPlatform =
-      const MethodChannel('com.else.apis.to.native.mainActivity');
+      const MethodChannel('com.else.apis.to.native');
 
   Future<void> _getBridgeStatus() async {
     String bridgeStatus;
@@ -147,6 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _updateTitleIfNeeded(arguments) {
+    logger.i("flutter method called by native");
     if(_appTitle.compareTo(arguments.toString())==0){
       //no need to update as previous title has been called
     }else{

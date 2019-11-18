@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -30,8 +31,8 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
     MethodChannel invokingDartMethods;
     private BeaconManager beaconManager = null;
 
-    private static final String CHANNEL_TO_NATIVE = "com.else.apis.to.native.mainActivity";
-    private static final String CHANNEL_FROM_NATIVE = "com.else.apis.from.native.mainActivity";
+    private static final String CHANNEL_TO_NATIVE = "com.else.apis.to.native";
+    private static final String CHANNEL_FROM_NATIVE = "com.else.apis.from.native";
     public static BridgeHelper helper ;
 
     public class BridgeHelper{
@@ -93,7 +94,9 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 String title =  determineUniverse(region);
                 if (beacons.size() > 0) {
-
+                    for(Beacon beacon : beacons){
+                        Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3());
+                    }
                 }
             }
 
