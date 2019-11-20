@@ -27,13 +27,11 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
     private static final String TAG = "MainActivity";
     private static final int PERMISSION_REQUEST_FINE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_BLUETOOTH = 2;
-    BeaconReferenceApplication application;
-    MethodChannel invokingDartMethods;
     private BeaconManager beaconManager = null;
-
     private static final String CHANNEL_TO_NATIVE = "com.else.apis.to.native";
     private static final String CHANNEL_FROM_NATIVE = "com.else.apis.from.native";
     public static BridgeHelper helper ;
+    MethodChannel invokingDartMethods;
 
     public class BridgeHelper{
        public void invokeDartMethod(String methodName,Object arg){
@@ -49,26 +47,20 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
         super.onCreate(savedInstanceState);
         GeneratedPluginRegistrant.registerWith(this);
 
-        if (this.checkSelfPermission(
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSION_REQUEST_FINE_LOCATION);
-        }
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH);
+        handleUserPermission();
+        handleBeaconServices();
+        handleBridgingServices();
 
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, PERMISSION_REQUEST_BLUETOOTH);
-        } else {
-            //TODO
-        }
+    }
 
-        application = ((BeaconReferenceApplication) this.getApplication());
+    private void handleBeaconServices(){
+        BeaconReferenceApplication application= ((BeaconReferenceApplication) this.getApplication());
         application.enableMonitoring();
         helper = new BridgeHelper();
         beaconManager = BeaconManager.getInstanceForApplication(this);
+    }
 
-
+    private void handleBridgingServices(){
         new MethodChannel(getFlutterView(), CHANNEL_TO_NATIVE).setMethodCallHandler(
                 new MethodCallHandler() {
                     @Override
@@ -79,6 +71,8 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
                         }
                     }
                 });
+
+
 
         invokingDartMethods = new MethodChannel(getFlutterView(), CHANNEL_FROM_NATIVE);
     }
@@ -92,7 +86,7 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
         RangeNotifier rangeNotifier = new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                String title =  determineUniverse(region);
+                String universe =  determineUniverse(region);
                 if (beacons.size() > 0) {
                     for(Beacon beacon : beacons){
                         Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3());
@@ -112,9 +106,30 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
         return "UnityOne";
     }
 
+
+    private void handleUserPermission(){
+        //is bluetooth permission reqiured ?
+
+        // handle other ccases of permissions
+        if (this.checkSelfPermission(
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_REQUEST_FINE_LOCATION);
+        }
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, PERMISSION_REQUEST_BLUETOOTH);
+        } else {
+            //TODO
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
+        //Task:should we unbind ?
         beaconManager.unbind(this);
     }
 

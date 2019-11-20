@@ -13,7 +13,6 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.Region;
-import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
@@ -22,38 +21,29 @@ import io.flutter.app.FlutterApplication;
 public class BeaconReferenceApplication extends FlutterApplication implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApplication";
     private RegionBootstrap regionBootstrap;
-    private BackgroundPowerSaver backgroundPowerSaver;
-    MainActivity.BridgeHelper helper;//=MainActivity.helper.getHelper();
+    MainActivity.BridgeHelper helper;
     public void onCreate() {
         super.onCreate();
+        buildBeaconConfiguration();
+        initRegion();
+    }
+    private void initRegion(){
+        Region region = new Region("backgroundRegion",
+                Identifier.parse("00000000-0000-0000-0000-000000000000"), null, null);
+        regionBootstrap = new RegionBootstrap(this, region);
+    }
+    private void buildBeaconConfiguration(){
         BeaconManager beaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().clear();
         //donot change the below value
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24")); //iBeacon specific value
-
         beaconManager.setDebug(false);
         Notification notification = getNotificationForForegroundScan();
         beaconManager.enableForegroundServiceScanning(notification, 456);
         beaconManager.setEnableScheduledScanJobs(false);
         beaconManager.setBackgroundBetweenScanPeriod(0);
         beaconManager.setBackgroundScanPeriod(1100);
-
-
-        Log.i(TAG, "setting up background monitoring for beacons and power saving");
-        // wake up the app when a beacon is seen
-        Region region = new Region("backgroundRegion",
-                Identifier.parse("00000000-0000-0000-0000-000000000000"), null, null);
-        regionBootstrap = new RegionBootstrap(this, region);
-
-        // simply constructing this class and holding a reference to it in your custom Application
-        // class will automatically cause the BeaconLibrary to save battery whenever the application
-        // is not visible.  This reduces bluetooth power usage by about 60%
-        backgroundPowerSaver = new BackgroundPowerSaver(this);
-
-        // If you wish to test beacon detection in the Android Emulator, you can use code like this:
-        // BeaconManager.setBeaconSimulator(new TimedBeaconSimulator() );
-        // ((TimedBeaconSimulator) BeaconManager.getBeaconSimulator()).createTimedSimulatedBeacons();
     }
 
     private Notification getNotificationForForegroundScan() {
@@ -77,6 +67,7 @@ public class BeaconReferenceApplication extends FlutterApplication implements Bo
         return builder.build();
     }
 
+    //should we use this method ? any benefits ?
     public void disableMonitoring() {
         if (regionBootstrap != null) {
             regionBootstrap.disable();
@@ -84,6 +75,7 @@ public class BeaconReferenceApplication extends FlutterApplication implements Bo
         }
     }
 
+    //is this method required?
     public void enableMonitoring() {
         Region region = new Region("backgroundRegion",
                 Identifier.parse("00000000-0000-0000-0000-000000000000"), null, null);
