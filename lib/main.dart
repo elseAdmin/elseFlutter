@@ -44,12 +44,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  BottomNavigatorViewHandler handler= new BottomNavigatorViewHandler();
-  int bottomNavIndex=0;
   final logger = Logger();
+
+  int bottomNavIndex=0;
+  BottomNavigatorViewHandler handler= new BottomNavigatorViewHandler();
+
   @override
   void initState() {
     super.initState();
+
     const nativeMessageReceivingChannel =
     const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);

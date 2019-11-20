@@ -5,7 +5,54 @@
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GeneratedPluginRegistrant registerWithRegistry:self];
-    //beacon scan code
+    
+    [self initializeCoreLocationSpecificVariables];
+    [self handleUserPermissionForCoreLocation];
+    [self handleBeaconService];
+    [self initializeBridgingSpecificVariables];
+    [self handleBridgingService];
+    
+    return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (void)handleBridgingService{
+    [self.recieveMessagesFromDart setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
+        // Note: this method is invoked on the UI thread.
+        // TODO
+        if ([call.method isEqualToString:@"nativeBridging"]) {
+            //call ios method here and return a future
+            NSLog(@"Native Method invoked by flutter");
+        }
+    }];
+}
+
+- (void)initializeBridgingSpecificVariables
+{
+    self.controller = (FlutterViewController*)self.window.rootViewController;
+    self.recieveMessagesFromDart = [FlutterMethodChannel
+                                    methodChannelWithName:@"com.else.apis.to.native"
+                                    binaryMessenger:self.controller];
+    self.invokeDartMethod = [FlutterMethodChannel
+                             methodChannelWithName:@"com.else.apis.from.native"
+                             binaryMessenger:self.controller];
+}
+
+- (void)handleBeaconService
+{
+    //flutter on start up should call native method to inject all uuids to scan in initRegion()
+    [self initRegion];
+    [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
+}
+
+- (void)initializeCoreLocationSpecificVariables
+{
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+}
+
+- (void)handleUserPermissionForCoreLocation
+{
+    //handle other cases of denied permission and add flow for requesting permission again on denial.
     if ([CLLocationManager authorizationStatus] != kCLAuthorizationStatusAuthorizedAlways) {
         NSLog(@"location permission not granted");
         [self.locationManager requestAlwaysAuthorization];
@@ -13,32 +60,6 @@
     } else {
         NSLog(@"location permission already granted");
     }
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-    [self initRegion];
-    [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
-    
-    //flutter native bridge code
-    FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
-    FlutterMethodChannel* invokeDartMethod = [FlutterMethodChannel
-                                              methodChannelWithName:@"com.else.apis.from.native"
-                                              binaryMessenger:controller];
-    
-    FlutterMethodChannel* recieveMessagesFromDart = [FlutterMethodChannel
-                                                     methodChannelWithName:@"com.else.apis.to.native"
-                                                     binaryMessenger:controller];
-    
-    [invokeDartMethod invokeMethod:@"universeIdentified"
-                         arguments:@"UnityOne"];
-    
-    [recieveMessagesFromDart setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
-        // Note: this method is invoked on the UI thread.
-        // TODO
-        if ([call.method isEqualToString:@"nativeBridging"]) {
-            NSLog(@"Native Method invoked by flutter");
-        }
-    }];
-   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 - (void)initRegion
@@ -69,8 +90,8 @@
 {
     NSLog(@"inside didRangeBeacons method");
     for(int i = 0; i < [beacons count]; i++){
-        CLBeacon *beacon = [beacons objectAtIndex:i];
-    
+    CLBeacon *beacon = [beacons objectAtIndex:i];
+    [self returnUniverseByUUID:beacon.proximityUUID.UUIDString];
     // Update UI
     NSLog(@"%@", beacon.proximityUUID.UUIDString);
     NSLog(@"%@", [NSString stringWithFormat:@"%@", beacon.major]);
@@ -95,5 +116,12 @@
         NSLog(@"Far");
     }
 }
+}
+
+- (void)returnUniverseByUUID:(NSString *)uuid
+{
+    //do we need to close this channel manually ? or its auto managed?
+    [self.invokeDartMethod invokeMethod:@"universeIdentified"
+                         arguments:@"UnityOne"];
 }
 @end

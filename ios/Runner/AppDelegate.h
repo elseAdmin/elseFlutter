@@ -5,5 +5,7 @@
 
 @property (strong, nonatomic) CLBeaconRegion *beaconRegion;
 @property (strong, nonatomic) CLLocationManager *locationManager;
-
+@property (strong, nonatomic) FlutterMethodChannel *recieveMessagesFromDart;
+@property (strong, nonatomic) FlutterViewController *controller;
+@property (strong, nonatomic) FlutterMethodChannel *invokeDartMethod ;
 @end
