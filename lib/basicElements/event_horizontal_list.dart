@@ -1,5 +1,8 @@
-import 'package:else_app_two/Models/events_model.dart';
+
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/event_list_page.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -36,22 +39,39 @@ class EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-      height: MediaQuery.of(context).size.height * 0.35,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: events.length,
-          itemBuilder: (context, index) {
-            return Container(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: Card(
-                child: Container(
-                    child: Image(image: NetworkImage(events[index].url))),
-              ),
-            );
-          }),
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => EventListPage(events)));
+          },
+          child: Text(
+            "Events",
+            style: TextStyle(
+              fontSize: Constants.homePageHeadingsFontSize,
+            ),
+          ),
+        ),
+        Container(
+          //container is used as list view doesnot stay without bound height of parent
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Card(
+                      child: Container(
+                          child: Image(image: NetworkImage(events[index].url))),
+                    ),
+                  );
+                }))
+      ],
     );
   }
-
 }

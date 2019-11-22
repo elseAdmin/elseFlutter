@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class DatabaseManager {
@@ -11,7 +12,7 @@ class DatabaseManager {
     }
     if (baseDatabase == null) {
       baseDatabase =
-          FirebaseDatabase.instance.reference().child('unityOneRohini');
+          FirebaseDatabase.instance.reference().child(StartupData.dbreference);
       //make the above child path as variable that can be injected at app startup
     }
   }
