@@ -6,5 +6,8 @@ class Constants {
    static Color titleBarTextColor = Colors.grey[800];
    static Color horizontalListBackgroundColor = Colors.grey[0];
 
+   static Color textColor = Colors.grey[800];
+
+
    static double homePageHeadingsFontSize=16;
 }

@@ -14,8 +14,8 @@ class EventListPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Constants.titleBarBackgroundColor,
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back, color: Colors.black),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text("Events",

@@ -8,10 +8,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return ListView(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(3),
       children: <Widget>[
-        EventList(),
-        DealList()
+        EventSection(),
+        DealSection()
       ],
     );
   }

@@ -6,12 +6,12 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-class DealList extends StatefulWidget {
+class DealSection extends StatefulWidget {
   @override
-  _DealListState createState() => new _DealListState();
+  _DealSectionState createState() => new _DealSectionState();
 }
 
-class _DealListState extends State<DealList> {
+class _DealSectionState extends State<DealSection> {
   List<DealModel> deals = new List();
   final DatabaseManager manager = DatabaseManager();
 
@@ -39,37 +39,53 @@ class _DealListState extends State<DealList> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Column(children: <Widget>[
-      GestureDetector(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => DealListPage(deals)));
-        },
-        child: new Text(
-          "Deals",
-          style: TextStyle(
-            fontSize: Constants.homePageHeadingsFontSize,
-          ),
-        ),
-      ),
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        height: MediaQuery.of(context).size.height * 0.35,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: deals.length,
-            itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width * 0.6,
-                child: Card(
-                  child: Container(
-                      child: Image(image: NetworkImage(deals[index].url))),
-                ),
-              );
-            }),
-      )
-    ]);
+    return Column(
+      children: <Widget>[
+        Container(
+            child:GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => DealListPage(deals)));
+              },
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Deals",
+                    style: TextStyle(
+                      fontSize: Constants.homePageHeadingsFontSize,
+                    ),
+                  )),
+            )),
+        Container(
+            padding: EdgeInsets.symmetric(vertical: 0.0),
+            height: MediaQuery.of(context).size.height * 0.30,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: deals.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                      width: MediaQuery.of(context).size.width * 0.65,
+                      child: Card(
+                        child:Stack(
+                          fit:StackFit.passthrough,
+                          children: <Widget>[
+                            Image(
+                                fit:BoxFit.cover,
+                                image: NetworkImage(deals[index].url)),
+                            Align(
+                                alignment: Alignment.center,
+                                child: Text(deals[index].name,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 19))),
+                          ],
+                        ),
+                      ));
+                }))
+      ],
+    );
   }
 }
