@@ -56,7 +56,7 @@ class SingleEventPageState extends State<SingleEventScreen>{
                             fontSize: 18,
                             decoration: TextDecoration.underline),
                       )),
-                  SubmissionSection(),
+                  SubmissionSection(widget.event),
                   Divider(
                       indent: SizeConfig.blockSizeHorizontal * 7,
                       endIndent: SizeConfig.blockSizeHorizontal * 7,
