@@ -3,6 +3,7 @@ import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/event_list_page.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/single_event_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -38,10 +39,12 @@ class EventSectionState extends State<EventSection> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     // TODO: implement build
     return Column(
       children: <Widget>[
         Container(
+          padding: EdgeInsets.only(top:SizeConfig.blockSizeVertical*1,left: SizeConfig.blockSizeHorizontal*2),
             child: GestureDetector(
           onTap: () {
             Navigator.push(
@@ -54,12 +57,13 @@ class EventSectionState extends State<EventSection> {
               child: Text(
                 "Events",
                 style: TextStyle(
+                  decoration: TextDecoration.underline,
                   fontSize: Constants.homePageHeadingsFontSize,
                 ),
               )),
         )),
         Container(
-            padding: EdgeInsets.symmetric(vertical: 0.0),
+            padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal*1,right: SizeConfig.blockSizeHorizontal*1),
             height: MediaQuery.of(context).size.height * 0.30,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,

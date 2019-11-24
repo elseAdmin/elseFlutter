@@ -1,14 +1,18 @@
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/SubmissionSection.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class SingleEventScreen extends StatelessWidget {
-  EventModel event;
-  SingleEventScreen(EventModel event) {
-    this.event = event;
-  }
+class SingleEventScreen extends StatefulWidget {
+  final EventModel event;
+  const SingleEventScreen(this.event);
+  @override
+  SingleEventPageState createState() => SingleEventPageState();
+}
+
+class SingleEventPageState extends State<SingleEventScreen>{
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -23,20 +27,20 @@ class SingleEventScreen extends StatelessWidget {
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  title: Text(event.name,
+                  title: Text(widget.event.name,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
                       )),
                   background:
-                      Image(fit: BoxFit.cover, image: NetworkImage(event.url))),
+                  Image(fit: BoxFit.cover, image: NetworkImage(widget.event.url))),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
                 [
                   Container(
                       padding: EdgeInsets.all(SizeConfig.blockSizeVertical * 2),
-                      child: Text(event.description,
+                      child: Text(widget.event.description,
                           style: TextStyle(
                               fontSize: 16,
                               color: Constants.textColor,
@@ -52,22 +56,7 @@ class SingleEventScreen extends StatelessWidget {
                             fontSize: 18,
                             decoration: TextDecoration.underline),
                       )),
-                  Container(
-                      padding: EdgeInsets.only(
-                          left: SizeConfig.blockSizeHorizontal * 13,
-                          top: SizeConfig.blockSizeVertical * 2),
-                      child: Row(children: <Widget>[
-                        CameraImpl(),
-                        Container(
-                            padding: EdgeInsets.only(
-                              left: SizeConfig.blockSizeHorizontal * 5,
-                            ),
-                            child: Text("Submit yours",
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    color: Constants.textColor,
-                                    fontWeight: FontWeight.w400)))
-                      ])),
+                  SubmissionSection(),
                   Divider(
                       indent: SizeConfig.blockSizeHorizontal * 7,
                       endIndent: SizeConfig.blockSizeHorizontal * 7,
@@ -78,8 +67,10 @@ class SingleEventScreen extends StatelessWidget {
             ),
             SliverGrid(
               gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-              delegate: SliverChildListDelegate(
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+                // I'm forcing item heights
+              delegate:
+              SliverChildListDelegate(
                 [
                   Card(color: Colors.green),
                   Card(color: Colors.yellow),
@@ -98,20 +89,102 @@ class SingleEventScreen extends StatelessWidget {
                   Card(color: Colors.orange),
                   Card(color: Colors.blue),
                   Card(color: Colors.red),
-
+                  Card(color: Colors.black),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
                   Card(color: Colors.red),
                   Card(color: Colors.blue),
                   Card(color: Colors.green),
-
                   Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.black),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.black),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.black),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.green),
+                  Card(color: Colors.yellow),
+                  Card(color: Colors.orange),
+                  Card(color: Colors.blue),
+                  Card(color: Colors.red),
+
                 ],
               ),
+
             ),
 
 
 
 
             SliverList(
+
               delegate: SliverChildListDelegate(
                   [
                     Text("veiw more")
