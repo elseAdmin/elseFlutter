@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
-class CameraImpl extends StatefulWidget{
+class CameraImpl extends StatefulWidget {
   CameraImplState cameraImplState = CameraImplState();
   @override
   State<StatefulWidget> createState() {
@@ -13,11 +13,13 @@ class CameraImpl extends StatefulWidget{
     return cameraImplState;
   }
 }
-class CameraImplState extends State<CameraImpl>{
+
+class CameraImplState extends State<CameraImpl> {
   final logger = Logger();
   File imageClicked;
   Future<void> renderSuitableCameraView() {
-    return showDialog(context: context,
+    return showDialog(
+        context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             content: new SingleChildScrollView(
@@ -40,60 +42,67 @@ class CameraImplState extends State<CameraImpl>{
           );
         });
   }
+
   @override
   Widget build(BuildContext context) {
-    File getLatestPickedImageFile(){
+    File getLatestPickedImageFile() {
       return imageClicked;
     }
-    if(imageClicked==null) {
-      return FloatingActionButton(
-        onPressed: renderSuitableCameraView,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
-      );
-    }else{
+
+    if (imageClicked == null) {
+      return GestureDetector(
+          onTap: () {
+            renderSuitableCameraView();
+          },
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[Icon(Icons.add_a_photo)]));
+    } else {
       return Column(
         children: <Widget>[
           Image.file(imageClicked),
-          FloatingActionButton(
-            onPressed: renderSuitableCameraView,
-            tooltip: 'Pick Image',
-            child: Icon(Icons.add_a_photo),
-            ),
+          GestureDetector(
+              onTap: () {
+                renderSuitableCameraView();
+              },
+              child: Icon(Icons.add_a_photo)),
         ],
       );
     }
   }
 
-  handleState(String source){
-    if(source.compareTo("gallery")==0) {
+  handleState(String source) {
+    if (source.compareTo("gallery") == 0) {
       openGallery().then((filepath) {
         changeState(filepath);
-      }).catchError((error){logger.e("Error with open gallery Future in camera impl "+error);});
-    }else if(source.compareTo("camera")==0) {
+      }).catchError((error) {
+        logger.e("Error with open gallery Future in camera impl " + error);
+      });
+    } else if (source.compareTo("camera") == 0) {
       openCamera().then((filePath) {
         changeState(filePath);
-      }).catchError((error){logger.e("Error in open camera Future in camera impl "+error);});
+      }).catchError((error) {
+        logger.e("Error in open camera Future in camera impl " + error);
+      });
     }
   }
 
-  Future<File> openCamera() async{
+  Future<File> openCamera() async {
     return await ImagePicker.pickImage(
       source: ImageSource.camera,
     );
   }
-  Future<File> openGallery() async{
+
+  Future<File> openGallery() async {
     return await ImagePicker.pickImage(
       source: ImageSource.gallery,
     );
   }
 
   changeState(File file) {
-    logger.i("File path : "+file.path);
+    logger.i("File path : " + file.path);
     setState(() {
-      imageClicked=file;
+      imageClicked = file;
     });
   }
-
-
 }

@@ -43,21 +43,21 @@ class EventSectionState extends State<EventSection> {
       children: <Widget>[
         Container(
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => EventListPage(events)));
-              },
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Events",
-                    style: TextStyle(
-                      fontSize: Constants.homePageHeadingsFontSize,
-                    ),
-                  )),
-            )),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => EventListPage(events)));
+          },
+          child: Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Events",
+                style: TextStyle(
+                  fontSize: Constants.homePageHeadingsFontSize,
+                ),
+              )),
+        )),
         Container(
             padding: EdgeInsets.symmetric(vertical: 0.0),
             height: MediaQuery.of(context).size.height * 0.30,
@@ -69,27 +69,28 @@ class EventSectionState extends State<EventSection> {
                       width: MediaQuery.of(context).size.width * 0.65,
                       child: Card(
                         child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) => SingleEventScreen(events[index])));
-                          },
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          SingleEventScreen(events[index])));
+                            },
                             child: Stack(
-                          fit: StackFit.passthrough,
-                          children: <Widget>[
-                            Image(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(events[index].blurUrl)),
-                            Align(
-                                alignment: Alignment.center,
-                                child: Text(events[index].name,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 19))),
-                          ],
-                        )),
+                              fit: StackFit.passthrough,
+                              children: <Widget>[
+                                Image(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(events[index].blurUrl)),
+                                Align(
+                                    alignment: Alignment.center,
+                                    child: Text(events[index].name,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 19))),
+                              ],
+                            )),
                       ));
                 }))
       ],
