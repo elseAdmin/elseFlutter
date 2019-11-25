@@ -39,6 +39,7 @@ class EventSectionState extends State<EventSection> {
 
   @override
   Widget build(BuildContext context) {
+    manager.getApprovedSubmissionsForEvent("UORCHR01");
     SizeConfig().init(context);
     // TODO: implement build
     return Column(
@@ -78,7 +79,7 @@ class EventSectionState extends State<EventSection> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          SingleEventScreen(events[index])));
+                                          SingleEventScreen(events[index],List())));
                             },
                             child: Stack(
                               fit: StackFit.passthrough,

@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:else_app_two/basicElements/camera_impl.dart';
+import 'package:else_app_two/basicElements/pick_gallery_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/submission_confirmation_dialogue.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -18,33 +21,40 @@ class SubmissionSection extends StatefulWidget {
 class SubmissionSectionState extends State<SubmissionSection> {
   final logger = Logger();
   File imageFile;
-  callback(file) {
-    logger.i(file);
+
+  onSubmissionConfirmedByUser(file) {
     setState(() {
       imageFile = file;
     });
-    DatabaseManager().addEventSubmission(widget.event, "123", imageFile);
-    //upload to firestore
+    DatabaseManager()
+        .addEventSubmission(widget.event, StartupData.userid, imageFile);
+  }
+
+  onImageSelectedFromCameraOrGallery(file) {
+    logger.i(file);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            SubmissionConfirmation(file, onSubmissionConfirmedByUser));
   }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    // TODO: implement build
     if (imageFile == null) {
       return Container(
           padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                CameraImpl(callback),
+                CameraImpl(onImageSelectedFromCameraOrGallery),
                 Container(
                     child: Text("Submit yours",
                         style: TextStyle(
                             fontSize: 13,
                             color: Constants.textColor,
                             fontWeight: FontWeight.w400))),
-                GestureDetector(onTap: () {}, child: Icon(Icons.photo_album)),
+                GalleryImpl(onImageSelectedFromCameraOrGallery),
               ]));
     } else {
       return Container(

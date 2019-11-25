@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 
 class SingleEventScreen extends StatefulWidget {
   final EventModel event;
-  const SingleEventScreen(this.event);
+  final List<String> submissionUrls;
+  const SingleEventScreen(this.event,this.submissionUrls);
+
   @override
   SingleEventPageState createState() => SingleEventPageState();
 }
@@ -70,114 +72,12 @@ class SingleEventPageState extends State<SingleEventScreen>{
               SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
                 // I'm forcing item heights
               delegate:
-              SliverChildListDelegate(
-                [
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.black),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.black),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.black),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.black),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.green),
-                  Card(color: Colors.yellow),
-                  Card(color: Colors.orange),
-                  Card(color: Colors.blue),
-                  Card(color: Colors.red),
-
-                ],
+              SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return Text("wdc");
+                },
+                childCount: 2,
               ),
-
             ),
 
 
@@ -187,7 +87,7 @@ class SingleEventPageState extends State<SingleEventScreen>{
 
               delegate: SliverChildListDelegate(
                   [
-                    Text("veiw more")
+                    Container(child:Text("view more >",style: TextStyle(fontSize: 11),),padding:EdgeInsets.only(left: SizeConfig.blockSizeHorizontal*2,top:SizeConfig.blockSizeVertical))
                   ]),
             ),
           ],

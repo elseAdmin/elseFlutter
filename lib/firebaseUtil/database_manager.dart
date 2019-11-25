@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/events_model.dart';
@@ -6,8 +7,10 @@ import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class DatabaseManager {
+  final logger = Logger();
   Firestore store;
   DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
   FirebaseStorage storageRef;
@@ -32,16 +35,16 @@ class DatabaseManager {
         .setData({'username': 'suhail'});
   }
 
-  List<String> getApprovedSubmissionsForEvent(EventModel event){
+  void getApprovedSubmissionsForEvent(String event) async{
     // make this call synchronous
     List<String> imageUrls = List();
-    store.collection(StartupData.dbreference).document("events").collection(event.uid).document("submissions").
-    collection("allSubmissions").getDocuments().then((submissions){
-             submissions.documents.forEach((submission){
-                imageUrls.add(submission.data['imageUrl']);
-             });
+    QuerySnapshot querySnapshot = await store.collection(StartupData.dbreference).document("events").collection(event).document("submissions").
+    collection("allSubmissions").getDocuments();
+    var allSubmissions = querySnapshot.documents;
+    allSubmissions.forEach((submission){
+      imageUrls.add(submission.data['imageUrl']);
     });
-    return imageUrls;
+    logger.i("returning submissions-{}",imageUrls.length);
   }
   
   void addEventSubmission(EventModel event,String userId,File image) async{
@@ -63,6 +66,7 @@ class DatabaseManager {
       "uploaded_at": new DateTime.now(),
       "likes":0
     });
+    logger.i("Event submission details saved successfully");
   }
 
   DatabaseReference getEventsDBRef() {
