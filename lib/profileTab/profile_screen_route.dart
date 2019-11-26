@@ -10,7 +10,7 @@ class ProfileScreenRoute {
       case 0 :
         return Navigator.push(context,
                 MaterialPageRoute(
-                builder: (context) => AboutUsDetailScreen(index: index),
+                  builder: (context) => AboutUsDetailScreen(index: index),
                 ),
               );
         break;
@@ -18,7 +18,7 @@ class ProfileScreenRoute {
       case 1 :
         return Navigator.push(context,
               MaterialPageRoute(
-              builder: (context) => AboutUsDetailScreen(index: index),
+                builder: (context) => AboutUsDetailScreen(index: index),
               ),
             );
         break;

@@ -1,3 +1,4 @@
+import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
-      home: MyHomePage(title: 'Else'),
+//      home: MyHomePage(title: 'Else'),
+      home: OauthManager(false),
     );
   }
 }

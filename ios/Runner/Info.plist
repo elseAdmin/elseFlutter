@@ -51,6 +51,18 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <!-- Insert your reversed client ID here -->
+                <string>com.googleusercontent.apps.872110279011-e8bn8rss9d1ec8hmog6fpdrq07epel70</string>
+            </array>
+        </dict>
+    </array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
