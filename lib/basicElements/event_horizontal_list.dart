@@ -1,7 +1,7 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/event_list_page.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/single_event_screen.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/event_list_page.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/single_event_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:firebase_database/firebase_database.dart';

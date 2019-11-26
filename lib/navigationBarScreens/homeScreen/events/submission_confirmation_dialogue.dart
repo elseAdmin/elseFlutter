@@ -25,7 +25,7 @@ class SubmissionConfirmation extends StatelessWidget{
             Container(
                 color: Colors.transparent,
                 height: SizeConfig.blockSizeVertical*30,
-                child:Image(fit:BoxFit.contain,image: FileImage(this.image))),
+                child:Image(fit:BoxFit.cover,image: FileImage(this.image))),
             Container(
                 height: SizeConfig.blockSizeVertical*7,
               padding:EdgeInsets.all(SizeConfig.blockSizeHorizontal),
