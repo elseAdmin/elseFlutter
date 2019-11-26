@@ -1,5 +1,7 @@
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/event_list_page.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
@@ -29,25 +31,13 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   final logger = Logger();
-
   int bottomNavIndex=0;
   BottomNavigatorViewHandler handler= new BottomNavigatorViewHandler();
 
@@ -103,13 +93,28 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<Null> _handleRefresh() async {
+    await new Future.delayed(new Duration(seconds: 1));
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
-        title: Text(_appTitle),
+        backgroundColor: Constants.titleBarBackgroundColor,
+        title: Text(_appTitle,
+          style: TextStyle(
+            color: Constants.titleBarTextColor,
+            fontSize: 18,
+          ),
+        ),
       ),
-      body: handler.getViewForNavigationBarIndex(bottomNavIndex),
+      body: RefreshIndicator(
+        child:handler.getViewForNavigationBarIndex(bottomNavIndex),
+        onRefresh: _handleRefresh,
+      ),//handler.getViewForNavigationBarIndex(bottomNavIndex),
       bottomNavigationBar:BottomNavigationBar(
         currentIndex: bottomNavIndex,
         type: BottomNavigationBarType.fixed ,
