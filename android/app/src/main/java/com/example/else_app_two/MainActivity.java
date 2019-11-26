@@ -89,7 +89,7 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
                 String universe =  determineUniverse(region);
                 if (beacons.size() > 0) {
                     for(Beacon beacon : beacons){
-                        Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3());
+                        Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3()+" rssi="+beacon.getRssi()+" distance = "+beacon.getDistance());
                     }
                 }
             }

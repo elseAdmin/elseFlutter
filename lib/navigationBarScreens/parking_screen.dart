@@ -10,10 +10,9 @@ class Parking extends StatefulWidget{
 }
 
 class ParkingState  extends State<Parking> {
-  CameraImpl cameraService = CameraImpl();
   @override
   Widget build(BuildContext context) {
-    return cameraService;
+    return Text("parking");
   }
 
 }
