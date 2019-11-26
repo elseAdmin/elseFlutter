@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 
 class GalleryImpl extends StatefulWidget {
   final Function(File) callback;
-  GalleryImpl(this.callback);
+  const GalleryImpl(this.callback);
   @override
   GalleryImplState createState() => new GalleryImplState();
 }
@@ -16,7 +16,7 @@ class GalleryImplState extends State<GalleryImpl> {
   final logger = Logger();
   @override
   Widget build(BuildContext context) {
-    return  GestureDetector(
+    return GestureDetector(
         onTap: () {
           getImage();
         },
@@ -30,5 +30,4 @@ class GalleryImplState extends State<GalleryImpl> {
 
     widget.callback(image);
   }
-
 }
