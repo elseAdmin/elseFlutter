@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -35,17 +37,21 @@ class SubmissionGridViewState extends State<SubmissionGridView>{
         ]),
       );
     } else if(urls!=null && urls.isNotEmpty){
-      return SliverGrid(
+      return SliverPadding(
+          padding:EdgeInsets.only(left:SizeConfig.blockSizeHorizontal*2,bottom: SizeConfig.blockSizeVertical*5),
+          sliver:SliverGrid(
         gridDelegate:
-        SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+        SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         // I'm forcing item heights
         delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-            return Card(child: Image(image: NetworkImage(urls[index])));
+            return Container(
+
+                color:Colors.black,child: CachedNetworkImage(fit:BoxFit.cover,imageUrl:urls[index]));
           },
           childCount: urls.length,
         ),
-      );
+      ));
     } else {
       return SliverList(
         delegate: SliverChildListDelegate([

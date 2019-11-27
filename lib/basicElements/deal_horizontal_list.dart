@@ -1,4 +1,3 @@
-
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/deals_model.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/deal_list_page.dart';
@@ -6,6 +5,7 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DealSection extends StatefulWidget {
   @override
@@ -44,13 +44,16 @@ class _DealSectionState extends State<DealSection> {
     return Column(
       children: <Widget>[
         Container(
-            padding: EdgeInsets.only(top:SizeConfig.blockSizeVertical*1,left: SizeConfig.blockSizeHorizontal*2),
-            child:GestureDetector(
+            padding: EdgeInsets.only(
+                top: SizeConfig.blockSizeVertical * 1,
+                left: SizeConfig.blockSizeHorizontal * 2),
+            child: GestureDetector(
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (BuildContext context) => DealListPage(deals)));
+                        builder: (BuildContext context) =>
+                            DealListPage(deals)));
               },
               child: Align(
                   alignment: Alignment.topLeft,
@@ -63,7 +66,9 @@ class _DealSectionState extends State<DealSection> {
                   )),
             )),
         Container(
-            padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal*1,right: SizeConfig.blockSizeHorizontal*1),
+            padding: EdgeInsets.only(
+                left: SizeConfig.blockSizeHorizontal * 1,
+                right: SizeConfig.blockSizeHorizontal * 1),
             height: MediaQuery.of(context).size.height * 0.30,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -72,12 +77,15 @@ class _DealSectionState extends State<DealSection> {
                   return Container(
                       width: MediaQuery.of(context).size.width * 0.65,
                       child: Card(
-                        child:Stack(
-                          fit:StackFit.passthrough,
+                        child: Stack(
+                          fit: StackFit.passthrough,
                           children: <Widget>[
-                            Image(
-                                fit:BoxFit.cover,
-                                image: NetworkImage(deals[index].url)),
+                            CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                              imageUrl: deals[index].blurUrl,
+                            ),
                             Align(
                                 alignment: Alignment.center,
                                 child: Text(deals[index].name,

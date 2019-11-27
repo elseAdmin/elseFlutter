@@ -26,7 +26,7 @@ class CameraImplState extends State<CameraImpl> {
   }
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker.pickImage(source: ImageSource.camera,imageQuality: 25);
 
     widget.callback(image);
   }

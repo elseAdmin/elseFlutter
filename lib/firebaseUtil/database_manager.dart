@@ -42,7 +42,7 @@ class DatabaseManager {
         .document("events")
         .collection(event)
         .document("submissions")
-        .collection("allSubmissions")
+        .collection("allSubmissions").where("status",isEqualTo: "approved").orderBy("uploaded_at",descending: true).limit(20)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
@@ -70,7 +70,7 @@ class DatabaseManager {
     return submission;
   }
 
-  void addEventSubmission(EventModel event, String userId, File image) async {
+  Future addEventSubmission(EventModel event, String userId, File image) async {
     //upload image to firebase storage
     StorageReference ref = storageRef
         .ref()
@@ -104,6 +104,7 @@ class DatabaseManager {
       "likes": 0
     });
     logger.i("Event submission details saved successfully");
+    return "Submission upload sucess";
   }
 
   DatabaseReference getEventsDBRef() {
