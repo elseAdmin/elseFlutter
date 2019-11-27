@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class AlreadySubmittedView extends StatelessWidget{
   File imageFile;

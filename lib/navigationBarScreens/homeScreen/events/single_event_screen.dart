@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/SubmissionSection.dart';
@@ -35,9 +36,12 @@ class SingleEventPageState extends State<SingleEventScreen> {
                         color: Colors.white,
                         fontSize: 18.0,
                       )),
-                  background: Image(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(widget.event.url))),
+                  background:  CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) =>
+                        CircularProgressIndicator(),
+                    imageUrl: widget.event.url,
+                  )),
             ),
             SliverList(
               delegate: SliverChildListDelegate(

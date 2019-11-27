@@ -6,6 +6,7 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class EventSection extends StatefulWidget {
   @override
@@ -41,52 +42,60 @@ class EventSectionState extends State<EventSection> {
   Widget build(BuildContext context) {
     manager.getApprovedSubmissionsForEvent("UORCHR01");
     SizeConfig().init(context);
-    // TODO: implement build
     return Column(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(top:SizeConfig.blockSizeVertical*1,left: SizeConfig.blockSizeHorizontal*2),
+            padding: EdgeInsets.only(
+                top: SizeConfig.blockSizeVertical * 1,
+                left: SizeConfig.blockSizeHorizontal * 2),
             child: GestureDetector(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => EventListPage(events)));
-          },
-          child: Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Events",
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  fontSize: Constants.homePageHeadingsFontSize,
-                ),
-              )),
-        )),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            EventListPage(events)));
+              },
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Events",
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      fontSize: Constants.homePageHeadingsFontSize,
+                    ),
+                  )),
+            )),
         Container(
-            padding: EdgeInsets.only(left: SizeConfig.blockSizeHorizontal*1,right: SizeConfig.blockSizeHorizontal*1),
+            padding: EdgeInsets.only(
+                left: SizeConfig.blockSizeHorizontal * 1,
+                right: SizeConfig.blockSizeHorizontal * 1),
             height: MediaQuery.of(context).size.height * 0.30,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: events.length,
                 itemBuilder: (context, index) {
                   return Container(
+                    color: Constants.mainBackgroundColor,
                       width: MediaQuery.of(context).size.width * 0.65,
                       child: Card(
+                        color: Constants.mainBackgroundColor,
                         child: GestureDetector(
                             onTap: () {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          SingleEventScreen(events[index],List())));
+                                          SingleEventScreen(
+                                              events[index], List())));
                             },
                             child: Stack(
                               fit: StackFit.passthrough,
                               children: <Widget>[
-                                Image(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(events[index].blurUrl)),
+                                CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: events[index].blurUrl,
+                                ),
                                 Align(
                                     alignment: Alignment.center,
                                     child: Text(events[index].name,

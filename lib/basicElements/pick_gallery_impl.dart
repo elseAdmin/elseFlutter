@@ -26,7 +26,7 @@ class GalleryImplState extends State<GalleryImpl> {
   }
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery,imageQuality: 25);
 
     widget.callback(image);
   }
