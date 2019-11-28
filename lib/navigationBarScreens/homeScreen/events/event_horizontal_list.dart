@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/event_list_page.dart';
@@ -7,13 +9,14 @@ import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
+import 'package:logger/logger.dart';
 class EventSection extends StatefulWidget {
   @override
   EventSectionState createState() => new EventSectionState();
 }
 
 class EventSectionState extends State<EventSection> {
+  final logger = Logger();
   List<EventModel> events = new List();
   final DatabaseManager manager = DatabaseManager();
 
@@ -40,7 +43,6 @@ class EventSectionState extends State<EventSection> {
 
   @override
   Widget build(BuildContext context) {
-    manager.getApprovedSubmissionsForEvent("UORCHR01");
     SizeConfig().init(context);
     return Column(
       children: <Widget>[
@@ -92,7 +94,7 @@ class EventSectionState extends State<EventSection> {
                             child: Stack(
                               fit: StackFit.passthrough,
                               children: <Widget>[
-                                CachedNetworkImage(
+                           CachedNetworkImage(
                                   fit: BoxFit.cover,
                                   imageUrl: events[index].blurUrl,
                                 ),
@@ -104,8 +106,8 @@ class EventSectionState extends State<EventSection> {
                                             fontWeight: FontWeight.w500,
                                             fontSize: 19))),
                               ],
-                            )),
-                      ));
+                            ))),
+                      );
                 }))
       ],
     );

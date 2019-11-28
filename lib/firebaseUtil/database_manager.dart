@@ -34,15 +34,50 @@ class DatabaseManager {
         .setData({'username': 'suhail'});
   }
 
-  Future getApprovedSubmissionsForEvent(String event) async {
+  Future getLimitedApprovedSubmissionsForEvent(String eventUid) async {
     // make this call synchronous
     List<String> imageUrls = List();
     await store
         .collection(StartupData.dbreference)
         .document("events")
-        .collection(event)
+        .collection(eventUid)
         .document("submissions")
         .collection("allSubmissions").where("status",isEqualTo: "approved").orderBy("uploaded_at",descending: true).limit(20)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((doc) {
+        imageUrls.add(doc.data["imageUrl"]);
+      });
+    });
+    return imageUrls;
+  }
+
+  Future getWinnerSubmissionForEvent(String eventUid) async{
+    List<String> imageUrls = List();
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(eventUid)
+        .document("submissions")
+        .collection("winnerSubmission")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((doc) {
+        imageUrls.add(doc.data["imageUrl"]);
+      });
+    });
+    return imageUrls;
+  }
+
+  Future getAllApprovedSubmissionsForEvent(String eventUid) async {
+    // make this call synchronous
+    List<String> imageUrls = List();
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(eventUid)
+        .document("submissions")
+        .collection("allSubmissions").where("status",isEqualTo: "approved").orderBy("uploaded_at",descending: true)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
