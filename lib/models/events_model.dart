@@ -10,6 +10,8 @@ class EventModel extends BaseModel{
 
   EventModel(DataSnapshot snapshot):super(snapshot){
     this.description = snapshot.value['description'];
+    this.startDate = DateTime.parse(snapshot.value['startDate']);
+    this.endDate = DateTime.parse(snapshot.value["endDate"]);
     //parse dates
   }
 }

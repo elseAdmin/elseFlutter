@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/DividerAboveSubmissionGrid.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/SubmissionGridViewHandler.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/SubmissionSection.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/submission_grid_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -23,6 +24,7 @@ class SingleEventPageState extends State<SingleEventScreen> {
 
     return Scaffold(
       body: Container(
+        color: Constants.mainBackgroundColor,
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
@@ -36,10 +38,9 @@ class SingleEventPageState extends State<SingleEventScreen> {
                         color: Colors.white,
                         fontSize: 18.0,
                       )),
-                  background:  CachedNetworkImage(
+                  background: CachedNetworkImage(
                     fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        CircularProgressIndicator(),
+                    placeholder: (context, url) => CircularProgressIndicator(),
                     imageUrl: widget.event.url,
                   )),
             ),
@@ -65,15 +66,11 @@ class SingleEventPageState extends State<SingleEventScreen> {
                             decoration: TextDecoration.underline),
                       )),
                   SubmissionSection(widget.event),
-                  Divider(
-                      indent: SizeConfig.blockSizeHorizontal * 7,
-                      endIndent: SizeConfig.blockSizeHorizontal * 7,
-                      color: Colors.black87,
-                      height: SizeConfig.blockSizeVertical * 5),
+                  DividerAboveSubmissionGrid(widget.event),
                 ],
               ),
             ),
-           SubmissionGridView(widget.event.uid),
+            SubmissionGridViewHandler(widget.event).renderSuitableSubmissionGridView()
           ],
         ),
       ),
