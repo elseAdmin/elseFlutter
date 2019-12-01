@@ -4,11 +4,11 @@ import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class AlreadySubmittedView extends StatelessWidget{
+class JustSubmittedView extends StatelessWidget{
   File imageFile;
   String status;
   int likes;
-  AlreadySubmittedView( File imageFile,
+  JustSubmittedView( File imageFile,
   String status,
   int likes){
     this.imageFile=imageFile;
@@ -21,20 +21,20 @@ class AlreadySubmittedView extends StatelessWidget{
     // TODO: implement build
     return Container(
         padding: EdgeInsets.only(
-            top: SizeConfig.blockSizeVertical * 2,
-            left: SizeConfig.blockSizeHorizontal * 2),
-        child: (Row(
+            top: SizeConfig.blockSizeVertical * 2),
+        child: (Column(
           children: <Widget>[
             Container(
-                width: SizeConfig.blockSizeHorizontal * 50,
-                height: SizeConfig.blockSizeVertical * 30,
+                width: SizeConfig.blockSizeHorizontal * 80,
+                height: SizeConfig.blockSizeVertical * 28,
                 child:
                 Image(fit: BoxFit.cover, image: FileImage(imageFile))),
             Column(
-              children: <Widget>[Text(status)],
+              children: <Widget>[Text("uploading ..")],
+
             )
           ],
-        )));;
+        )));
   }
 
 }

@@ -1,23 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/DividerAboveSubmissionGrid.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/SubmissionGridViewHandler.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/SubmissionSection.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/submission_grid_view.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/DividerAboveSubmissionGrid.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventRulesDialog.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventStaticData.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/SubmissionGridViewHandler.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/SubmissionSection.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class SingleEventScreen extends StatefulWidget {
+class OnlineEventScreen extends StatefulWidget {
   final EventModel event;
-  final List<String> submissionUrls;
-  const SingleEventScreen(this.event, this.submissionUrls);
+  const OnlineEventScreen(this.event);
 
   @override
-  SingleEventPageState createState() => SingleEventPageState();
+  OnlineEventScreenState createState() => OnlineEventScreenState();
 }
 
-class SingleEventPageState extends State<SingleEventScreen> {
+class OnlineEventScreenState extends State<OnlineEventScreen> {
+
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -47,16 +49,11 @@ class SingleEventPageState extends State<SingleEventScreen> {
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  Container(
-                      padding: EdgeInsets.all(SizeConfig.blockSizeVertical * 2),
-                      child: Text(widget.event.description,
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Constants.textColor,
-                              fontWeight: FontWeight.w300))),
+                  EventStaticData(widget.event.description, widget.event.rules),
                   Container(
                       padding: EdgeInsets.only(
-                          left: SizeConfig.blockSizeHorizontal * 2),
+                          left: SizeConfig.blockSizeHorizontal * 2,
+                          top: SizeConfig.blockSizeVertical),
                       child: Text(
                         "Submissions",
                         style: TextStyle(
@@ -70,7 +67,8 @@ class SingleEventPageState extends State<SingleEventScreen> {
                 ],
               ),
             ),
-            SubmissionGridViewHandler(widget.event).renderSuitableSubmissionGridView()
+            SubmissionGridViewHandler(widget.event)
+                .renderSuitableSubmissionGridView()
           ],
         ),
       ),

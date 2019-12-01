@@ -1,10 +1,7 @@
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/WinnerSectionView.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/submission_grid_view.dart';
-import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/WinnerSectionView.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/submission_grid_view.dart';
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
 
 class SubmissionGridViewHandler {
   EventModel event;

@@ -5,8 +5,9 @@ import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/pick_gallery_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/submission_confirmation_dialogue.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/submitted_view.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/past_submission_view.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/submission_confirmation_dialogue.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/just_submitted_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -56,12 +57,13 @@ class SubmissionSectionState extends State<SubmissionSection> {
       likes = 0;
     });
     DatabaseManager()
-        .addEventSubmission(widget.event, StartupData.userid, imageFile).then((status){
-          if(status.compareTo("Submission upload sucess")==0){
-              setState(() {
-                status="uploaded";
-              });
-          }
+        .addEventSubmission(widget.event, StartupData.userid, imageFile)
+        .then((status) {
+      if (status.compareTo("Submission upload sucess") == 0) {
+        setState(() {
+          status = "uploaded";
+        });
+      }
     });
   }
 
@@ -86,12 +88,12 @@ class SubmissionSectionState extends State<SubmissionSection> {
             child: Center(
               child: Loading(
                   indicator: BallPulseIndicator(),
-                  size: 60.0,
+                  size: 50.0,
                   color: Colors.blue),
             ));
       } else {
         // the user has just clicked or picked an image from the gallery so we re-render that image first and then we upload submission data to firestore
-        return AlreadySubmittedView(imageFile, status, likes);
+        return JustSubmittedView(imageFile, status, likes);
       }
     } else if (imagePath.compareTo("never submitted") == 0) {
       // user has no submission for this event
@@ -113,26 +115,11 @@ class SubmissionSectionState extends State<SubmissionSection> {
                 ]));
       } else {
         //user just clicked an image or picked from gallery and now that re-renders immediately without waiting for submission data to upload to complete
-        return AlreadySubmittedView(imageFile, status, likes);
+        return JustSubmittedView(imageFile, status, likes);
       }
     } else {
       // user has a submission submitted in the past
-      return Container(
-          padding: EdgeInsets.only(
-              top: SizeConfig.blockSizeVertical * 2,
-              left: SizeConfig.blockSizeHorizontal * 2),
-          child: (Row(
-            children: <Widget>[
-              Container(
-                  width: SizeConfig.blockSizeHorizontal * 50,
-                  height: SizeConfig.blockSizeVertical * 30,
-                  child: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: imagePath,
-                  )),
-              Column(children: <Widget>[Text(status)]),
-            ],
-          )));
+      return PastSubmissionView(imagePath,status);
     }
   }
 }

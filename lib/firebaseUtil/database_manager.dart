@@ -1,9 +1,10 @@
+import 'dart:collection';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/submission_firestore_model.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,6 +15,7 @@ class DatabaseManager {
   Firestore store;
   DatabaseReference baseDatabase;
   FirebaseStorage storageRef;
+  Map<String, List> universeVsParticipatedEvents = HashMap();
   DatabaseManager() {
     if (storageRef == null) {
       storageRef = FirebaseStorage.instance;
@@ -27,13 +29,6 @@ class DatabaseManager {
     }
   }
 
-  void addUser() async {
-    await store
-        .collection("users")
-        .document("1")
-        .setData({'username': 'suhail'});
-  }
-
   Future getLimitedApprovedSubmissionsForEvent(String eventUid) async {
     // make this call synchronous
     List<String> imageUrls = List();
@@ -42,7 +37,10 @@ class DatabaseManager {
         .document("events")
         .collection(eventUid)
         .document("submissions")
-        .collection("allSubmissions").where("status",isEqualTo: "approved").orderBy("uploaded_at",descending: true).limit(20)
+        .collection("allSubmissions")
+        .where("status", isEqualTo: "approved")
+        .orderBy("uploaded_at", descending: true)
+        .limit(20)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
@@ -52,7 +50,7 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getWinnerSubmissionForEvent(String eventUid) async{
+  Future getWinnerSubmissionForEvent(String eventUid) async {
     List<String> imageUrls = List();
     await store
         .collection(StartupData.dbreference)
@@ -77,7 +75,9 @@ class DatabaseManager {
         .document("events")
         .collection(eventUid)
         .document("submissions")
-        .collection("allSubmissions").where("status",isEqualTo: "approved").orderBy("uploaded_at",descending: true)
+        .collection("allSubmissions")
+        .where("status", isEqualTo: "approved")
+        .orderBy("uploaded_at", descending: true)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
@@ -133,13 +133,58 @@ class DatabaseManager {
         .document(userId)
         .setData({
       "userUid": userId,
-      "status": "pending",
+      "status": Constants.pendingStatusMessage,
       "imageUrl": url,
       "uploaded_at": new DateTime.now(),
       "likes": 0
     });
+
+    await store
+        .collection(StartupData.userReference)
+        .document(userId)
+        .collection("events")
+        .document(Constants.universe)
+        .setData({event.uid: true});
+
     logger.i("Event submission details saved successfully");
     return "Submission upload sucess";
+  }
+
+  Future getAllEventsForUser(String userId) async {
+    List docs = List();
+    List events = List();
+
+    await store
+        .collection(StartupData.userReference)
+        .document(userId)
+        .collection("events")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((doc) {
+        if (!universeVsParticipatedEvents.containsKey(doc.documentID)) {
+          List events = List();
+          events.add(doc.data);
+          universeVsParticipatedEvents[doc.documentID] = events;
+        } else {
+          List events = universeVsParticipatedEvents[doc.documentID];
+          events.add(doc.data);
+          universeVsParticipatedEvents[doc.documentID] = events;
+        }
+      });
+    });
+
+    universeVsParticipatedEvents.forEach((universe,eventsInUniverse) async {
+      List allEventsInUniverse = List();
+      await FirebaseDatabase.instance.reference().child(universe).child("eventStaticData").once().then((snap){
+        allEventsInUniverse = snap.value;
+      });
+      for(int i=0;i<eventsInUniverse.length;i++){
+        if(!eventsInUniverse.contains(allEventsInUniverse[i].value['eventUid'])){
+          allEventsInUniverse.remove(allEventsInUniverse[i]);
+        }
+      }
+    });
+    return null;
   }
 
   DatabaseReference getEventsDBRef() {

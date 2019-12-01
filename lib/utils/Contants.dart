@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Constants {
-   static Color mainBackgroundColor = Colors.grey[300];
+   static Color mainBackgroundColor = Colors.grey[100];
    static Color titleBarBackgroundColor =Colors.grey[100];
    static Color titleBarTextColor = Colors.grey[800];
    static Color horizontalListBackgroundColor = Colors.grey[0];
@@ -9,5 +9,10 @@ class Constants {
    static Color textColor = Colors.grey[800];
 
 
-   static double homePageHeadingsFontSize=16;
+   static double homePageHeadingsFontSize=18;
+
+
+   static String pendingStatusMessage = "Your submssion is pending approval";
+
+   static String universe = "unityOneRohini";
 }
