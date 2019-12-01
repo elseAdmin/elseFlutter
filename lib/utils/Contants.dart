@@ -9,8 +9,10 @@ class Constants {
    static Color textColor = Colors.grey[800];
 
 
-   static double homePageHeadingsFontSize=16;
+   static double homePageHeadingsFontSize=18;
 
 
    static String pendingStatusMessage = "Your submssion is pending approval";
+
+   static String universe = "unityOneRohini";
 }

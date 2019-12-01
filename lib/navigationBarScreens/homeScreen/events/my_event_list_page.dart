@@ -2,9 +2,9 @@ import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
-class EventListPage extends StatelessWidget {
+class MyEventListPage extends StatelessWidget {
   List<EventModel> events;
-  EventListPage(List<EventModel> events) {
+  MyEventListPage(List<EventModel> events) {
     this.events = events;
   }
   @override

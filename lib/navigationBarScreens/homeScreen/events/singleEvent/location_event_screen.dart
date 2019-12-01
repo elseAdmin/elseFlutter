@@ -18,7 +18,7 @@ class LocationEventScreen extends StatefulWidget {
 }
 
 class LocationEventScreenState extends State<LocationEventScreen> {
-  _viewRules() {
+  viewRules() {
     showDialog(
         context: context,
         builder: (BuildContext context) => RulesDialog(widget.event.rules));

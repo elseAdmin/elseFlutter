@@ -18,11 +18,6 @@ class OfflineEventScreen extends StatefulWidget {
 }
 
 class OfflineEventScreenState extends State<OfflineEventScreen> {
-  _viewRules() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => RulesDialog(widget.event.rules));
-  }
 
   @override
   Widget build(BuildContext context) {

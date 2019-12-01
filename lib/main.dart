@@ -1,4 +1,4 @@
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/event_list_page.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/my_event_list_page.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';

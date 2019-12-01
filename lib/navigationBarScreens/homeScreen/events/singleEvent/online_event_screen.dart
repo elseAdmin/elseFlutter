@@ -18,11 +18,7 @@ class OnlineEventScreen extends StatefulWidget {
 }
 
 class OnlineEventScreenState extends State<OnlineEventScreen> {
-  _viewRules() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => RulesDialog(widget.event.rules));
-  }
+
 
   @override
   Widget build(BuildContext context) {
