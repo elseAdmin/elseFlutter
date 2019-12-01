@@ -1,5 +1,3 @@
-import 'package:else_app_two/auth/auth.dart';
-import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
@@ -10,7 +8,6 @@ import 'package:else_app_two/utils/Contants.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
-
   final String title;
   @override
   _MyHomePageState createState() => _MyHomePageState();

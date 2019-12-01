@@ -1,7 +1,6 @@
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
-
 import 'homeTab/home_page.dart';
 
 void main() {
