@@ -11,7 +11,7 @@ import 'package:logger/logger.dart';
 
 class DatabaseManager {
   final logger = Logger();
-  Firestore store;
+  static Firestore store;
   DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
   FirebaseStorage storageRef;
   DatabaseManager() {
@@ -28,11 +28,15 @@ class DatabaseManager {
     }
   }
 
-  void addUser() async {
-    await store
-        .collection("users")
-        .document("1")
-        .setData({'username': 'suhail'});
+  DocumentReference usersCollectionReferenceOnKey(String key) {
+    return store.collection("users").document(key);
+  }
+
+
+  void addUser(String key, Map<String,dynamic> user){
+    usersCollectionReferenceOnKey(key).setData(user).whenComplete(() => {
+      // do something on completing the task
+    });
   }
 
   void getApprovedSubmissionsForEvent(String event) async{
@@ -75,5 +79,9 @@ class DatabaseManager {
 
   DatabaseReference getDealsDBRef() {
     return baseDatabase.child('dealsStaticData');
+  }
+
+  Firestore getStoreReference() {
+    return store;
   }
 }

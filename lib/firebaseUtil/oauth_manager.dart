@@ -1,13 +1,16 @@
+import 'package:else_app_two/auth/auth.dart';
+import 'package:else_app_two/auth/auth_provider.dart';
+import 'package:else_app_two/models/user_model.dart';
+import 'package:else_app_two/profileTab/register_user.dart';
+import 'package:else_app_two/service/api.dart';
+import 'package:else_app_two/service/user_crud_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
-
 class OauthManager extends StatefulWidget {
-  final bool isLoggedIn;
-
-  OauthManager(this.isLoggedIn);
+  final VoidCallback onSignedIn;
+  const OauthManager({Key key, this.onSignedIn}) : super(key: key);
 
   @override
   _OauthManager createState() => _OauthManager();
@@ -18,18 +21,21 @@ class _OauthManager extends State<OauthManager>{
 
   TextEditingController _smsCodeController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
+  final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
   String verificationId;
   String _message = '';
   final String prefixNumber = '+91';
 
   /// Sends the code to the specified phone number.
   Future<void> _sendCodeToPhoneNumber() async {
+    final BaseAuth _auth = AuthProvider.of(context).auth;
+
     setState(() {
       _message = 'All the process text will be seen here';
     });
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential phoneAuthCredential) {
-      _auth.signInWithCredential(phoneAuthCredential);
+      _auth.signInwithPhoneNumber(phoneAuthCredential);
       setState(() {
         print('Received phone auth credential: $phoneAuthCredential');
         _message = 'Received phone auth credential: $phoneAuthCredential';
@@ -60,7 +66,7 @@ class _OauthManager extends State<OauthManager>{
       _message = "time out";
     };
 
-    await FirebaseAuth.instance.verifyPhoneNumber(
+    await _auth.verifyPhoneNumber(
         phoneNumber: prefixNumber+_phoneNumberController.text,
         timeout: const Duration(seconds: 5),
         verificationCompleted: verificationCompleted,
@@ -69,20 +75,45 @@ class _OauthManager extends State<OauthManager>{
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   }
 
+  void _signedIn() {
+    Navigator.pop(context);
+    widget.onSignedIn();
+  }
+
+  Future _checkForNewUser(BuildContext context, String userId, String phoneNumber) async {
+    User user = await userProvider.getUserById(userId);
+
+    if(user == null){
+      await Navigator.push(context,
+        MaterialPageRoute(
+          builder: (context) => RegisterUser(userId, _phoneNumberController.text, _signedIn),
+        ),
+      );
+    }
+    else{
+      _signedIn();
+    }
+  }
+
   /// Sign in using an sms code as input.
-  void _signInWithPhoneNumber(String smsCode) async {
+  void _signInWithPhoneNumber(BuildContext context, String smsCode) async {
+    final BaseAuth _auth = AuthProvider.of(context).auth;
+
     final AuthCredential credential = PhoneAuthProvider.getCredential(
       verificationId: verificationId,
       smsCode: smsCode,
     );
-    final FirebaseUser user =
-        (await _auth.signInWithCredential(credential)).user;
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
+    final String userId =
+        (await _auth.signInwithPhoneNumber(credential));
+    final String currentUserId = await _auth.currentUser();
+    assert(userId == currentUserId);
+    if(userId.isNotEmpty){
+      await _checkForNewUser(context, userId, _phoneNumberController.text);
+    }
     setState(() {
-      if (user != null) {
-        print('Successfully signed in, uid: ' + user.uid);
-        _message = 'Successfully signed in, uid: ' + user.uid;
+      if (userId != null) {
+        print('Successfully signed in, uid: ' + userId);
+        _message = 'Successfully signed in, uid: ' + userId;
       } else {
         print('Sign in failed');
         _message = 'Sign In Failed';
@@ -111,7 +142,7 @@ class _OauthManager extends State<OauthManager>{
                 textInputAction: TextInputAction.send,
                 maxLength: 10,
                 decoration: const InputDecoration(
-                    labelText: 'Phone number (+x xxx-xxx-xxxx)',
+                  labelText: 'Phone number (+x xxx-xxx-xxxx)',
                   prefixText: '+91-',
                 ),
                 validator: (String value) {
@@ -143,6 +174,7 @@ class _OauthManager extends State<OauthManager>{
               TextField(
                 controller: _smsCodeController,
                 decoration: const InputDecoration(labelText: 'Verification code'),
+                keyboardType: TextInputType.number,
               ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -151,7 +183,7 @@ class _OauthManager extends State<OauthManager>{
                   minWidth: MediaQuery.of(context).size.width / 2,
                   child: RaisedButton(
                     onPressed: () async {
-                      _signInWithPhoneNumber(_smsCodeController.text);
+                      _signInWithPhoneNumber(context, _smsCodeController.text);
                     },
                     color: Colors.blueGrey,
                     child: const Text(
