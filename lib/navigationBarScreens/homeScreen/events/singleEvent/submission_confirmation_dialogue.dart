@@ -27,9 +27,10 @@ class SubmissionConfirmation extends StatelessWidget{
                 height: SizeConfig.blockSizeVertical*30,
                 child:Image(fit:BoxFit.cover,image: FileImage(this.image))),
             Container(
+              alignment: Alignment.center,
                 height: SizeConfig.blockSizeVertical*7,
               padding:EdgeInsets.all(SizeConfig.blockSizeHorizontal),
-                child:Text("Post submission, content verification will take around 1-2 hours for your image to be publically visible. We take privacy seriously.",style:TextStyle(fontSize: 11))),
+                child:Text("Post submission, content verification will take a maximum of 2 hours for your image to be publically visible. We take privacy seriously.",style:TextStyle(fontSize: 11))),
             Container(
                 height: SizeConfig.blockSizeVertical*5,
                 child:

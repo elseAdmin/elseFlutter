@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/submission_firestore_model.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -133,7 +134,7 @@ class DatabaseManager {
         .document(userId)
         .setData({
       "userUid": userId,
-      "status": "pending",
+      "status": Constants.pendingStatusMessage,
       "imageUrl": url,
       "uploaded_at": new DateTime.now(),
       "likes": 0
