@@ -155,14 +155,7 @@ class AboutUsDetailScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              color: Colors.white70,
-              width: 1.0,
-            ),
-          ),
+        child: Card(
           child: Center(
             child: Text(textData),
           ),
