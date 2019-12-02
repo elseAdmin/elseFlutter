@@ -25,7 +25,6 @@ class HomeScreen extends StatelessWidget {
                 left: SizeConfig.blockSizeHorizontal * 2),
             child: GestureDetector(
                 onTap: () {
-                  DatabaseManager().getAllEventsForUser(StartupData.userid);
                   Navigator.push(
                       context,
                       MaterialPageRoute(

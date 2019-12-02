@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:else_app_two/models/base_model.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/submission_firestore_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -139,52 +140,65 @@ class DatabaseManager {
       "likes": 0
     });
 
+    //upload submission and event details to user data.
+    String pathToUserSubmission = store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(userId).path;
+
     await store
         .collection(StartupData.userReference)
         .document(userId)
-        .collection("events")
-        .document(Constants.universe)
-        .setData({event.uid: true});
+        .collection("events").add({
+      "universe":StartupData.dbreference,
+      "eventUrl": getEventsDBRef().child(event.uid).path,
+      "submissionUrl":pathToUserSubmission,
+    });
 
     logger.i("Event submission details saved successfully");
     return "Submission upload sucess";
   }
 
   Future getAllEventsForUser(String userId) async {
-    List docs = List();
-    List events = List();
+    List<Map<String,String>> allEventAndSubmissionUrls = List();
 
     await store
         .collection(StartupData.userReference)
         .document(userId)
-        .collection("events")
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents.forEach((doc) {
-        if (!universeVsParticipatedEvents.containsKey(doc.documentID)) {
-          List events = List();
-          events.add(doc.data);
-          universeVsParticipatedEvents[doc.documentID] = events;
-        } else {
-          List events = universeVsParticipatedEvents[doc.documentID];
-          events.add(doc.data);
-          universeVsParticipatedEvents[doc.documentID] = events;
-        }
-      });
+        .collection("events").getDocuments().then((snapshot){
+          List<DocumentSnapshot> allEventsOfUser =snapshot.documents;
+          for (var event in allEventsOfUser) {
+            Map<String,String> eventDetails = HashMap();
+            eventDetails.putIfAbsent("submissionUrl",()=>event.data['submissionUrl']);
+            eventDetails.putIfAbsent("eventUrl",()=>event.data['eventUrl']);
+            allEventAndSubmissionUrls.add(eventDetails);
+          }
     });
 
-    universeVsParticipatedEvents.forEach((universe,eventsInUniverse) async {
-      List allEventsInUniverse = List();
-      await FirebaseDatabase.instance.reference().child(universe).child("eventStaticData").once().then((snap){
-        allEventsInUniverse = snap.value;
+    List<Map<String,BaseModel>> listParticipatedEvents = List();
+
+    for(int i=0;i<allEventAndSubmissionUrls.length;i++) {
+      Map<String,BaseModel> returnData = HashMap();
+      Map event = allEventAndSubmissionUrls[i];
+      String eUrl = event["eventUrl"];
+      String sUrl = event["submissionUrl"];
+      await FirebaseDatabase.instance.reference().child(eUrl).once().then((
+          receivedEvents) {
+        EventModel event = EventModel(receivedEvents);
+        returnData.putIfAbsent("eventDetails", ()=>event);
       });
-      for(int i=0;i<eventsInUniverse.length;i++){
-        if(!eventsInUniverse.contains(allEventsInUniverse[i].value['eventUid'])){
-          allEventsInUniverse.remove(allEventsInUniverse[i]);
-        }
-      }
-    });
-    return null;
+
+      await store.document(sUrl).get().then((snap){
+        FirestoreSubmissionModel submission  = FirestoreSubmissionModel(snap);
+        returnData.putIfAbsent("submissionDetails", ()=>submission);
+      });
+
+      listParticipatedEvents.add(returnData);
+    }
+    return listParticipatedEvents;
   }
 
   DatabaseReference getEventsDBRef() {
