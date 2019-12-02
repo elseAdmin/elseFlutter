@@ -1,5 +1,6 @@
 import 'package:else_app_two/profileTab/help_data.dart';
 import 'package:flutter/material.dart';
+import 'package:else_app_two/utils/Contants.dart';
 
 class HelpSection extends StatelessWidget{
   final int index;
@@ -9,8 +10,18 @@ class HelpSection extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
-        title: Text('Help'),
+        title: Text('Help',
+            style: TextStyle(
+              color: Constants.titleBarTextColor,
+              fontSize: 18,
+            )
+        ),
+        iconTheme: IconThemeData(
+          color: Constants.textColor, //change your color here
+        ),
+        backgroundColor: Constants.titleBarBackgroundColor,
       ),
       body: SingleChildScrollView(
         child: HelpSectionData(),

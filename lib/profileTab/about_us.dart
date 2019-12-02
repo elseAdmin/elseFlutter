@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:else_app_two/utils/Contants.dart';
 
 class AboutUsDetailScreen extends StatelessWidget {
   // Declare a field that holds the Todo.
@@ -141,12 +141,31 @@ class AboutUsDetailScreen extends StatelessWidget {
 
 
     return Scaffold(
+      backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
-        title: Text('About Us'),
+        backgroundColor: Constants.titleBarBackgroundColor,
+        iconTheme: IconThemeData(
+          color: Constants.textColor, //change your color here
+        ),
+        title: Text('About Us',
+            style: TextStyle(
+              color: Constants.titleBarTextColor,
+              fontSize: 18,
+            )
+        ),
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Text(textData),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(
+              color: Colors.white70,
+              width: 1.0,
+            ),
+          ),
+          child: Center(
+            child: Text(textData),
+          ),
         ),
       ),
     );
