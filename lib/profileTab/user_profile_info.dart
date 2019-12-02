@@ -21,8 +21,10 @@ class _UserProfileInfo extends State<UserProfileInfo>{
   TextEditingController _phoneController = TextEditingController();
   final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
 
+
+
   @override
-  void didChangeDependencies() async {
+  Future didChangeDependencies() async {
     super.didChangeDependencies();
     final BaseAuth _auth = AuthProvider.of(context).auth;
     final String userId = await _auth.currentUser();
@@ -71,6 +73,10 @@ class _UserProfileInfo extends State<UserProfileInfo>{
       maintainState: true,
       visible: widget.isUserLogged,
     );
+  }
+
+  Widget userInfoChild(){
+
   }
 
 }

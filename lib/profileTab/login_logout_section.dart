@@ -95,7 +95,8 @@ class _LoginLogoutSection extends State<LoginLogoutSection>{
           'ELSE',
           textAlign: TextAlign.center,
           style: TextStyle(
-              fontWeight: FontWeight.bold
+            fontWeight: FontWeight.bold,
+            fontSize: 18
           ),
         ),
       );

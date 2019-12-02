@@ -1,6 +1,8 @@
 
-import 'package:else_app_two/profileTab/about_us_detail_screen.dart';
+import 'package:else_app_two/profileTab/about_us.dart';
 import 'package:flutter/material.dart';
+
+import 'help_section.dart';
 
 class ProfileScreenRoute {
 
@@ -10,7 +12,7 @@ class ProfileScreenRoute {
       case 0 :
         return Navigator.push(context,
                 MaterialPageRoute(
-                  builder: (context) => AboutUsDetailScreen(index: index),
+                  builder: (context) => HelpSection(index:index),
                 ),
               );
         break;
