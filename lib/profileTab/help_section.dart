@@ -24,7 +24,20 @@ class HelpSection extends StatelessWidget{
         backgroundColor: Constants.titleBarBackgroundColor,
       ),
       body: SingleChildScrollView(
-        child: HelpSectionData(),
+        child: Card(
+          child: Column(
+            children: <Widget>[
+              Text(
+                "FAQ",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20
+                )
+              ),
+              HelpSectionData(),
+            ],
+          ),
+        ),
       ),
     );
   }

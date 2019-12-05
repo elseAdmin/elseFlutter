@@ -1,30 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:else_app_two/models/user_model.dart';
+import 'package:else_app_two/models/request_model.dart';
 import 'package:else_app_two/service/api.dart';
 import 'package:flutter/material.dart';
 
-class UserCrudModel extends ChangeNotifier{
-  String collection;
+class RequestCrudModel extends ChangeNotifier{
 
-  UserCrudModel(this.collection, this._api);
+  RequestCrudModel(this._api);
 
   Api _api ;
 
-  List<User> users;
+  List<Request> requests;
 
-  Future<List<User>> fetchUsers() async {
+  Future<List<Request>> fetchRequests() async {
     var result = await _api.getDataCollection();
-    users = result.documents
-    .map((doc) => User.fromMap(doc.data, doc.documentID))
+    requests = result.documents
+    .map((doc) => Request.fromMap(doc.data, doc.documentID))
     .toList();
-    return users;
+    return requests;
   }
 
-  Stream<QuerySnapshot> fetchUsersAsStream () {
+  Stream<QuerySnapshot> fetchRequestsAsStream () {
     return _api.streamDataCollection();
   }
 
-  Future<User> getUserById(String id) async{
+  Future<Request> getRequestById(String id) async{
     if(id.isEmpty){
       return null;
     }
@@ -32,25 +31,25 @@ class UserCrudModel extends ChangeNotifier{
     if(doc.data == null){
       return null;
     }
-    return User.fromMap(doc.data, doc.documentID);
+    return Request.fromMap(doc.data, doc.documentID);
   }
 
-  Future removeUser(String id) async{
+  Future removeRequest(String id) async{
     await _api.removeDocument(id) ;
     return ;
   }
 
-  Future updateUser(User data, String id) async{
+  Future updateRequest(Request data, String id) async{
     await _api.updateDocument(data.toJson(), id) ;
     return ;
   }
 
-  Future addUser(User data) async{
+  Future addRequest(Request data) async{
     var result  = await _api.addDocument(data.toJson()) ;
     return result.documentID;
   }
 
-  Future addUserById(User data) async{
+  Future addRequestById(Request data) async{
     var result = await _api.addDocumentById(data.id, data.toJson());
     return ;
   }
