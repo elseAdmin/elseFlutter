@@ -8,6 +8,8 @@ class Constants {
 
    static Color textColor = Colors.grey[800];
 
+   static Color test = Colors.grey[600];
+
 
    static double homePageHeadingsFontSize=18;
 

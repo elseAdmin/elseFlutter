@@ -1,8 +1,8 @@
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/models/user_model.dart';
-import 'package:else_app_two/service/api.dart';
-import 'package:else_app_two/service/user_crud_model.dart';
+import 'package:else_app_two/firebaseUtil/api.dart';
+import 'package:else_app_two/models/user_crud_model.dart';
 import 'package:flutter/material.dart';
 
 class UserProfileInfo extends StatefulWidget{

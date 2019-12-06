@@ -196,6 +196,10 @@ class DatabaseManager {
     return baseDatabase.child('dealsStaticData');
   }
 
+  DatabaseReference getBaseDBRef(){
+    return baseDatabase;
+  }
+
   Firestore getStoreReference() {
     return store;
   }

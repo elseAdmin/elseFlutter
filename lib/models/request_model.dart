@@ -6,7 +6,7 @@ class Request{
   String message;
   String uid;
 
-  Request(this.id, this.phoneNumber, this.name, this.message, this.uid);
+  Request(this.phoneNumber, this.name, this.message, this.uid);
 
   Request.fromMap(Map snapshot, String id) :
         id = id ?? '',
