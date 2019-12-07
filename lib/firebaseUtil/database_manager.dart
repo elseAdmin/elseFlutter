@@ -30,6 +30,19 @@ class DatabaseManager {
     }
   }
 
+  void markUserVisitForBeacon(String major, String minor) async {
+    //write only once in 24 hours per beacon, use sqllite to store last write
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection("advertisement")
+        .document(major)
+        .collection(minor)
+        .document("user").collection(StartupData.userid)
+        .add(
+            {"timestamp":DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+
   Future getLimitedApprovedSubmissionsForEvent(String eventUid) async {
     // make this call synchronous
     List<String> imageUrls = List();
@@ -147,15 +160,17 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(userId).path;
+        .document(userId)
+        .path;
 
     await store
         .collection(StartupData.userReference)
         .document(userId)
-        .collection("events").add({
-      "universe":StartupData.dbreference,
+        .collection("events")
+        .add({
+      "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
-      "submissionUrl":pathToUserSubmission,
+      "submissionUrl": pathToUserSubmission,
     });
 
     logger.i("Event submission details saved successfully");
@@ -163,37 +178,43 @@ class DatabaseManager {
   }
 
   Future getAllEventsForUser(String userId) async {
-    List<Map<String,String>> allEventAndSubmissionUrls = List();
+    List<Map<String, String>> allEventAndSubmissionUrls = List();
 
     await store
         .collection(StartupData.userReference)
         .document(userId)
-        .collection("events").getDocuments().then((snapshot){
-          List<DocumentSnapshot> allEventsOfUser =snapshot.documents;
-          for (var event in allEventsOfUser) {
-            Map<String,String> eventDetails = HashMap();
-            eventDetails.putIfAbsent("submissionUrl",()=>event.data['submissionUrl']);
-            eventDetails.putIfAbsent("eventUrl",()=>event.data['eventUrl']);
-            allEventAndSubmissionUrls.add(eventDetails);
-          }
+        .collection("events")
+        .getDocuments()
+        .then((snapshot) {
+      List<DocumentSnapshot> allEventsOfUser = snapshot.documents;
+      for (var event in allEventsOfUser) {
+        Map<String, String> eventDetails = HashMap();
+        eventDetails.putIfAbsent(
+            "submissionUrl", () => event.data['submissionUrl']);
+        eventDetails.putIfAbsent("eventUrl", () => event.data['eventUrl']);
+        allEventAndSubmissionUrls.add(eventDetails);
+      }
     });
 
-    List<Map<String,BaseModel>> listParticipatedEvents = List();
+    List<Map<String, BaseModel>> listParticipatedEvents = List();
 
-    for(int i=0;i<allEventAndSubmissionUrls.length;i++) {
-      Map<String,BaseModel> returnData = HashMap();
+    for (int i = 0; i < allEventAndSubmissionUrls.length; i++) {
+      Map<String, BaseModel> returnData = HashMap();
       Map event = allEventAndSubmissionUrls[i];
       String eUrl = event["eventUrl"];
       String sUrl = event["submissionUrl"];
-      await FirebaseDatabase.instance.reference().child(eUrl).once().then((
-          receivedEvents) {
+      await FirebaseDatabase.instance
+          .reference()
+          .child(eUrl)
+          .once()
+          .then((receivedEvents) {
         EventModel event = EventModel(receivedEvents);
-        returnData.putIfAbsent("eventDetails", ()=>event);
+        returnData.putIfAbsent("eventDetails", () => event);
       });
 
-      await store.document(sUrl).get().then((snap){
-        FirestoreSubmissionModel submission  = FirestoreSubmissionModel(snap);
-        returnData.putIfAbsent("submissionDetails", ()=>submission);
+      await store.document(sUrl).get().then((snap) {
+        FirestoreSubmissionModel submission = FirestoreSubmissionModel(snap);
+        returnData.putIfAbsent("submissionDetails", () => submission);
       });
 
       listParticipatedEvents.add(returnData);

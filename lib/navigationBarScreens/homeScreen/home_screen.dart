@@ -30,17 +30,24 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (BuildContext context) =>  RequestsPage()));
                 },
-                child: Text(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[Text(
                   "Requests",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
                     fontSize: Constants.homePageHeadingsFontSize,
                   ),
-                ))),
+                ),
+                    Divider(
+                        endIndent: SizeConfig.blockSizeHorizontal * 60,
+                        color: Colors.black87,
+                        height: SizeConfig.blockSizeVertical)
+                  ]))),
         Container(
             padding: EdgeInsets.only(
                 top: SizeConfig.blockSizeVertical * 1,
-                left: SizeConfig.blockSizeHorizontal * 2),
+                left: SizeConfig.blockSizeHorizontal * 2,
+            bottom: SizeConfig.blockSizeVertical*7),
             child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -48,13 +55,20 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (BuildContext context) =>  FeedbacksPage()));
                 },
-                child: Text(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[Text(
                   "Feedbacks",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
                     fontSize: Constants.homePageHeadingsFontSize,
                   ),
-                )))
+                ),
+                  Divider(
+                      endIndent: SizeConfig.blockSizeHorizontal * 60,
+                      color: Colors.black87,
+                      height: SizeConfig.blockSizeVertical)
+                ])
+            ))
       ],
     );
   }
