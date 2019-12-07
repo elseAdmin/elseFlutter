@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class GeneralSection extends StatelessWidget{
 
-  final List<String> listData = <String>['Help', 'About', 'Share', 'Rate'];
-  final listIcons = <IconData>[Icons.help, Icons.info, Icons.share, Icons.rate_review];
+  final List<String> listData = <String>['Help', 'About', 'Request', 'Share', 'Rate'];
+  final listIcons = <IconData>[Icons.help, Icons.info, Icons.message, Icons.share, Icons.rate_review];
   ProfileScreenRoute handler = new ProfileScreenRoute();
 
   @override

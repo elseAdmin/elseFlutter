@@ -16,7 +16,7 @@ class RegisterUser extends StatefulWidget{
 }
 
 class _RegisterUser extends State<RegisterUser>{
-
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
 
@@ -42,50 +42,67 @@ class _RegisterUser extends State<RegisterUser>{
         child: new Container(
           height: MediaQuery.of(context).size.height / 2,
           width: MediaQuery.of(context).size.width * 2 / 3,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                controller: _nameController,
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  prefixText: 'Mr./ Ms. ',
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  controller: _nameController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                    prefixText: 'Mr./ Ms. ',
+                  ),
+                  validator: (String value) {
+                    if (value.length == 0) {
+                      return 'Name';
+                    }
+                    else{
+                      return null;
+                    }
+                  },
                 ),
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'Name';
-                  }
-                  return null;
-                },
-              ),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email Id'),
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.send,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                alignment: Alignment.center,
-                child: ButtonTheme(
-                  minWidth: MediaQuery.of(context).size.width / 2,
-                  child: RaisedButton(
-                    onPressed: () async {
-                      _registerUser(context, _nameController.text, _emailController.text);
-                    },
-                    color: Colors.blueGrey,
-                    child: const Text(
-                      'REGISTER',
-                      style: TextStyle(
-                          color: Colors.white
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email Id'),
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.send,
+                  validator: (value){
+                    Pattern pattern =
+                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                    RegExp regex = new RegExp(pattern);
+                    if (!regex.hasMatch(value))
+                      return 'Enter Valid Email';
+                    else
+                      return null;
+                  },
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  alignment: Alignment.center,
+                  child: ButtonTheme(
+                    minWidth: MediaQuery.of(context).size.width / 2,
+                    child: RaisedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          _registerUser(context, _nameController.text,
+                              _emailController.text);
+                        }
+                      },
+                      color: Colors.blueGrey,
+                      child: const Text(
+                        'REGISTER',
+                        style: TextStyle(
+                            color: Colors.white
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

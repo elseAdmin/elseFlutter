@@ -18,13 +18,14 @@ class OauthManager extends StatefulWidget {
 }
 
 class _OauthManager extends State<OauthManager>{
-
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _smsCodeController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
   final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
   String verificationId;
   String _message = '';
   final String prefixNumber = '+91';
+  bool disabledKey = true;
 
   /// Sends the code to the specified phone number.
   Future<void> _sendCodeToPhoneNumber() async {
@@ -56,7 +57,10 @@ class _OauthManager extends State<OauthManager>{
         (String verificationId, [int forceResendingToken]) async {
       this.verificationId = verificationId;
       print("code sent to " + _phoneNumberController.text);
-      _message = "code sent to " + _phoneNumberController.text;
+      setState(() {
+        _message = "code sent to " + _phoneNumberController.text;
+        disabledKey = false;
+      });
     };
 
     final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
@@ -116,7 +120,7 @@ class _OauthManager extends State<OauthManager>{
         _message = 'Successfully signed in, uid: ' + userId;
       } else {
         print('Sign in failed');
-        _message = 'Sign In Failed';
+        _message = 'Sign In Failed!! Wrong OTP';
       }
     });
   }
@@ -132,75 +136,90 @@ class _OauthManager extends State<OauthManager>{
         child: new Container(
           height: MediaQuery.of(context).size.height / 2,
           width: MediaQuery.of(context).size.width * 2 / 3,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                controller: _phoneNumberController,
-                keyboardType: TextInputType.phone,
-                textInputAction: TextInputAction.send,
-                maxLength: 10,
-                decoration: const InputDecoration(
-                  labelText: 'Phone number (+x xxx-xxx-xxxx)',
-                  prefixText: '+91-',
-                ),
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'Phone number (+x xxx-xxx-xxxx)';
-                  }
-                  if(value.length < 10){
-                    _message = 'Invalid phone number';
-                  }
-                  return null;
-                },
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                alignment: Alignment.center,
-                child: RaisedButton(
-                  onPressed: () async {
-                    _sendCodeToPhoneNumber();
-                  },
-                  color: Colors.blueGrey,
-                  child: const Text(
-                      'Send OTP',
-                    style: TextStyle(
-                      color: Colors.white
-                    ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                TextFormField(
+                  controller: _phoneNumberController,
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.send,
+                  maxLength: 10,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone number (+x xxx-xxx-xxxx)',
+                    prefixText: '+91-',
                   ),
+                  validator: (String value) {
+                    if (value.length < 10) {
+                      return 'Phone number (+x xxx-xxx-xxxx)';
+                    }
+                    else if(value.length > 10){
+                      return 'Invalid phone number';
+                    }
+                    else{
+                      return null;
+                    }
+                  },
                 ),
-              ),
-              TextField(
-                controller: _smsCodeController,
-                decoration: const InputDecoration(labelText: 'Verification code'),
-                keyboardType: TextInputType.number,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                alignment: Alignment.center,
-                child: ButtonTheme(
-                  minWidth: MediaQuery.of(context).size.width / 2,
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  alignment: Alignment.center,
                   child: RaisedButton(
                     onPressed: () async {
-                      _signInWithPhoneNumber(context, _smsCodeController.text);
+                      if (_formKey.currentState.validate()) {
+                        _sendCodeToPhoneNumber();
+                      }
                     },
                     color: Colors.blueGrey,
                     child: const Text(
-                        'LOG IN',
+                      'Send OTP',
                       style: TextStyle(
-                        color: Colors.white
+                          color: Colors.white
                       ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(_message),
-              )
-            ],
+                AbsorbPointer(
+                  absorbing: disabledKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextField(
+                        controller: _smsCodeController,
+                        decoration: const InputDecoration(labelText: 'Verification code'),
+                        keyboardType: TextInputType.number,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        alignment: Alignment.center,
+                        child: ButtonTheme(
+                          minWidth: MediaQuery.of(context).size.width / 2,
+                          child: RaisedButton(
+                            onPressed: () async {
+                              _signInWithPhoneNumber(context, _smsCodeController.text);
+                            },
+                            color: Colors.blueGrey,
+
+                            child: const Text(
+                              'LOG IN',
+                              style: TextStyle(
+                                  color: Colors.white
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(_message),
+                )
+              ],
+            ),
           ),
         ),
       ),

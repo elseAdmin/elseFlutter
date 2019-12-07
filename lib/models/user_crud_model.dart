@@ -25,7 +25,7 @@ class UserCrudModel extends ChangeNotifier{
   }
 
   Future<User> getUserById(String id) async{
-    if(id.isEmpty){
+    if(id == null || id.isEmpty){
       return null;
     }
     var doc = await _api.getDocumentById(id);

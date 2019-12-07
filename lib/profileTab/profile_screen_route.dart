@@ -1,5 +1,6 @@
 
 import 'package:else_app_two/profileTab/about_us.dart';
+import 'package:else_app_two/requests/request_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'help_section.dart';
@@ -26,6 +27,11 @@ class ProfileScreenRoute {
         break;
 
       case 2 :
+        return Navigator.push(context,
+          MaterialPageRoute(
+            builder: (context) => RequestsPage(),
+          ),
+        );
         break;
 
       case 3:

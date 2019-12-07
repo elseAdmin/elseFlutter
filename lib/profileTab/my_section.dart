@@ -5,14 +5,14 @@ class MySection extends StatelessWidget{
 
   MySection(this.isUserLogged);
 
-  final List<String> listData = <String>['My Events', 'My Feedback', 'My Request'];
-  final listIcons = <IconData>[Icons.event, Icons.feedback, Icons.message];
+  final List<String> listData = <String>['My Events', 'My Feedback'];
+  final listIcons = <IconData>[Icons.event, Icons.feedback];
 
   @override
   Widget build(BuildContext context) {
     return Visibility(
       child: Container(
-        height: MediaQuery.of(context).size.height / 4,
+        height: MediaQuery.of(context).size.height / 6,
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
