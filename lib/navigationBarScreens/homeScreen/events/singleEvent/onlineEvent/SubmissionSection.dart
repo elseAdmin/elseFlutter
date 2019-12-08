@@ -56,6 +56,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
       status = "pending";
       likes = 0;
     });
+
     DatabaseManager()
         .addEventSubmission(widget.event, StartupData.userid, imageFile)
         .then((status) {
@@ -119,7 +120,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
       }
     } else {
       // user has a submission submitted in the past
-      return PastSubmissionView(imagePath,status);
+      return PastSubmissionView(imagePath, status);
     }
   }
 }
