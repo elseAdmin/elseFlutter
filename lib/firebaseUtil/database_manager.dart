@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/base_model.dart';
 import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/models/firestore/submission_firestore_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -30,7 +31,7 @@ class DatabaseManager {
     }
   }
 
-  void markUserVisitForBeacon(String major, String minor) async {
+  markUserVisitForBeacon(String major, String minor) async {
     //write only once in 24 hours per beacon, use sqllite to store last write
     await store
         .collection(StartupData.dbreference)
@@ -38,9 +39,25 @@ class DatabaseManager {
         .collection("advertisement")
         .document(major)
         .collection(minor)
-        .document("user").collection(StartupData.userid)
-        .add(
-            {"timestamp":DateTime.now().millisecondsSinceEpoch.toString()});
+        .document("user")
+        .collection(StartupData.userid)
+        .add({"timestamp": DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+
+  Future getAdMetaForBeacon(String major, String minor) async {
+    AdBeacon adBeacon;
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection("advertisement")
+        .document(major)
+        .collection(minor)
+        .document("adMeta")
+        .get()
+        .then((DocumentSnapshot snapshot) {
+          adBeacon = AdBeacon(snapshot);
+    });
+    return adBeacon;
   }
 
   Future getLimitedApprovedSubmissionsForEvent(String eventUid) async {

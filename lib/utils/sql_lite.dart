@@ -9,9 +9,13 @@ class SqlLiteManager{
   static Database _db;
 
   Future<Database> get db async {
-    if (_db != null) return _db;
+
+    if (_db != null)
+      return _db;
+
     _db = await initDb();
     return _db;
+
   }
 
   initDb() async {
@@ -36,17 +40,22 @@ class SqlLiteManager{
     await dbClient.insert("visits",{'uuid':StartupData.uuid,'major':major, 'minor':minor, 'time':DateTime.now().millisecondsSinceEpoch.toString()});
   }
 
-  getLastVisitForBeacon(String major,String minor){
-    var row = getDbRow(major,minor,StartupData.uuid);
-    var lastVisitTimestamp;
-    row.then((rowValue){
-      lastVisitTimestamp = rowValue[0].row[4];
+  getLastVisitForBeacon(String major,String minor) async {
+    List rowValue = await getDbRow(major, minor, StartupData.uuid);
+    if(rowValue.length != 0){
       logger.i("timestamp of last visit : "+rowValue[0].row[4]);
-    });
-    return lastVisitTimestamp;
+      return rowValue[0].row[4];
+    }else{
+      return null;
+    }
+
+  /*  var lastVisitTimestamp;
+    row.then((rowValue){
+
+    });*/
   }
 
-  getDbRow(String major,String minor,String uuid) async{
+  Future getDbRow(String major,String minor,String uuid) async{
     var dbClient = await db;
     var result = await dbClient.rawQuery('SELECT * FROM visits');//WHERE uuid=$uuid AND major=$major AND minor=$minor');
     return result.toList();

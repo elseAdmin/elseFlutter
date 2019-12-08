@@ -1,8 +1,5 @@
-import 'dart:math';
-
+import 'package:else_app_two/basicElements/AdScreen.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/all_event_list_page.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -45,9 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
   BottomNavigatorViewHandler handler= new BottomNavigatorViewHandler();
   BeaconServiceImpl beaconService;
   String _appTitle = Constants.universe;
+
+
+  @override
+  Future didChangeDependencies() async {
+    super.didChangeDependencies();
+    //initialize DB here
+  await beaconService.handleBeacon("123", "123");
+ // await beaconService.handleBeacon("123", "123");
+  }
+
   @override
   void initState() {
-    beaconService=BeaconServiceImpl();
+    beaconService=BeaconServiceImpl(pushAdScreen);
     super.initState();
     const nativeMessageReceivingChannel =
     const MethodChannel('com.else.apis.from.native');
@@ -58,15 +65,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
       case "beaconFound":
-        _postBeaconFound(call.arguments);
+        await _postBeaconFound(call.arguments);
         return new Future.value("");
     }
   }
 
-  void _postBeaconFound(arguments) {
+  _postBeaconFound(arguments) async {
     // do this only for advertisement beacons and not parking beacons
-
-    beaconService.handleBeacon(arguments[1],arguments[2]);
+    await beaconService.handleBeacon(arguments[1],arguments[2]);
 
     if(Constants.universe.compareTo("Else")==0 && arguments[0].compareTo("00000000-0000-0000-0000-000000000000")==0) {
     Constants.universe="unityOneRohini";
@@ -104,6 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Null> _handleRefresh() async {
     await new Future.delayed(new Duration(seconds: 1));
     return null;
+  }
+
+  void pushAdScreen(String imageUrl){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) =>
+                AdScreen(imageUrl)
+        ));
   }
 
   @override
