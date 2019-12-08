@@ -1,31 +1,10 @@
-import 'package:else_app_two/basicElements/AdScreen.dart';
-import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
-import 'package:else_app_two/service/beacon_service.dart';
-import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
-import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
-import 'homeTab/home_page.dart';
+import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 
-void main() {
-  runApp(MaterialApp(
-    title: 'Else',
-    home: MyApp(),
-  ));
-}
+import '../service/bottom_navigator_view_handler.dart';
+import 'package:else_app_two/utils/Contants.dart';
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
-      ),
-      home: MyHomePage(title: 'Else')
-    );
-  }
-}
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -38,62 +17,44 @@ class _MyHomePageState extends State<MyHomePage> {
   final logger = Logger();
   int bottomNavIndex=0;
   BottomNavigatorViewHandler handler= new BottomNavigatorViewHandler();
-  BeaconServiceImpl beaconService;
-  String _appTitle = Constants.universe;
-
-
-  @override
-  Future didChangeDependencies() async {
-    super.didChangeDependencies();
-    //initialize DB here
-  await beaconService.handleBeacon("123", "123");
- // await beaconService.handleBeacon("123", "123");
-  }
 
   @override
   void initState() {
-    beaconService=BeaconServiceImpl(pushAdScreen);
     super.initState();
+
     const nativeMessageReceivingChannel =
     const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
     _getBridgeStatus();
   }
 
+  //receiving messages from native code.
+  String _appTitle = 'Else';
+
+
+  _MyHomePageState() {
+
+  }
+
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
-      case "beaconFound":
-        await _postBeaconFound(call.arguments);
+      case "universeIdentified":
+        _updateTitleIfNeeded(call.arguments);
         return new Future.value("");
     }
   }
 
-  _postBeaconFound(arguments) async {
-    // do this only for advertisement beacons and not parking beacons
-    await beaconService.handleBeacon(arguments[1],arguments[2]);
-
-    if(Constants.universe.compareTo("Else")==0 && arguments[0].compareTo("00000000-0000-0000-0000-000000000000")==0) {
-    Constants.universe="unityOneRohini";
-    if (_appTitle.compareTo(arguments.toString()) == 0) {
-    //no need to update as previous title has been called
-    } else {
-    setState(() {
-    _appTitle = Constants.universe;
-    });
-    }
-    }
-  }
 
   //invoking native methods from dart code.
   String _bridgeStatus = 'native bridge not verified yet.';
   static const mainActivityToPlatform =
-      const MethodChannel('com.else.apis.to.native');
+  const MethodChannel('com.else.apis.to.native');
 
   Future<void> _getBridgeStatus() async {
     String bridgeStatus;
     try {
       final String result =
-          await mainActivityToPlatform.invokeMethod('nativeBridging');
+      await mainActivityToPlatform.invokeMethod('nativeBridging');
       bridgeStatus = 'Bridge status : ' + result;
     } on PlatformException catch (e) {
       bridgeStatus = "Failed to bridge to native '${e.message}'.";
@@ -103,20 +64,15 @@ class _MyHomePageState extends State<MyHomePage> {
       _bridgeStatus = bridgeStatus;
     });
   }
-
+  _handleBottomNavigationTab(int index){
+    setState(() {
+      bottomNavIndex=index;
+    });
+  }
 
   Future<Null> _handleRefresh() async {
     await new Future.delayed(new Duration(seconds: 1));
     return null;
-  }
-
-  void pushAdScreen(String imageUrl){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) =>
-                AdScreen(imageUrl)
-        ));
   }
 
   @override
@@ -131,8 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
             fontSize: 18,
           ),
         ),
-        home: MyHomePage(title:"ELSE"),
-//        home: RegisterUser(),
       ),
       body: RefreshIndicator(
         child:handler.getViewForNavigationBarIndex(bottomNavIndex),
@@ -141,7 +95,38 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar:BottomNavigationBar(
         currentIndex: bottomNavIndex,
         type: BottomNavigationBarType.fixed ,
-        items: BottomNavigationBarItemsList().getItems(),
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Home', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.navigation,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Navigate', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_parking,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Parking', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Notify', style: TextStyle(
+                color: Colors.blue,
+              ))
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.verified_user,color: Color.fromARGB(255, 0, 0, 0)),
+              title: new Text('Profile', style: TextStyle(
+                color: Colors.blue,
+              ))
+          )
+        ],
         onTap: (index){
           _handleBottomNavigationTab(index);
         },
@@ -149,9 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-  _handleBottomNavigationTab(int index){
-    setState(() {
-      bottomNavIndex=index;
-    });
+
+  void _updateTitleIfNeeded(arguments) {
+    logger.i("flutter method called by native");
+    if(_appTitle.compareTo(arguments.toString())==0){
+      //no need to update as previous title has been called
+    }else{
+      setState(() {
+        _appTitle = arguments;
+      });
+    }
   }
 }

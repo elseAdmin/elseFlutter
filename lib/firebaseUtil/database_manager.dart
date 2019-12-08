@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/base_model.dart';
@@ -14,8 +15,8 @@ import 'package:logger/logger.dart';
 
 class DatabaseManager {
   final logger = Logger();
-  Firestore store;
-  DatabaseReference baseDatabase;
+  static Firestore store;
+  DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
   FirebaseStorage storageRef;
   Map<String, List> universeVsParticipatedEvents = HashMap();
   DatabaseManager() {
@@ -245,5 +246,13 @@ class DatabaseManager {
 
   DatabaseReference getDealsDBRef() {
     return baseDatabase.child('dealsStaticData');
+  }
+
+  DatabaseReference getBaseDBRef(){
+    return baseDatabase;
+  }
+
+  Firestore getStoreReference() {
+    return store;
   }
 }
