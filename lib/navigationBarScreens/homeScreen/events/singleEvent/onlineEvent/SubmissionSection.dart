@@ -6,8 +6,8 @@ import 'package:else_app_two/basicElements/pick_gallery_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/past_submission_view.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/submission_confirmation_dialogue.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/just_submitted_view.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/submission_confirmation_dialogue.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/just_submitted_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -56,6 +56,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
       status = "pending";
       likes = 0;
     });
+
     DatabaseManager()
         .addEventSubmission(widget.event, StartupData.userid, imageFile)
         .then((status) {
@@ -119,7 +120,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
       }
     } else {
       // user has a submission submitted in the past
-      return PastSubmissionView(imagePath,status);
+      return PastSubmissionView(imagePath, status);
     }
   }
 }

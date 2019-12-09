@@ -1,6 +1,6 @@
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/WinnerSectionView.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/submission_grid_view.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/WinnerSectionView.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/submission_grid_view.dart';
 import 'package:flutter/material.dart';
 
 class SubmissionGridViewHandler {
