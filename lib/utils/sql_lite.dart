@@ -22,7 +22,7 @@ class SqlLiteManager{
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, "visits.db");
 
-    await deleteDatabase(path);
+    //await deleteDatabase(path);
     var theDb = await openDatabase(path, version: 1,
         onCreate: _onCreate);
 
@@ -48,23 +48,18 @@ class SqlLiteManager{
     }else{
       return null;
     }
-
-  /*  var lastVisitTimestamp;
-    row.then((rowValue){
-
-    });*/
   }
 
   Future getDbRow(String major,String minor,String uuid) async{
     var dbClient = await db;
-    var result = await dbClient.rawQuery('SELECT * FROM visits');//WHERE uuid=$uuid AND major=$major AND minor=$minor');
+    var result = await dbClient.rawQuery('SELECT time FROM visits WHERE uuid=$uuid AND major=$major AND minor=$minor');
     return result.toList();
   }
 
   updateVisitTime(String major,String minor) async {
     var dbClient = await db;
     await dbClient.rawUpdate(
-        'UPDATE visits SET time = ${DateTime.now().millisecondsSinceEpoch.toString()} WHERE major = ${major} AND minor = ${minor}'
+        'UPDATE visits SET time = ${DateTime.now().millisecondsSinceEpoch.toString()} WHERE uuid=${StartupData.uuid} AND major = $major AND minor = $minor'
     );
   }
 }

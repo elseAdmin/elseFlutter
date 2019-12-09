@@ -51,8 +51,6 @@ class BeaconServiceImpl{
        adScreenCallback(adBeacon.imageUrl);
       }
     //check if this user has seen the beacon before or not
-
-
   }
 
   Future<bool> wasBeaconSeenRecently(String major, String minor) async {

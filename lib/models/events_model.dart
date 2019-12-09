@@ -15,6 +15,7 @@ class EventModel extends BaseModel{
   String name;
   String status;
   String uid;
+  int observedDays;
 
   EventModel(DataSnapshot snapshot){
     this.description = snapshot.value['description'];
@@ -22,6 +23,7 @@ class EventModel extends BaseModel{
     this.endDate = DateTime.parse(snapshot.value["endDate"]);
     this.rules = snapshot.value['rules'];
     this.type = snapshot.value['type'];
+    this.observedDays = snapshot.value['observedDays'];
 
     this.id = snapshot.key;
     this.url = snapshot.value['url'];

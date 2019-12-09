@@ -4,7 +4,8 @@ import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
-import 'homeTab/home_page.dart';
+import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -41,15 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
   BeaconServiceImpl beaconService;
   String _appTitle = Constants.universe;
 
-
-  @override
-  Future didChangeDependencies() async {
-    super.didChangeDependencies();
-    //initialize DB here
-  await beaconService.handleBeacon("123", "123");
- // await beaconService.handleBeacon("123", "123");
-  }
-
   @override
   void initState() {
     beaconService=BeaconServiceImpl(pushAdScreen);
@@ -57,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const nativeMessageReceivingChannel =
     const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
-    _getBridgeStatus();
+    //_getBridgeStatus();
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
@@ -69,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _postBeaconFound(arguments) async {
-    // do this only for advertisement beacons and not parking beacons
     await beaconService.handleBeacon(arguments[1],arguments[2]);
 
     if(Constants.universe.compareTo("Else")==0 && arguments[0].compareTo("00000000-0000-0000-0000-000000000000")==0) {
@@ -85,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //invoking native methods from dart code.
-  String _bridgeStatus = 'native bridge not verified yet.';
+ /* String _bridgeStatus = 'native bridge not verified yet.';
   static const mainActivityToPlatform =
       const MethodChannel('com.else.apis.to.native');
 
@@ -103,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _bridgeStatus = bridgeStatus;
     });
   }
-
+*/
 
   Future<Null> _handleRefresh() async {
     await new Future.delayed(new Duration(seconds: 1));
@@ -111,12 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void pushAdScreen(String imageUrl){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) =>
-                AdScreen(imageUrl)
-        ));
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AdScreen(imageUrl));
   }
 
   @override
@@ -131,13 +119,11 @@ class _MyHomePageState extends State<MyHomePage> {
             fontSize: 18,
           ),
         ),
-        home: MyHomePage(title:"ELSE"),
-//        home: RegisterUser(),
       ),
       body: RefreshIndicator(
         child:handler.getViewForNavigationBarIndex(bottomNavIndex),
         onRefresh: _handleRefresh,
-      ),//handler.getViewForNavigationBarIndex(bottomNavIndex),
+      ),
       bottomNavigationBar:BottomNavigationBar(
         currentIndex: bottomNavIndex,
         type: BottomNavigationBarType.fixed ,
@@ -146,7 +132,6 @@ class _MyHomePageState extends State<MyHomePage> {
           _handleBottomNavigationTab(index);
         },
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
   _handleBottomNavigationTab(int index){
