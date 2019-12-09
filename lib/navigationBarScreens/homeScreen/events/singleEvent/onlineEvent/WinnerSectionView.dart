@@ -15,7 +15,7 @@ class WinnerSectionViewState extends State<WinnerSectionView>{
   List<String> winnerImagesUrls = List();
   @override
   void initState(){
-    DatabaseManager().getWinnerSubmissionForEvent(widget.eventUid).then((urls){
+    DatabaseManager().getWinnerSubmissionForOnlineEvent(widget.eventUid).then((urls){
         setState(() {
           winnerImagesUrls=urls;
         });

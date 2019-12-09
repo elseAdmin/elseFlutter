@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 
+import 'auth/auth.dart';
+import 'auth/auth_provider.dart';
+
 void main() {
   runApp(MaterialApp(
     title: 'Else',
@@ -18,13 +21,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
-      ),
-      home: MyHomePage(title: 'Else')
-    );
+    return AuthProvider(
+        auth: Auth(),
+        child: MaterialApp(
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              primarySwatch: Colors.blueGrey,
+            ),
+            home: MyHomePage(title: 'Else')));
   }
 }
 
@@ -37,17 +41,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final logger = Logger();
-  int bottomNavIndex=0;
-  BottomNavigatorViewHandler handler= new BottomNavigatorViewHandler();
+  int bottomNavIndex = 0;
+  BottomNavigatorViewHandler handler = new BottomNavigatorViewHandler();
   BeaconServiceImpl beaconService;
   String _appTitle = Constants.universe;
 
   @override
   void initState() {
-    beaconService=BeaconServiceImpl(pushAdScreen);
+    beaconService = BeaconServiceImpl(pushAdScreen);
     super.initState();
     const nativeMessageReceivingChannel =
-    const MethodChannel('com.else.apis.from.native');
+        const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
     //_getBridgeStatus();
   }
@@ -61,17 +65,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _postBeaconFound(arguments) async {
-    await beaconService.handleBeacon(arguments[1],arguments[2]);
+    await beaconService.handleBeacon(arguments[1], arguments[2]);
 
-    if(Constants.universe.compareTo("Else")==0 && arguments[0].compareTo("00000000-0000-0000-0000-000000000000")==0) {
-    Constants.universe="unityOneRohini";
-    if (_appTitle.compareTo(arguments.toString()) == 0) {
-    //no need to update as previous title has been called
-    } else {
-    setState(() {
-    _appTitle = Constants.universe;
-    });
-    }
+    if (Constants.universe.compareTo("Else") == 0 &&
+        arguments[0].compareTo("00000000-0000-0000-0000-000000000000") == 0) {
+      Constants.universe = "unityOneRohini";
+      if (_appTitle.compareTo(arguments.toString()) == 0) {
+        //no need to update as previous title has been called
+      } else {
+        setState(() {
+          _appTitle = Constants.universe;
+        });
+      }
     }
   }
 
@@ -93,15 +98,14 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _bridgeStatus = bridgeStatus;
     });
-  }
-*/
+  }*/
 
   Future<Null> _handleRefresh() async {
     await new Future.delayed(new Duration(seconds: 1));
     return null;
   }
 
-  void pushAdScreen(String imageUrl){
+  void pushAdScreen(String imageUrl) {
     showDialog(
         context: context,
         builder: (BuildContext context) => AdScreen(imageUrl));
@@ -113,7 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
         backgroundColor: Constants.titleBarBackgroundColor,
-        title: Text(_appTitle,
+        title: Text(
+          _appTitle,
           style: TextStyle(
             color: Constants.titleBarTextColor,
             fontSize: 18,
@@ -121,22 +126,23 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: RefreshIndicator(
-        child:handler.getViewForNavigationBarIndex(bottomNavIndex),
+        child: handler.getViewForNavigationBarIndex(bottomNavIndex),
         onRefresh: _handleRefresh,
       ),
-      bottomNavigationBar:BottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBar(
         currentIndex: bottomNavIndex,
-        type: BottomNavigationBarType.fixed ,
+        type: BottomNavigationBarType.fixed,
         items: BottomNavigationBarItemsList().getItems(),
-        onTap: (index){
+        onTap: (index) {
           _handleBottomNavigationTab(index);
         },
       ),
     );
   }
-  _handleBottomNavigationTab(int index){
+
+  _handleBottomNavigationTab(int index) {
     setState(() {
-      bottomNavIndex=index;
+      bottomNavIndex = index;
     });
   }
 }

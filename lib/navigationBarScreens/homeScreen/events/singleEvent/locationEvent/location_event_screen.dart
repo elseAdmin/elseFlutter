@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/DividerAboveSubmissionGrid.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventRulesDialog.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventStaticData.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionGridViewHandler.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionSection.dart';
+import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/locationEvent/submission_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +53,7 @@ class LocationEventScreenState extends State<LocationEventScreen> {
               delegate: SliverChildListDelegate(
                 [
                   EventStaticData(widget.event.description, widget.event.rules),
+                  SubmissionView(widget.event),
                 ],
               ),
             ),

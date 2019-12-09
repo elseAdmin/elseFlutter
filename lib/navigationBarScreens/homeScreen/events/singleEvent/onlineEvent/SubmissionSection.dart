@@ -32,7 +32,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
   @override
   void initState() {
     DatabaseManager()
-        .getUserSubmissionForEvent(widget.event)
+        .getUserSubmissionForOnlineEvent(widget.event)
         .then((submission) {
       if (submission != null) {
         setState(() {
@@ -58,7 +58,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
     });
 
     DatabaseManager()
-        .addEventSubmission(widget.event, StartupData.userid, imageFile)
+        .addOnlineEventSubmission(widget.event, StartupData.userid, imageFile)
         .then((status) {
       if (status.compareTo("Submission upload sucess") == 0) {
         setState(() {

@@ -1,11 +1,12 @@
 import 'dart:collection';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/base_model.dart';
+import 'package:else_app_two/models/beacon_model.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
+import 'package:else_app_two/models/firestore/loc_submission_model.dart';
 import 'package:else_app_two/models/firestore/submission_firestore_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -32,8 +33,54 @@ class DatabaseManager {
     }
   }
 
+  getVisitsForBeacon(BeaconData beaconData) async{
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection("advertisement")
+        .document(beaconData.major.toString())
+        .collection(beaconData.minor.toString())
+        .document("user")
+        .collection(StartupData.userid).getDocuments().then((docs){
+
+    });
+  }
+
+  getUserParticipationForLocationEvent(EventModel event) async{
+    LocationEventSubmissionModel model;
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      //what if snapshot is null ?
+      model = LocationEventSubmissionModel(snapshot);
+    }).catchError((error) {
+      logger.i("No submissions by user for this event");
+    });
+    return model;
+  }
+
+  Future markUserParticipationForLocationEvent(EventModel event) async{
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid).setData({
+      "participatedAt":DateTime.now().millisecondsSinceEpoch.toString(),
+      "date":DateTime.now(),
+      "status":"incomplete",
+    });
+    return;
+  }
+
   markUserVisitForBeacon(String major, String minor) async {
-    //write only once in 24 hours per beacon, use sqllite to store last write
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
@@ -61,7 +108,7 @@ class DatabaseManager {
     return adBeacon;
   }
 
-  Future getLimitedApprovedSubmissionsForEvent(String eventUid) async {
+  Future getLimitedApprovedSubmissionsForOnlineEvent(String eventUid) async {
     // make this call synchronous
     List<String> imageUrls = List();
     await store
@@ -82,7 +129,7 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getWinnerSubmissionForEvent(String eventUid) async {
+  Future getWinnerSubmissionForOnlineEvent(String eventUid) async {
     List<String> imageUrls = List();
     await store
         .collection(StartupData.dbreference)
@@ -99,7 +146,7 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getAllApprovedSubmissionsForEvent(String eventUid) async {
+  Future getAllApprovedSubmissionsForOnlineEvent(String eventUid) async {
     // make this call synchronous
     List<String> imageUrls = List();
     await store
@@ -119,7 +166,7 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getUserSubmissionForEvent(EventModel event) async {
+  Future getUserSubmissionForOnlineEvent(EventModel event) async {
     FirestoreSubmissionModel submission;
     await store
         .collection(StartupData.dbreference)
@@ -130,6 +177,7 @@ class DatabaseManager {
         .document(StartupData.userid)
         .get()
         .then((DocumentSnapshot snapshot) {
+          //what if snapshot is null ?
       submission = FirestoreSubmissionModel(snapshot);
     }).catchError((error) {
       logger.i("No submissions by user for this event");
@@ -137,7 +185,7 @@ class DatabaseManager {
     return submission;
   }
 
-  Future addEventSubmission(EventModel event, String userId, File image) async {
+  Future addOnlineEventSubmission(EventModel event, String userId, File image) async {
     //upload image to firebase storage
     StorageReference ref = storageRef
         .ref()
@@ -239,6 +287,12 @@ class DatabaseManager {
     }
     return listParticipatedEvents;
   }
+
+
+
+
+
+
 
   DatabaseReference getEventsDBRef() {
     return baseDatabase.child('eventStaticData');

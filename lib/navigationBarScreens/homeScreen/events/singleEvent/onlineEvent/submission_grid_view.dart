@@ -20,7 +20,7 @@ class SubmissionGridViewState extends State<SubmissionGridView> {
   @override
   void initState() {
     DatabaseManager()
-        .getLimitedApprovedSubmissionsForEvent(widget.eventUid)
+        .getLimitedApprovedSubmissionsForOnlineEvent(widget.eventUid)
         .then((imageUrls) {
       setState(() {
         urls = imageUrls;

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/DividerAboveSubmissionGrid.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventRulesDialog.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventStaticData.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionGridViewHandler.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionSection.dart';
