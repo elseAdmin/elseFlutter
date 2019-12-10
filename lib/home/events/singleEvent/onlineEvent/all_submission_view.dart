@@ -19,7 +19,7 @@ class AllSubmissionWidgetState extends State<AllSubmissionWidget> {
   @override
   void initState() {
     DatabaseManager()
-        .getAllApprovedSubmissionsForEvent(widget.eventUid)
+        .getAllApprovedSubmissionsForOnlineEvent(widget.eventUid)
         .then((imageUrls) {
       setState(() {
         urls = imageUrls;

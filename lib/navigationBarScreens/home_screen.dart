@@ -1,11 +1,9 @@
-import 'package:else_app_two/basicElements/deal_horizontal_list.dart';
+import 'package:else_app_two/home/deals/deal_horizontal_list.dart';
 import 'package:else_app_two/feedback/FeedbackPage.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/event_horizontal_list.dart';
+import 'package:else_app_two/home/events/event_horizontal_list.dart';
 import 'package:else_app_two/requests/request_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
-import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 

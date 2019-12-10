@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/pick_gallery_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/past_submission_view.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/submission_confirmation_dialogue.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/just_submitted_view.dart';
+import 'package:else_app_two/home/events/singleEvent/onlineEvent/past_submission_view.dart';
+import 'package:else_app_two/home/events/singleEvent/onlineEvent/submission_confirmation_dialogue.dart';
+import 'package:else_app_two/home/events/singleEvent/onlineEvent/just_submitted_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -32,7 +31,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
   @override
   void initState() {
     DatabaseManager()
-        .getUserSubmissionForEvent(widget.event)
+        .getUserSubmissionForOnlineEvent(widget.event)
         .then((submission) {
       if (submission != null) {
         setState(() {
@@ -58,7 +57,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
     });
 
     DatabaseManager()
-        .addEventSubmission(widget.event, StartupData.userid, imageFile)
+        .addOnlineEventSubmission(widget.event, StartupData.userid, imageFile)
         .then((status) {
       if (status.compareTo("Submission upload sucess") == 0) {
         setState(() {

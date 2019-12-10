@@ -1,11 +1,13 @@
 import 'dart:collection';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/base_model.dart';
+import 'package:else_app_two/models/beacon_model.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
+import 'package:else_app_two/models/firestore/loc_submission_model.dart';
+import 'package:else_app_two/models/firestore/offline_submission_model.dart';
 import 'package:else_app_two/models/firestore/submission_firestore_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -31,9 +33,113 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
+  markUserParticipationForOfflineEvent(EventModel event) async{
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid)
+        .setData({
+      "participatedAt": DateTime.now().millisecondsSinceEpoch,
+      "participationId": "123", //generate unique id
+    });
+    return;
+  }
+  getUserParticipationForOfflineEvent(EventModel event) async{
+    OfflineEventSubmissionModel model;
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      //what if snapshot is null ?
+      model = OfflineEventSubmissionModel(snapshot);
+    }).catchError((error) {
+      logger.i("No submissions by user for this event");
+    });
+    return model;
+  }
+  getUniqueVisitsForBeacon(EventModel event) async {
+    Set uniqueDates = Set();
+    List visits = await getAllVisitsForBeaconInEventTimeRange(event);
+    for (var visit in visits) {
+      int time = visit.data['timestamp'];
+      DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
+      String day = date.day.toString();
+      String month = date.month.toString();
+      String year = date.year.toString();
+      String key = day+month+year;// 8th dec 2019 = 8122019
+      uniqueDates.add(key);
+    }
+    return uniqueDates;
+  }
+
+  getAllVisitsForBeaconInEventTimeRange(EventModel event) async {
+    List visits;
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection("advertisement")
+        .document(event.beaconDataList[0].major.toString())
+        .collection(event.beaconDataList[0].minor.toString())
+        .document("user")
+        .collection(StartupData.userid)
+        .where('timestamp',
+            isGreaterThanOrEqualTo: event.startDate.millisecondsSinceEpoch)
+        .where('timestamp',
+            isLessThanOrEqualTo: event.endDate.millisecondsSinceEpoch)
+    .orderBy('timestamp')
+        .getDocuments()
+        .then((docs) {
+      visits = docs.documents;
+    });
+    return visits;
+  }
+//
+
+//
+  getUserParticipationForLocationEvent(EventModel event) async {
+    LocationEventSubmissionModel model;
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid)
+        .get()
+        .then((DocumentSnapshot snapshot) {
+      //what if snapshot is null ?
+      model = LocationEventSubmissionModel(snapshot);
+    }).catchError((error) {
+      logger.i("No submissions by user for this event");
+    });
+    return model;
+  }
+
+  Future markUserParticipationForLocationEvent(EventModel event) async {
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid)
+        .setData({
+      "participatedAt": DateTime.now().millisecondsSinceEpoch,
+      "date": DateTime.now(),
+      "status": "incomplete",
+    });
+    return;
+  }
 
   markUserVisitForBeacon(String major, String minor) async {
-    //write only once in 24 hours per beacon, use sqllite to store last write
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
@@ -42,7 +148,7 @@ class DatabaseManager {
         .collection(minor)
         .document("user")
         .collection(StartupData.userid)
-        .add({"timestamp": DateTime.now().millisecondsSinceEpoch.toString()});
+        .add({"timestamp": DateTime.now().millisecondsSinceEpoch});
   }
 
   Future getAdMetaForBeacon(String major, String minor) async {
@@ -56,12 +162,12 @@ class DatabaseManager {
         .document("adMeta")
         .get()
         .then((DocumentSnapshot snapshot) {
-          adBeacon = AdBeacon(snapshot);
+      adBeacon = AdBeacon(snapshot);
     });
     return adBeacon;
   }
 
-  Future getLimitedApprovedSubmissionsForEvent(String eventUid) async {
+  Future getLimitedApprovedSubmissionsForOnlineEvent(String eventUid) async {
     // make this call synchronous
     List<String> imageUrls = List();
     await store
@@ -82,7 +188,7 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getWinnerSubmissionForEvent(String eventUid) async {
+  Future getWinnerSubmissionForOnlineEvent(String eventUid) async {
     List<String> imageUrls = List();
     await store
         .collection(StartupData.dbreference)
@@ -99,7 +205,7 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getAllApprovedSubmissionsForEvent(String eventUid) async {
+  Future getAllApprovedSubmissionsForOnlineEvent(String eventUid) async {
     // make this call synchronous
     List<String> imageUrls = List();
     await store
@@ -119,7 +225,7 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getUserSubmissionForEvent(EventModel event) async {
+  Future getUserSubmissionForOnlineEvent(EventModel event) async {
     FirestoreSubmissionModel submission;
     await store
         .collection(StartupData.dbreference)
@@ -130,6 +236,7 @@ class DatabaseManager {
         .document(StartupData.userid)
         .get()
         .then((DocumentSnapshot snapshot) {
+      //what if snapshot is null ?
       submission = FirestoreSubmissionModel(snapshot);
     }).catchError((error) {
       logger.i("No submissions by user for this event");
@@ -137,7 +244,8 @@ class DatabaseManager {
     return submission;
   }
 
-  Future addEventSubmission(EventModel event, String userId, File image) async {
+  Future addOnlineEventSubmission(
+      EventModel event, String userId, File image) async {
     //upload image to firebase storage
     StorageReference ref = storageRef
         .ref()
@@ -248,7 +356,7 @@ class DatabaseManager {
     return baseDatabase.child('dealsStaticData');
   }
 
-  DatabaseReference getBaseDBRef(){
+  DatabaseReference getBaseDBRef() {
     return baseDatabase;
   }
 
