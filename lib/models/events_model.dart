@@ -29,8 +29,8 @@ class EventModel extends BaseModel{
 
     List list = snapshot.value['beaconMeta'];
     beaconDataList  = List();
-    for(int i=0;i<list.length;i++){
-      BeaconData data = new BeaconData(list[i].major, list[i].minor);
+    for(int i=1;i<list.length;i++){
+      BeaconData data = new BeaconData(list[i]['major'], list[i]['minor']);
       beaconDataList.add(data);
     }
 

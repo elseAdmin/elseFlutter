@@ -1,6 +1,6 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/home/deal_list_page.dart';
 import 'package:else_app_two/models/deals_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/deal_list_page.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:firebase_database/firebase_database.dart';

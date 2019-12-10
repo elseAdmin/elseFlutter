@@ -1,27 +1,23 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventRulesDialog.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventStaticData.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/locationEvent/submission_view.dart';
+import 'package:else_app_two/home/events/singleEvent/onlineEvent/DividerAboveSubmissionGrid.dart';
+import 'package:else_app_two/home/events/singleEvent/EventStaticData.dart';
+import 'package:else_app_two/home/events/singleEvent/onlineEvent/SubmissionGridViewHandler.dart';
+import 'package:else_app_two/home/events/singleEvent/onlineEvent/SubmissionSection.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class LocationEventScreen extends StatefulWidget {
+class OnlineEventScreen extends StatefulWidget {
   final EventModel event;
-  const LocationEventScreen(this.event);
+  const OnlineEventScreen(this.event);
 
   @override
-  LocationEventScreenState createState() => LocationEventScreenState();
+  OnlineEventScreenState createState() => OnlineEventScreenState();
 }
 
-class LocationEventScreenState extends State<LocationEventScreen> {
-  viewRules() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => RulesDialog(widget.event.rules));
-  }
+class OnlineEventScreenState extends State<OnlineEventScreen> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +49,25 @@ class LocationEventScreenState extends State<LocationEventScreen> {
               delegate: SliverChildListDelegate(
                 [
                   EventStaticData(widget.event.description, widget.event.rules),
-                  SubmissionView(widget.event),
+                  Container(
+                      padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 2,
+                          top: SizeConfig.blockSizeVertical),
+                      child: Text(
+                        "Submissions",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            color: Constants.textColor,
+                            fontSize: 18,
+                            decoration: TextDecoration.underline),
+                      )),
+                  SubmissionSection(widget.event),
+                  DividerAboveSubmissionGrid(widget.event),
                 ],
               ),
             ),
+            SubmissionGridViewHandler(widget.event)
+                .renderSuitableSubmissionGridView()
           ],
         ),
       ),

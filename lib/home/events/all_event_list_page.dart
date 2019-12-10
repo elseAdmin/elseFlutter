@@ -4,7 +4,7 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-import 'SingleEventPageViewHandler.dart';
+import 'singleEvent/SingleEventPageViewHandler.dart';
 
 class EventListPage extends StatelessWidget {
   List<EventModel> events;

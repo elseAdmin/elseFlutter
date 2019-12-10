@@ -1,23 +1,26 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/DividerAboveSubmissionGrid.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventRulesDialog.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventStaticData.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionGridViewHandler.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionSection.dart';
+import 'package:else_app_two/home/events/singleEvent/EventRulesDialog.dart';
+import 'package:else_app_two/home/events/singleEvent/EventStaticData.dart';
+import 'package:else_app_two/home/events/singleEvent/locationEvent/submission_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class OfflineEventScreen extends StatefulWidget {
+class LocationEventScreen extends StatefulWidget {
   final EventModel event;
-  const OfflineEventScreen(this.event);
+  const LocationEventScreen(this.event);
 
   @override
-  OfflineEventScreenState createState() => OfflineEventScreenState();
+  LocationEventScreenState createState() => LocationEventScreenState();
 }
 
-class OfflineEventScreenState extends State<OfflineEventScreen> {
+class LocationEventScreenState extends State<LocationEventScreen> {
+  viewRules() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => RulesDialog(widget.event.rules));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +52,7 @@ class OfflineEventScreenState extends State<OfflineEventScreen> {
               delegate: SliverChildListDelegate(
                 [
                   EventStaticData(widget.event.description, widget.event.rules),
+                  SubmissionView(widget.event),
                 ],
               ),
             ),

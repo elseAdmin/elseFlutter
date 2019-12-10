@@ -1,23 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:else_app_two/home/events/singleEvent/offlineEvent/submission_view.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/DividerAboveSubmissionGrid.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/EventStaticData.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionGridViewHandler.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/onlineEvent/SubmissionSection.dart';
+import 'package:else_app_two/home/events/singleEvent/EventStaticData.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class OnlineEventScreen extends StatefulWidget {
+class OfflineEventScreen extends StatefulWidget {
   final EventModel event;
-  const OnlineEventScreen(this.event);
+  const OfflineEventScreen(this.event);
 
   @override
-  OnlineEventScreenState createState() => OnlineEventScreenState();
+  OfflineEventScreenState createState() => OfflineEventScreenState();
 }
 
-class OnlineEventScreenState extends State<OnlineEventScreen> {
-
+class OfflineEventScreenState extends State<OfflineEventScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -49,25 +46,10 @@ class OnlineEventScreenState extends State<OnlineEventScreen> {
               delegate: SliverChildListDelegate(
                 [
                   EventStaticData(widget.event.description, widget.event.rules),
-                  Container(
-                      padding: EdgeInsets.only(
-                          left: SizeConfig.blockSizeHorizontal * 2,
-                          top: SizeConfig.blockSizeVertical),
-                      child: Text(
-                        "Submissions",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            color: Constants.textColor,
-                            fontSize: 18,
-                            decoration: TextDecoration.underline),
-                      )),
-                  SubmissionSection(widget.event),
-                  DividerAboveSubmissionGrid(widget.event),
+                  SubmissionView(widget.event)
                 ],
               ),
             ),
-            SubmissionGridViewHandler(widget.event)
-                .renderSuitableSubmissionGridView()
           ],
         ),
       ),
