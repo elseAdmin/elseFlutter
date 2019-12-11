@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LocationEventSubmissionModel {
-  var timestamp;
-  var date;
-  var status;
+  int timestamp;
+  Timestamp date;
+  String status;
   LocationEventSubmissionModel(DocumentSnapshot snapshot){
     if(snapshot!=null) {
       this.timestamp = snapshot.data['participatedAt'];
