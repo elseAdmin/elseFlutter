@@ -57,7 +57,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
     });
 
     DatabaseManager()
-        .addOnlineEventSubmission(widget.event, StartupData.userid, imageFile)
+        .markUserParticipationForOnlineEvent(widget.event, StartupData.userid, imageFile)
         .then((status) {
       if (status.compareTo("Submission upload sucess") == 0) {
         setState(() {

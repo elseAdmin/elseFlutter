@@ -57,22 +57,26 @@ class ParticipatedViewState extends State<ParticipatedView> {
     titles.add("Eighth");
     titles.add("Nineth");
 
-    //not more than nine days can be observed
+    // *** not more than nine days can be observed
 
     List<Step> stepList = List();
     for (int i = 0; i < widget.event.observedDays; i++) {
-      var stateCheck;
-      if (visitDates != null && i < visitDates.length) {
+      if (visitDates != null && i < visitDates.length && isVisitAfterSubmission(visitDates[i])) {
+        //has user completed the event?
+        if (visitDates.length == widget.event.observedDays) {
+          //user has completed the event
+          DatabaseManager().markLocationEventCompleted(widget.event);
+        }
         //visited steps
-        stateCheck = StepState.complete;
+        var stateCheck = StepState.complete;
         Step step = new Step(
             title: Text(titles[i]),
             state: stateCheck,
             content: Text("You were here on " + getDateFromString(i)));
         stepList.add(step);
       } else {
-        //not visited 
-        stateCheck = StepState.indexed;
+        //not visited
+        var stateCheck = StepState.indexed;
         Step step = new Step(
             title: Text(titles[i]),
             state: stateCheck,
@@ -82,15 +86,37 @@ class ParticipatedViewState extends State<ParticipatedView> {
     }
     return stepList;
   }
+  isVisitAfterSubmission(String visitDate){
+    DateTime submissionDateTime  = DateTime.fromMillisecondsSinceEpoch(widget.submissionDetails.timestamp);
+    int visitMonth = int.parse(getMonthInt(visitDate));
+    int visitDay = int.parse(getDayInt(visitDate));
 
+    if(visitMonth<submissionDateTime.month){
+      //visit not counted
+      return false;
+    }else if(visitMonth==submissionDateTime.month){
+      if(visitDay<=submissionDateTime.day){
+        return false;
+      }
+    }
+    return true;
+
+  }
+  getMonthInt(String date){
+    return date[2] + date[3];
+  }
+  getDayInt(String date){
+    return date[0] + date[1];
+  }
+  getYearInt(String date){
+    return date[4] + date[5] + date[6] + date[7];
+  }
   getDateFromString(int i) {
-    String stringDate = visitDates[i];
     String date, monthName, year;
-
-    date = stringDate[0] + stringDate[1];
-    String mon = stringDate[2] + stringDate[3];
+    date = getDayInt(visitDates[i]);
+    String mon = getMonthInt(visitDates[i]);
     monthName = HelperMethods().getLiteralMonthForIntMonth(mon);
-    year = stringDate[4] + stringDate[5] + stringDate[6] + stringDate[7];
+    year = getYearInt(visitDates[i]);
 
     return date + " " + monthName + " " + year;
   }

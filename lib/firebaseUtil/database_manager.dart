@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/models/base_model.dart';
-import 'package:else_app_two/models/beacon_model.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/models/firestore/loc_submission_model.dart';
@@ -33,7 +32,8 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
-  markUserParticipationForOfflineEvent(EventModel event) async{
+
+  markLocationEventCompleted(EventModel event) async {
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -41,12 +41,11 @@ class DatabaseManager {
         .document("submissions")
         .collection("allSubmissions")
         .document(StartupData.userid)
-        .setData({
-      "participatedAt": DateTime.now().millisecondsSinceEpoch,
-      "participationId": "123", //generate unique id
+        .updateData({
+      "status": "complete",
     });
-    return;
   }
+
   getUserParticipationForOfflineEvent(EventModel event) async{
     OfflineEventSubmissionModel model;
     await store
@@ -65,6 +64,7 @@ class DatabaseManager {
     });
     return model;
   }
+
   getUniqueVisitsForBeacon(EventModel event) async {
     Set uniqueDates = Set();
     List visits = await getAllVisitsForBeaconInEventTimeRange(event);
@@ -131,21 +131,6 @@ class DatabaseManager {
     return model;
   }
 
-  Future markUserParticipationForLocationEvent(EventModel event) async {
-    await store
-        .collection(StartupData.dbreference)
-        .document("events")
-        .collection(event.uid)
-        .document("submissions")
-        .collection("allSubmissions")
-        .document(StartupData.userid)
-        .setData({
-      "participatedAt": DateTime.now().millisecondsSinceEpoch,
-      "date": DateTime.now(),
-      "status": "incomplete",
-    });
-    return;
-  }
 
   markUserVisitForBeacon(String major, String minor) async {
     await store
@@ -252,7 +237,41 @@ class DatabaseManager {
     return submission;
   }
 
-  Future addOnlineEventSubmission(
+  markUserParticipationForOfflineEvent(EventModel event) async{
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid)
+        .setData({
+      "participatedAt": DateTime.now().millisecondsSinceEpoch,
+      "participationId": "123", //generate unique id
+    });
+
+    String submissionPath=store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid).path;
+
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("events")
+        .add({
+      "universe": StartupData.dbreference,
+      "eventUrl": getEventsDBRef().child(event.uid).path,
+      "submissionUrl": submissionPath,
+    });
+
+    return;
+  }
+
+  Future markUserParticipationForOnlineEvent(
       EventModel event, String userId, File image) async {
     //upload image to firebase storage
     StorageReference ref = storageRef
@@ -309,6 +328,42 @@ class DatabaseManager {
 
     logger.i("Event submission details saved successfully");
     return "Submission upload sucess";
+  }
+
+
+  Future markUserParticipationForLocationEvent(EventModel event) async {
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid)
+        .setData({
+      "participatedAt": DateTime.now().millisecondsSinceEpoch,
+      "date": DateTime.now(),
+      "status": "incomplete",
+    });
+
+    String submissionPath =store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.userid).path;
+
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("events")
+        .add({
+      "universe": StartupData.dbreference,
+      "eventUrl": getEventsDBRef().child(event.uid).path,
+      "submissionUrl": submissionPath,
+    });
+
+    return;
   }
 
   Future getAllEventsForUser(String userId) async {
