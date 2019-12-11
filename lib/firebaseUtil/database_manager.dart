@@ -72,7 +72,13 @@ class DatabaseManager {
       int time = visit.data['timestamp'];
       DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
       String day = date.day.toString();
+      if(day.length==1){
+        day = "0"+day;
+      }
       String month = date.month.toString();
+      if(month.length==1){
+        month = "0"+month;
+      }
       String year = date.year.toString();
       String key = day+month+year;// 8th dec 2019 = 8122019
       uniqueDates.add(key);
@@ -98,9 +104,11 @@ class DatabaseManager {
         .getDocuments()
         .then((docs) {
       visits = docs.documents;
+    }).catchError((error){
+      logger.e(error);
     });
     return visits;
-  }
+   }
 //
 
 //
