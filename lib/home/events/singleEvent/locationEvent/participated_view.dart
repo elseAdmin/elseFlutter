@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/loc_submission_model.dart';
@@ -32,6 +34,7 @@ class ParticipatedViewState extends State<ParticipatedView> {
     // TODO: implement build
     return Container(
         child: Stepper(
+          key: Key(Random.secure().nextDouble().toString()),
       steps: getSteps(),
       currentStep: _index,
       onStepTapped: (index) {
@@ -61,7 +64,9 @@ class ParticipatedViewState extends State<ParticipatedView> {
 
     List<Step> stepList = List();
     for (int i = 0; i < widget.event.observedDays; i++) {
-      if (visitDates != null && i < visitDates.length && isVisitAfterSubmission(visitDates[i])) {
+      if (visitDates != null){
+        filterVisitAfterSubmission();
+      if (i < visitDates.length) {
         //has user completed the event?
         if (visitDates.length == widget.event.observedDays) {
           //user has completed the event
@@ -74,7 +79,16 @@ class ParticipatedViewState extends State<ParticipatedView> {
             state: stateCheck,
             content: Text("You were here on " + getDateFromString(i)));
         stepList.add(step);
-      } else {
+      }else{
+        //not visited
+        var stateCheck = StepState.indexed;
+        Step step = new Step(
+            title: Text(titles[i]),
+            state: stateCheck,
+            content: Text("We are yet to mark your visit"));
+        stepList.add(step);
+      }
+    }else {
         //not visited
         var stateCheck = StepState.indexed;
         Step step = new Step(
@@ -86,21 +100,21 @@ class ParticipatedViewState extends State<ParticipatedView> {
     }
     return stepList;
   }
-  isVisitAfterSubmission(String visitDate){
-    DateTime submissionDateTime  = DateTime.fromMillisecondsSinceEpoch(widget.submissionDetails.timestamp);
-    int visitMonth = int.parse(getMonthInt(visitDate));
-    int visitDay = int.parse(getDayInt(visitDate));
+  filterVisitAfterSubmission(){
+    for(int i=0;i<visitDates.length;i++){
+      DateTime submissionDateTime  = DateTime.fromMillisecondsSinceEpoch(widget.submissionDetails.timestamp);
+      int visitMonth = int.parse(getMonthInt(visitDates[i]));
+      int visitDay = int.parse(getDayInt(visitDates[i]));
 
-    if(visitMonth<submissionDateTime.month){
-      //visit not counted
-      return false;
-    }else if(visitMonth==submissionDateTime.month){
-      if(visitDay<=submissionDateTime.day){
-        return false;
+      if(visitMonth<submissionDateTime.month){
+        //visit not counted
+        visitDates.remove(visitDates[i]);
+      }else if(visitMonth==submissionDateTime.month){
+        if(visitDay<=submissionDateTime.day){
+          visitDates.remove(visitDates[i]);
+        }
       }
     }
-    return true;
-
   }
   getMonthInt(String date){
     return date[2] + date[3];
