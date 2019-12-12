@@ -203,4 +203,8 @@ class DatabaseManager {
   Firestore getStoreReference() {
     return store;
   }
+
+  FirebaseStorage getStorageReference() {
+    return storageRef;
+  }
 }

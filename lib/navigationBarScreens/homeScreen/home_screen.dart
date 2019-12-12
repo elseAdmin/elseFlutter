@@ -1,5 +1,7 @@
 import 'package:else_app_two/basicElements/deal_horizontal_list.dart';
-import 'package:else_app_two/feedback/FeedbackPage.dart';
+import 'package:else_app_two/feedback/feedback_preview.dart';
+import 'package:else_app_two/feedback/myfeedback_screen.dart';
+import 'package:else_app_two/feedback/new_feedback.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/navigationBarScreens/homeScreen/events/event_horizontal_list.dart';
 import 'package:else_app_two/requests/request_screen.dart';
@@ -47,7 +49,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) =>  FeedbacksPage()));
+                          builder: (BuildContext context) =>  NewFeedBack()));
                 },
                 child: Text(
                   "Feedbacks",
