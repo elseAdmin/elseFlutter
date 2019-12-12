@@ -83,7 +83,7 @@ class _NewFeedBack extends State<NewFeedBack>{
     if(feedBackFuture != null){
       UserFeedBack userFeedBack = new UserFeedBack(feedBackFuture,
           StartupData.dbreference, subject, Status.PENDING.index,
-          Timestamp.now(), Timestamp.now());
+          DateTime.now(), DateTime.now());
       var userData = await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
       print("Feeddata mapped to user"+userData);
       showModalBottomSheet(context: context, builder: (context){

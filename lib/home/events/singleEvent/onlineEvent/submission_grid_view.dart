@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/all_submission_view.dart';
+import 'package:else_app_two/home/events/singleEvent/onlineEvent/all_submission_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +20,7 @@ class SubmissionGridViewState extends State<SubmissionGridView> {
   @override
   void initState() {
     DatabaseManager()
-        .getLimitedApprovedSubmissionsForEvent(widget.eventUid)
+        .getLimitedApprovedSubmissionsForOnlineEvent(widget.eventUid)
         .then((imageUrls) {
       setState(() {
         urls = imageUrls;

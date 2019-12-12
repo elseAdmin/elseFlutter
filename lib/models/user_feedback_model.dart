@@ -7,8 +7,8 @@ class UserFeedBack{
   String universe;
   String subject;
   int feedbackStatus;
-  Timestamp createdDate;
-  Timestamp updatedDate;
+  DateTime createdDate;
+  DateTime updatedDate;
 
   UserFeedBack(this.feedbackId, this.universe, this.subject,
       this.feedbackStatus, this.createdDate, this.updatedDate);
@@ -19,8 +19,8 @@ class UserFeedBack{
       feedbackId = snapshot['feedbackId'] ?? '',
       universe = snapshot['universe'] ?? '',
       feedbackStatus = snapshot['feedbackStatus'] ?? '',
-      createdDate = snapshot['createdDate'] ?? '',
-      updatedDate = snapshot['updatedDate'] ?? '';
+      createdDate = snapshot['createdDate'].toDate(),
+      updatedDate = snapshot['updatedDate'].toDate();
 
   toJson(){
     return{

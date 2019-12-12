@@ -1,5 +1,6 @@
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
+import 'package:else_app_two/feedback/feedback_preview.dart';
 import 'package:else_app_two/feedback/new_feedback.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/models/user_feedback_crud_model.dart';
@@ -19,9 +20,6 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
 
   UserFeedBackCrudModel userFeedBackCrudModel;
   List<UserFeedBack> _userFeedbackList = [];
-
-//  DateFormat dateFormat = DateFormat("yyyy-MM-dd HH:mm:ss");
-  List<String> updatedDate = [];
 
   @override
   void didChangeDependencies() async{
@@ -44,6 +42,7 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
       case Status.IN_PROCESS : return 'INPROCESS';
       case Status.PENDING : return 'PENDING';
       case Status.INVALID : return 'INVALID';
+      case Status.VALID : return 'VALID';
       case Status.COMPLETED : return 'COMPLETED';
     }
     return '';
@@ -107,7 +106,7 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            contentPadding: EdgeInsets.all(18.0),
+                            contentPadding: EdgeInsets.all(15.0),
                             isThreeLine: true,
                             subtitle: Padding(
                               padding: const EdgeInsets.only(left: 0.0, top: 8.0, right: 0.0, bottom: 0.0),
@@ -115,18 +114,21 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text('FeedBack ID : ${_userFeedbackList[index].feedbackId}'),
-//                                  paddingData(),
                                   Text('Status : ${getStatusString(_userFeedbackList[index].feedbackStatus)}'),
-//                                  paddingData(),
-                                  Text('Date'),
-//                                  paddingData(),
+                                  Text('Date: ${_userFeedbackList[index].updatedDate}'),
                                   Text('Place : ${_userFeedbackList[index].universe}'),
                                 ],
                               ),
                             ),
                             trailing: Icon(Icons.arrow_right),
                             onTap: () {
-//                          handler.routeToProfileOptions(context, index);
+                              Navigator.push(context,
+                                MaterialPageRoute(
+                                  builder: (context) => FeedBackPreview(
+                                      _userFeedbackList[index].feedbackId,
+                                      _userFeedbackList[index].universe),
+                                ),
+                              );
                             },
                           ),
                         ),

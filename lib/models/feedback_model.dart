@@ -5,7 +5,7 @@ class FeedBack{
   bool typeOfFeedBack;
   double feedbackIntensity;
   String content;
-  List<String> imageUrls;
+  List imageUrls;
   int feedbackStatus;
   DateTime createdDate;
   DateTime updatedDate;
@@ -23,8 +23,8 @@ class FeedBack{
       content = snapshot['content'] ?? '',
       imageUrls = snapshot['imageUrls'] ?? '',
       feedbackStatus = snapshot['feedbackStatus'] ?? '',
-      createdDate = snapshot['createdDate'] ?? '',
-      updatedDate = snapshot['updatedDate'] ?? '';
+      createdDate = snapshot['createdDate'].toDate(),
+      updatedDate = snapshot['updatedDate'].toDate();
 
   toJson(){
     return{

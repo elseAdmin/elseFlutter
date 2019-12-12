@@ -1,5 +1,5 @@
 
-import 'package:else_app_two/navigationBarScreens/homeScreen/home_screen.dart';
+import 'package:else_app_two/navigationBarScreens/home_screen.dart';
 import 'package:else_app_two/navigationBarScreens/navigation_screen.dart';
 import 'package:else_app_two/navigationBarScreens/notification_screen.dart';
 import 'package:else_app_two/navigationBarScreens/parking_screen.dart';

@@ -1,6 +1,6 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/home/deals/deal_list_page.dart';
 import 'package:else_app_two/models/deals_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/deal_list_page.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -55,15 +55,20 @@ class _DealSectionState extends State<DealSection> {
                         builder: (BuildContext context) =>
                             DealListPage(deals)));
               },
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Deals",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontSize: Constants.homePageHeadingsFontSize,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Deals",
+                      style: TextStyle(
+                        fontSize: Constants.homePageHeadingsFontSize,
+                      ),
                     ),
-                  )),
+                    Divider(
+                        endIndent: SizeConfig.blockSizeHorizontal * 60,
+                        color: Colors.black87,
+                        height: SizeConfig.blockSizeVertical)
+                  ]),
             )),
         Container(
             padding: EdgeInsets.only(
@@ -80,19 +85,17 @@ class _DealSectionState extends State<DealSection> {
                         child: Stack(
                           fit: StackFit.passthrough,
                           children: <Widget>[
-                            CachedNetworkImage(
+                            Opacity(
+                                opacity: 0.8,child:CachedNetworkImage(
                               fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
                               imageUrl: deals[index].blurUrl,
-                            ),
+                            )),
                             Align(
                                 alignment: Alignment.center,
                                 child: Text(deals[index].name,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 19))),
+                                    style: TextStyle(color: Colors.black,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 30))),
                           ],
                         ),
                       ));

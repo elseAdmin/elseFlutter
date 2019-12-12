@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -12,7 +11,9 @@ import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -34,7 +35,7 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
     MethodChannel invokingDartMethods;
 
     public class BridgeHelper{
-       public void invokeDartMethod(String methodName,Object arg){
+       public void invokeMethod(String methodName,Object arg){
            invokingDartMethods.invokeMethod(methodName,arg);
        }
        BridgeHelper getHelper(){
@@ -89,7 +90,13 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
                 String universe =  determineUniverse(region);
                 if (beacons.size() > 0) {
                     for(Beacon beacon : beacons){
-                        Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3()+" rssi="+beacon.getRssi()+" distance = "+beacon.getDistance());
+                        List<String> beaconMeta = new ArrayList<>();
+                        beaconMeta.add(beacon.getId1().toString());
+                        beaconMeta.add(beacon.getId2().toString());
+                        beaconMeta.add(beacon.getId3().toString());
+
+                        invokingDartMethods.invokeMethod("beaconFound",beaconMeta);
+                        //Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3()+" rssi="+beacon.getRssi()+" distance = "+beacon.getDistance());
                     }
                 }
             }

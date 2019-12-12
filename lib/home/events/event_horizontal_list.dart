@@ -2,12 +2,10 @@ import 'dart:ui';
 
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/SingleEventPageViewHandler.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/my_event_list_page.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/singleEvent/online_event_screen.dart';
+import 'package:else_app_two/home/events/singleEvent/SingleEventPageViewHandler.dart';
+import 'package:else_app_two/home/events/all_event_list_page.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
-import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,7 +25,6 @@ class EventSectionState extends State<EventSection> {
   void initState() {
     super.initState();
     manager.getEventsDBRef().onChildAdded.listen(_newEventAdded);
-    manager.getAllEventsForUser(StartupData.userid);
   }
 
   void _newEventAdded(Event e) {
@@ -60,17 +57,22 @@ class EventSectionState extends State<EventSection> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            MyEventListPage(events)));
+                            EventListPage(events)));
               },
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Events",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      fontSize: Constants.homePageHeadingsFontSize,
-                    ),
-                  )),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                Text(
+                  "Events",
+                  style: TextStyle(
+                    fontSize: Constants.homePageHeadingsFontSize,
+                  ),
+                ),
+                Divider(
+                    endIndent: SizeConfig.blockSizeHorizontal * 60,
+                    color: Colors.black87,
+                    height: SizeConfig.blockSizeVertical)
+              ]),
             )),
         Container(
             padding: EdgeInsets.only(

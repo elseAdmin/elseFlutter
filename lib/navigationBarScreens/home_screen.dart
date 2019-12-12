@@ -1,13 +1,9 @@
-import 'package:else_app_two/basicElements/deal_horizontal_list.dart';
-import 'package:else_app_two/feedback/feedback_preview.dart';
-import 'package:else_app_two/feedback/myfeedback_screen.dart';
 import 'package:else_app_two/feedback/new_feedback.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/navigationBarScreens/homeScreen/events/event_horizontal_list.dart';
+import 'package:else_app_two/home/deals/deal_horizontal_list.dart';
+import 'package:else_app_two/home/events/event_horizontal_list.dart';
 import 'package:else_app_two/requests/request_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
-import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -27,23 +23,29 @@ class HomeScreen extends StatelessWidget {
                 left: SizeConfig.blockSizeHorizontal * 2),
             child: GestureDetector(
                 onTap: () {
-                  DatabaseManager().getAllEventsForUser(StartupData.userid);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) =>  RequestsPage()));
                 },
-                child: Text(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[Text(
                   "Requests",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
                     fontSize: Constants.homePageHeadingsFontSize,
                   ),
-                ))),
+                ),
+                    Divider(
+                        endIndent: SizeConfig.blockSizeHorizontal * 60,
+                        color: Colors.black87,
+                        height: SizeConfig.blockSizeVertical)
+                  ]))),
         Container(
             padding: EdgeInsets.only(
                 top: SizeConfig.blockSizeVertical * 1,
-                left: SizeConfig.blockSizeHorizontal * 2),
+                left: SizeConfig.blockSizeHorizontal * 2,
+            bottom: SizeConfig.blockSizeVertical*7),
             child: GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -51,13 +53,20 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (BuildContext context) =>  NewFeedBack()));
                 },
-                child: Text(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[Text(
                   "Feedbacks",
                   style: TextStyle(
-                    decoration: TextDecoration.underline,
                     fontSize: Constants.homePageHeadingsFontSize,
                   ),
-                )))
+                ),
+                  Divider(
+                      endIndent: SizeConfig.blockSizeHorizontal * 60,
+                      color: Colors.black87,
+                      height: SizeConfig.blockSizeVertical)
+                ])
+            ))
       ],
     );
   }
