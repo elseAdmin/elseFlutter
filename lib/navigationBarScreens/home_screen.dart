@@ -1,6 +1,7 @@
 import 'package:else_app_two/home/deals/deal_horizontal_list.dart';
 import 'package:else_app_two/feedback/FeedbackPage.dart';
 import 'package:else_app_two/home/events/event_horizontal_list.dart';
+import 'package:else_app_two/profileTab/myEvents/my_events.dart';
 import 'package:else_app_two/requests/request_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
@@ -51,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) =>  FeedbacksPage()));
+                          builder: (BuildContext context) =>  MyEvents()));
                 },
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

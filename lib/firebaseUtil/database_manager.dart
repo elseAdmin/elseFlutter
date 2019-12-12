@@ -7,7 +7,7 @@ import 'package:else_app_two/models/events_model.dart';
 import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/models/firestore/loc_submission_model.dart';
 import 'package:else_app_two/models/firestore/offline_submission_model.dart';
-import 'package:else_app_two/models/firestore/submission_firestore_model.dart';
+import 'package:else_app_two/models/firestore/online_submission_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -46,7 +46,7 @@ class DatabaseManager {
     });
   }
 
-  getUserParticipationForOfflineEvent(EventModel event) async{
+  getUserParticipationForOfflineEvent(EventModel event) async {
     OfflineEventSubmissionModel model;
     await store
         .collection(StartupData.dbreference)
@@ -72,15 +72,15 @@ class DatabaseManager {
       int time = visit.data['timestamp'];
       DateTime date = DateTime.fromMillisecondsSinceEpoch(time);
       String day = date.day.toString();
-      if(day.length==1){
-        day = "0"+day;
+      if (day.length == 1) {
+        day = "0" + day;
       }
       String month = date.month.toString();
-      if(month.length==1){
-        month = "0"+month;
+      if (month.length == 1) {
+        month = "0" + month;
       }
       String year = date.year.toString();
-      String key = day+month+year;// 8th dec 2019 = 8122019
+      String key = day + month + year; // 8th dec 2019 = 08122019
       uniqueDates.add(key);
     }
     return uniqueDates;
@@ -100,18 +100,16 @@ class DatabaseManager {
             isGreaterThanOrEqualTo: event.startDate.millisecondsSinceEpoch)
         .where('timestamp',
             isLessThanOrEqualTo: event.endDate.millisecondsSinceEpoch)
-    .orderBy('timestamp')
+        .orderBy('timestamp')
         .getDocuments()
         .then((docs) {
       visits = docs.documents;
-    }).catchError((error){
+    }).catchError((error) {
       logger.e(error);
     });
     return visits;
-   }
-//
+  }
 
-//
   getUserParticipationForLocationEvent(EventModel event) async {
     LocationEventSubmissionModel model;
     await store
@@ -130,7 +128,6 @@ class DatabaseManager {
     });
     return model;
   }
-
 
   markUserVisitForBeacon(String major, String minor) async {
     await store
@@ -219,7 +216,7 @@ class DatabaseManager {
   }
 
   Future getUserSubmissionForOnlineEvent(EventModel event) async {
-    FirestoreSubmissionModel submission;
+    OnlineEventSubmissionModel submission;
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -230,14 +227,14 @@ class DatabaseManager {
         .get()
         .then((DocumentSnapshot snapshot) {
       //what if snapshot is null ?
-      submission = FirestoreSubmissionModel(snapshot);
+      submission = OnlineEventSubmissionModel(snapshot);
     }).catchError((error) {
       logger.i("No submissions by user for this event");
     });
     return submission;
   }
 
-  markUserParticipationForOfflineEvent(EventModel event) async{
+  markUserParticipationForOfflineEvent(EventModel event) async {
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -247,16 +244,18 @@ class DatabaseManager {
         .document(StartupData.userid)
         .setData({
       "participatedAt": DateTime.now().millisecondsSinceEpoch,
-      "participationId": "123", //generate unique id
+      "participationId": "123",
+      "type": "offline" //generate unique id
     });
 
-    String submissionPath=store
+    String submissionPath = store
         .collection(StartupData.dbreference)
         .document("events")
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid).path;
+        .document(StartupData.userid)
+        .path;
 
     await store
         .collection(StartupData.userReference)
@@ -267,7 +266,6 @@ class DatabaseManager {
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
     });
-
     return;
   }
 
@@ -302,8 +300,10 @@ class DatabaseManager {
       "userUid": userId,
       "status": Constants.pendingStatusMessage,
       "imageUrl": url,
-      "uploaded_at": new DateTime.now(),
-      "likes": 0
+      "uploaded_at": DateTime.now(),
+      "likes": 0,
+      "type": "online",
+      "participatedAt":DateTime.now().millisecondsSinceEpoch
     });
 
     //upload submission and event details to user data.
@@ -330,7 +330,6 @@ class DatabaseManager {
     return "Submission upload sucess";
   }
 
-
   Future markUserParticipationForLocationEvent(EventModel event) async {
     await store
         .collection(StartupData.dbreference)
@@ -343,15 +342,17 @@ class DatabaseManager {
       "participatedAt": DateTime.now().millisecondsSinceEpoch,
       "date": DateTime.now(),
       "status": "incomplete",
+      "type": "location"
     });
 
-    String submissionPath =store
+    String submissionPath = store
         .collection(StartupData.dbreference)
         .document("events")
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid).path;
+        .document(StartupData.userid)
+        .path;
 
     await store
         .collection(StartupData.userReference)
@@ -366,12 +367,12 @@ class DatabaseManager {
     return;
   }
 
-  Future getAllEventsForUser(String userId) async {
+  Future getAllEventsForUser() async {
     List<Map<String, String>> allEventAndSubmissionUrls = List();
 
     await store
         .collection(StartupData.userReference)
-        .document(userId)
+        .document(StartupData.userid)
         .collection("events")
         .getDocuments()
         .then((snapshot) {
@@ -392,6 +393,7 @@ class DatabaseManager {
       Map event = allEventAndSubmissionUrls[i];
       String eUrl = event["eventUrl"];
       String sUrl = event["submissionUrl"];
+      logger.i("start "+DateTime.now().millisecondsSinceEpoch.toString());
       await FirebaseDatabase.instance
           .reference()
           .child(eUrl)
@@ -399,15 +401,31 @@ class DatabaseManager {
           .then((receivedEvents) {
         EventModel event = EventModel(receivedEvents);
         returnData.putIfAbsent("eventDetails", () => event);
+      }).catchError((error) {
+        logger.e(error);
       });
 
       await store.document(sUrl).get().then((snap) {
-        FirestoreSubmissionModel submission = FirestoreSubmissionModel(snap);
-        returnData.putIfAbsent("submissionDetails", () => submission);
+        if (snap.data['type'] == 'online') {
+          OnlineEventSubmissionModel submission =
+              OnlineEventSubmissionModel(snap);
+          returnData.putIfAbsent("submissionDetails", () => submission);
+        }
+        if (snap.data['type'] == 'offline') {
+          OfflineEventSubmissionModel submission =
+              OfflineEventSubmissionModel(snap);
+          returnData.putIfAbsent("submissionDetails", () => submission);
+        }
+        if (snap.data['type'] == 'location') {
+          LocationEventSubmissionModel submission =
+              LocationEventSubmissionModel(snap);
+          returnData.putIfAbsent("submissionDetails", () => submission);
+        }
       });
 
       listParticipatedEvents.add(returnData);
     }
+    logger.i("end "+DateTime.now().millisecondsSinceEpoch.toString());
     return listParticipatedEvents;
   }
 

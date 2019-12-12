@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:else_app_two/models/base_model.dart';
 
-class OfflineEventSubmissionModel {
+class OfflineEventSubmissionModel extends BaseModel{
   String participationId;
-  int timestamp;
+  DateTime participatedAt;
   OfflineEventSubmissionModel(DocumentSnapshot snapshot) {
     if (snapshot != null) {
       this.participationId = snapshot.data['participationId'];
-      this.timestamp = snapshot.data['participatedAt'];
+      this.participatedAt = DateTime.fromMillisecondsSinceEpoch(snapshot.data['participatedAt']);
     }
   }
 }

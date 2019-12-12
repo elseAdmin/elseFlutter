@@ -50,7 +50,7 @@ class SubmissionViewState extends State<SubmissionView>{
             size: 60.0,
             color: Colors.blue),
       );
-    }else if(submissionDetails.timestamp == null){
+    }else if(submissionDetails.participatedAt == null){
       //user never participated
       return NotParticipatedView(widget.event,onUserParticipated);
     }else{
