@@ -1,7 +1,6 @@
 import 'package:else_app_two/feedback/myfeedback_screen.dart';
+import 'package:else_app_two/profileTab/myEvents/my_events.dart';
 import 'package:flutter/material.dart';
-
-import 'help_section.dart';
 
 class ProfileMySectionScreenRoute {
 
@@ -10,7 +9,7 @@ class ProfileMySectionScreenRoute {
       case 0 :
         return Navigator.push(context,
           MaterialPageRoute(
-            builder: (context) => HelpSection(index:index),
+            builder: (context) => MyEvents(),
           ),
         );
         break;

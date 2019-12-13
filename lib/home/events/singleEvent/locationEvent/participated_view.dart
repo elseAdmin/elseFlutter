@@ -34,7 +34,7 @@ class ParticipatedViewState extends State<ParticipatedView> {
     // TODO: implement build
     return Container(
         child: Stepper(
-          key: Key(Random.secure().nextDouble().toString()),
+      key: Key(Random.secure().nextDouble().toString()),
       steps: getSteps(),
       currentStep: _index,
       onStepTapped: (index) {
@@ -64,31 +64,31 @@ class ParticipatedViewState extends State<ParticipatedView> {
 
     List<Step> stepList = List();
     for (int i = 0; i < widget.event.observedDays; i++) {
-      if (visitDates != null){
-        filterVisitAfterSubmission();
-      if (i < visitDates.length) {
-        //has user completed the event?
-        if (visitDates.length == widget.event.observedDays) {
-          //user has completed the event
-          DatabaseManager().markLocationEventCompleted(widget.event);
+      if (visitDates != null) {
+        filterVisitsAfterSubmissionDate();
+        if (i < visitDates.length) {
+          //has user completed the event?
+          if (visitDates.length == widget.event.observedDays) {
+            //user has completed the event
+            DatabaseManager().markLocationEventCompleted(widget.event);
+          }
+          //visited steps
+          var stateCheck = StepState.complete;
+          Step step = new Step(
+              title: Text(titles[i]),
+              state: stateCheck,
+              content: Text("You were here on " + getDateFromString(i)));
+          stepList.add(step);
+        } else {
+          //not visited
+          var stateCheck = StepState.indexed;
+          Step step = new Step(
+              title: Text(titles[i]),
+              state: stateCheck,
+              content: Text("We are yet to mark your visit"));
+          stepList.add(step);
         }
-        //visited steps
-        var stateCheck = StepState.complete;
-        Step step = new Step(
-            title: Text(titles[i]),
-            state: stateCheck,
-            content: Text("You were here on " + getDateFromString(i)));
-        stepList.add(step);
-      }else{
-        //not visited
-        var stateCheck = StepState.indexed;
-        Step step = new Step(
-            title: Text(titles[i]),
-            state: stateCheck,
-            content: Text("We are yet to mark your visit"));
-        stepList.add(step);
-      }
-    }else {
+      } else {
         //not visited
         var stateCheck = StepState.indexed;
         Step step = new Step(
@@ -100,36 +100,41 @@ class ParticipatedViewState extends State<ParticipatedView> {
     }
     return stepList;
   }
-  filterVisitAfterSubmission(){
-    for(int i=0;i<visitDates.length;i++){
-      DateTime submissionDateTime  = DateTime.fromMillisecondsSinceEpoch(widget.submissionDetails.timestamp);
+
+  filterVisitsAfterSubmissionDate() {
+    for (int i = 0; i < visitDates.length; i++) {
+      DateTime submissionDateTime = widget.submissionDetails.participatedAt;
       int visitMonth = int.parse(getMonthInt(visitDates[i]));
       int visitDay = int.parse(getDayInt(visitDates[i]));
 
-      if(visitMonth<submissionDateTime.month){
+      if (visitMonth < submissionDateTime.month) {
         //visit not counted
         visitDates.remove(visitDates[i]);
-      }else if(visitMonth==submissionDateTime.month){
-        if(visitDay<=submissionDateTime.day){
+      } else if (visitMonth == submissionDateTime.month) {
+        if (visitDay <= submissionDateTime.day) {
           visitDates.remove(visitDates[i]);
         }
       }
     }
   }
-  getMonthInt(String date){
+
+  getMonthInt(String date) {
     return date[2] + date[3];
   }
-  getDayInt(String date){
+
+  getDayInt(String date) {
     return date[0] + date[1];
   }
-  getYearInt(String date){
+
+  getYearInt(String date) {
     return date[4] + date[5] + date[6] + date[7];
   }
+
   getDateFromString(int i) {
     String date, monthName, year;
     date = getDayInt(visitDates[i]);
     String mon = getMonthInt(visitDates[i]);
-    monthName = HelperMethods().getLiteralMonthForIntMonth(mon);
+    monthName = HelperMethods().getMonthNameForMonth(mon);
     year = getYearInt(visitDates[i]);
 
     return date + " " + monthName + " " + year;

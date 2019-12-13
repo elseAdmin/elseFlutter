@@ -20,7 +20,7 @@ class DealsDetails extends StatelessWidget{
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
-              expandedHeight: SizeConfig.blockSizeVertical * 20,
+              expandedHeight: SizeConfig.blockSizeVertical * 25,
               floating: false,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
@@ -70,76 +70,76 @@ class DealsDetails extends StatelessWidget{
                     ),
                   ),
                   paddingData(),
-//                  Card(
-//                    child: ListTile(
-//                      title: Text('Details',
-//                          style: TextStyle(
-//                              fontSize: 18,
-//                              color: Constants.textColor,
-//                              fontWeight: FontWeight.w700
-//                          )),
-//                      subtitle: Column(
-//                        crossAxisAlignment: CrossAxisAlignment.start,
-//                        children: <Widget>[
-//                          paddingData(),
-//                          Text(
-//                              '• ${deals.details}',
-//                              style: TextStyle(
-//                                  fontSize: 15,
-//                                  color: Constants.textColor,
-//                                  fontWeight: FontWeight.w300
-//                              )
-//                          ),
-//                          paddingData(),
-//                          Text(
-//                              '• ${deals.details}',
-//                              style: TextStyle(
-//                                  fontSize: 15,
-//                                  color: Constants.textColor,
-//                                  fontWeight: FontWeight.w300
-//                              )
-//                          ),
-//                          paddingData(),
-//                          Text(
-//                              '• ${deals.details}',
-//                              style: TextStyle(
-//                                  fontSize: 15,
-//                                  color: Constants.textColor,
-//                                  fontWeight: FontWeight.w300
-//                              )
-//                          ),
-//                          paddingData(),
-//                          Text(
-//                              '• ${deals.details}',
-//                              style: TextStyle(
-//                                  fontSize: 15,
-//                                  color: Constants.textColor,
-//                                  fontWeight: FontWeight.w300
-//                              )
-//                          ),
-//                          paddingData(),
-//                          Text(
-//                              '• ${deals.details}',
-//                              style: TextStyle(
-//                                  fontSize: 15,
-//                                  color: Constants.textColor,
-//                                  fontWeight: FontWeight.w300
-//                              )
-//                          ),
-//                          paddingData(),
-//                          Text(
-//                              '• ${deals.details}',
-//                              style: TextStyle(
-//                                  fontSize: 15,
-//                                  color: Constants.textColor,
-//                                  fontWeight: FontWeight.w300
-//                              )
-//                          ),
-//                          paddingData(),
-//                        ],
-//                      ),
-//                    ),
-//                  ),
+                  Card(
+                    child: ListTile(
+                      title: Text('Details',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Constants.textColor,
+                              fontWeight: FontWeight.w700
+                          )),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          paddingData(),
+                          Text(
+                              '• ${deals.details}',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Constants.textColor,
+                                  fontWeight: FontWeight.w300
+                              )
+                          ),
+                          paddingData(),
+                          Text(
+                              '• ${deals.details}',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Constants.textColor,
+                                  fontWeight: FontWeight.w300
+                              )
+                          ),
+                          paddingData(),
+                          Text(
+                              '• ${deals.details}',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Constants.textColor,
+                                  fontWeight: FontWeight.w300
+                              )
+                          ),
+                          paddingData(),
+                          Text(
+                              '• ${deals.details}',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Constants.textColor,
+                                  fontWeight: FontWeight.w300
+                              )
+                          ),
+                          paddingData(),
+                          Text(
+                              '• ${deals.details}',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Constants.textColor,
+                                  fontWeight: FontWeight.w300
+                              )
+                          ),
+                          paddingData(),
+                          Text(
+                              '• ${deals.details}',
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Constants.textColor,
+                                  fontWeight: FontWeight.w300
+                              )
+                          ),
+                          paddingData(),
+                        ],
+                      ),
+                    ),
+                  ),
                   paddingData(),
                   Card(
                     child: ListTile(

@@ -1,5 +1,5 @@
 class HelperMethods {
-  getLiteralMonthForIntMonth(String mon) {
+  getMonthNameForMonth(String mon) {
       if (int.parse(mon) == 1) {
         return "Jan";
       }
