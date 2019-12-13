@@ -1,5 +1,6 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/home/deals/deal_list_page.dart';
+import 'package:else_app_two/home/deals/deals_details.dart';
 import 'package:else_app_two/models/deals_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
@@ -74,29 +75,38 @@ class _DealSectionState extends State<DealSection> {
             padding: EdgeInsets.only(
                 left: SizeConfig.blockSizeHorizontal * 1,
                 right: SizeConfig.blockSizeHorizontal * 1),
-            height: MediaQuery.of(context).size.height * 0.30,
+            height: MediaQuery.of(context).size.height * 0.20,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: deals.length,
                 itemBuilder: (context, index) {
                   return Container(
-                      width: MediaQuery.of(context).size.width * 0.65,
+                      width: MediaQuery.of(context).size.width * 0.45,
                       child: Card(
-                        child: Stack(
-                          fit: StackFit.passthrough,
-                          children: <Widget>[
-                            Opacity(
-                                opacity: 0.8,child:CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              imageUrl: deals[index].blurUrl,
-                            )),
-                            Align(
-                                alignment: Alignment.center,
-                                child: Text(deals[index].name,
-                                    style: TextStyle(color: Colors.black,
-                                        fontWeight: FontWeight.w800,
-                                        fontSize: 30))),
-                          ],
+                        child: GestureDetector(
+                          onTap:  () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        DealsDetails(deals[index], deals[index].tnc.toList())));
+                          },
+                          child: Column(
+                            children: <Widget>[
+                              Card(
+//                                opacity: 0.8,
+                                  child:CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    imageUrl: deals[index].blurUrl,
+                                    height: MediaQuery.of(context).size.height * 0.15,
+                                  )),
+                              Text(deals[index].name,
+                                  style: TextStyle(color: Colors.black,
+                                      fontWeight: FontWeight.w800,
+                                      backgroundColor: Colors.white,
+                                      fontSize: 12)),
+                            ],
+                          ),
                         ),
                       ));
                 }))
