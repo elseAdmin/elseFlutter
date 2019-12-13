@@ -44,9 +44,9 @@ class _RequestCard extends State<RequestCard>{
     Navigator.pop(context);
   }
 
-  void _addRequest(BuildContext context, String name, String phone, String message){
+  void _addRequest(BuildContext context, String name, String phone, String message) async{
     Request request = new Request(phone, name, message, _userIdController.text);
-    Future requestFuture = requestCrudModel.addRequest(request);
+    var requestFuture = await requestCrudModel.addRequest(request);
     if(requestFuture !=null){
       print('Request added successfully ' + requestFuture.toString());
       showModalBottomSheet(context: context, builder: (context){

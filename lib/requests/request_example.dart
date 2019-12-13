@@ -47,13 +47,11 @@ class _RequestExample extends State<RequestExample>{
 //            itemExtent: 50.0,
             itemCount: _list.length,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(
-                    '${_list[index]}',
+              return Text(
+                  '•  ${_list[index]}',
                   style: TextStyle(
                     color: Constants.test,
                   )
-                ),
               );
             },
           ),

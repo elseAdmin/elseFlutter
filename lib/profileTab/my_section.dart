@@ -1,3 +1,4 @@
+import 'package:else_app_two/profileTab/profile_my_section_route.dart';
 import 'package:flutter/material.dart';
 
 class MySection extends StatelessWidget{
@@ -7,6 +8,7 @@ class MySection extends StatelessWidget{
 
   final List<String> listData = <String>['My Events', 'My Feedback'];
   final listIcons = <IconData>[Icons.event, Icons.feedback];
+  final ProfileMySectionScreenRoute handler = new ProfileMySectionScreenRoute();
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,9 @@ class MySection extends StatelessWidget{
             return ListTile(
               title: Text('${listData[index]}'),
               leading: Icon(listIcons[index]),
+              onTap: () {
+                handler.routeToProfileOptions(context, index);
+              },
             );
           },
         ),
