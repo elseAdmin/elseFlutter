@@ -9,7 +9,8 @@ class DealModel extends BaseModel{
   String url;
   String blurUrl;
   String name;
-  String details;
+  String shortDetails;
+  List details;
   String status;
   String uid;
   String couponCode;
@@ -17,6 +18,7 @@ class DealModel extends BaseModel{
   DealModel(DataSnapshot snapshot){
     this.tnc = snapshot.value['tnc'];
     this.validity = snapshot.value['validity'];
+    this.shortDetails = snapshot.value['shortDetails'];
     this.details = snapshot.value['details'];
     this.id = snapshot.key;
     this.url = snapshot.value['url'];

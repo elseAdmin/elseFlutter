@@ -4,12 +4,19 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class DealsDetails extends StatelessWidget{
+class DealsDetails extends StatefulWidget {
   final DealModel deals;
   final List tnc;
-  bool buttonPressed = false;
+  final List details;
 
-  DealsDetails(this.deals, this.tnc);
+  DealsDetails(this.deals, this.tnc, this.details);
+
+  @override
+  _DealsDetails createState() => _DealsDetails();
+}
+
+class _DealsDetails extends State<DealsDetails>{
+  bool _buttonPressed=false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class DealsDetails extends StatelessWidget{
                   background: CachedNetworkImage(
                     fit: BoxFit.cover,
                     placeholder: (context, url) => CircularProgressIndicator(),
-                    imageUrl: deals.url,
+                    imageUrl: widget.deals.url,
                   )),
             ),
             SliverList(
@@ -37,7 +44,7 @@ class DealsDetails extends StatelessWidget{
                   paddingData(),
                   Card(
                     child: ListTile(
-                      title: Text('${deals.name}',
+                      title: Text('${widget.deals.name}',
                           style: TextStyle(
                               fontSize: 20,
                               color: Constants.textColor,
@@ -49,86 +56,7 @@ class DealsDetails extends StatelessWidget{
                           paddingData(),
                           paddingData(),
                           Text(
-                              '${deals.details}',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w300
-                              )
-                          ),
-                          paddingData(),
-                          Text(
-                              'Free',
-                              style: TextStyle(
-                                  fontSize: 24,
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w500
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  paddingData(),
-                  Card(
-                    child: ListTile(
-                      title: Text('Details',
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: Constants.textColor,
-                              fontWeight: FontWeight.w700
-                          )),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          paddingData(),
-                          Text(
-                              '• ${deals.details}',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w300
-                              )
-                          ),
-                          paddingData(),
-                          Text(
-                              '• ${deals.details}',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w300
-                              )
-                          ),
-                          paddingData(),
-                          Text(
-                              '• ${deals.details}',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w300
-                              )
-                          ),
-                          paddingData(),
-                          Text(
-                              '• ${deals.details}',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w300
-                              )
-                          ),
-                          paddingData(),
-                          Text(
-                              '• ${deals.details}',
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Constants.textColor,
-                                  fontWeight: FontWeight.w300
-                              )
-                          ),
-                          paddingData(),
-                          Text(
-                              '• ${deals.details}',
+                              '${widget.deals.details}',
                               style: TextStyle(
                                   fontSize: 15,
                                   color: Constants.textColor,
@@ -151,11 +79,35 @@ class DealsDetails extends StatelessWidget{
                           )),
                       subtitle: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: deals.tnc.length,
+                        itemCount: widget.deals.details.length,
                         padding: EdgeInsets.all(8.0),
                         itemBuilder: (BuildContext context, int index) {
                           return Text(
-                              '• ${tnc[index]}',
+                              '• ${widget.details[index]}',
+                              style: TextStyle(
+                                color: Constants.test,
+                              )
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  paddingData(),
+                  Card(
+                    child: ListTile(
+                      title: Text('Points to Note',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Constants.textColor,
+                              fontWeight: FontWeight.w600
+                          )),
+                      subtitle: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: widget.deals.tnc.length,
+                        padding: EdgeInsets.all(8.0),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '• ${widget.tnc[index]}',
                               style: TextStyle(
                                 color: Constants.test,
                               )
@@ -169,36 +121,41 @@ class DealsDetails extends StatelessWidget{
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
-                    child: FlatButton(
-                      color: Colors.white,
-                      onPressed: () {
-
-                      },
-                      child:ListTile(
-                        contentPadding: const EdgeInsets.only(left: 10, right: 10,top: 10,bottom: 10),
-                        title: FlatButton(
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.only(
+                          left: 10, right: 10, top: 10, bottom: 10),
+                      title: Visibility(
+                        child: FlatButton(
                           color: Colors.white,
-                          onPressed: (){},
-                          child: const Text(
-                            'SHOW COUPON CODE',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
-                        subtitle: Visibility(
+                          onPressed: () {
+                            setState(() {
+                              _buttonPressed = !_buttonPressed;
+                            });
+                          },
                           child: Text(
-                            'ELSE',
-                            textAlign: TextAlign.center,
+                            'Show Coupon Code',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold
                             ),
                           ),
-                          maintainSize: true,
-                          maintainAnimation: true,
-                          maintainState: true,
-                          visible: buttonPressed,
                         ),
+                        maintainSize: !_buttonPressed,
+                        maintainAnimation: !_buttonPressed,
+                        maintainState: !_buttonPressed,
+                        visible: !_buttonPressed,
+                      ),
+                      subtitle: Visibility(
+                        child: Text(
+                          'Coupon Code : ${widget.deals.couponCode}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        maintainSize: _buttonPressed,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        visible: _buttonPressed,
                       ),
                     ),
                   )
@@ -213,8 +170,7 @@ class DealsDetails extends StatelessWidget{
 
   Widget paddingData(){
     return Padding(
-      padding: const EdgeInsets.only(bottom: 5.0),
+      padding: const EdgeInsets.only(bottom: 10.0),
     );
   }
-
 }

@@ -76,10 +76,8 @@ class FeedBackPreview{
         child: ListTile(
           contentPadding: EdgeInsets.only(left: 8.0, top: 0.0, right: 8.0, bottom: 8.0),
           title: Container(
-//            height:60.0,
             child: GridView.builder(
               shrinkWrap: true,
-//              scrollDirection: Axis.horizontal,
               itemCount: feedBack.imageUrls.length,
               gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3),
@@ -119,8 +117,6 @@ class FeedBackPreview{
                   richTextData("Intensity", feedBack.feedbackIntensity.toString()),
                 ],
               ),
-//              Text("Type: ${getFeedBackType(feedBack.typeOfFeedBack)}"),
-//              Text("Intensity: ${feedBack.feedbackIntensity}"),
             ],
           ),
         ),

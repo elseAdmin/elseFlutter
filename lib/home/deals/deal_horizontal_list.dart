@@ -89,7 +89,7 @@ class _DealSectionState extends State<DealSection> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        DealsDetails(deals[index], deals[index].tnc.toList())));
+                                        DealsDetails(deals[index], deals[index].tnc.toList(), deals[index].details.toList())));
                           },
                           child: Column(
                             children: <Widget>[
@@ -100,7 +100,7 @@ class _DealSectionState extends State<DealSection> {
                                     imageUrl: deals[index].blurUrl,
                                     height: MediaQuery.of(context).size.height * 0.15,
                                   )),
-                              Text(deals[index].name,
+                              Text(deals[index].shortDetails,
                                   style: TextStyle(color: Colors.black,
                                       fontWeight: FontWeight.w800,
                                       backgroundColor: Colors.white,
