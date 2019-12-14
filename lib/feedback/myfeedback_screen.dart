@@ -1,14 +1,17 @@
+import 'dart:collection';
+
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/feedback/feedback_preview.dart';
 import 'package:else_app_two/feedback/new_feedback.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
+import 'package:else_app_two/models/feedback_crud_model.dart';
+import 'package:else_app_two/models/feedback_model.dart';
 import 'package:else_app_two/models/user_feedback_crud_model.dart';
 import 'package:else_app_two/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'FeedbackStatus.dart';
 
 
 class MyFeedbackPage extends StatefulWidget {
@@ -20,6 +23,8 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
 
   UserFeedBackCrudModel userFeedBackCrudModel;
   List<UserFeedBack> _userFeedbackList = [];
+  Map<String, FeedBackPreview> _feedBackPreviewMap = new HashMap();
+  FeedbackCrudModel feedbackCrudModel;
 
   @override
   void didChangeDependencies() async{
@@ -30,22 +35,30 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
     userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
     List<UserFeedBack> userFeedBackList = await userFeedBackCrudModel.fetchUserFeedBackList();
     if(userFeedBackList.isNotEmpty){
-      setState(() {
-        _userFeedbackList = userFeedBackList;
-      });
+      for(UserFeedBack userFeedBack in userFeedBackList){
+        String path = userFeedBack.universe + '/feedback/allfeedbacks';
+        feedbackCrudModel = new FeedbackCrudModel(new Api(path));
+        FeedBack feedBack = await feedbackCrudModel.getFeedBackById(userFeedBack.feedbackId);
+        if(feedBack != null){
+          FeedBackPreview feedBackPreview = new FeedBackPreview
+            (userFeedBack.feedbackId, userFeedBack.universe, feedBack, false);
+          setState(() {
+            _userFeedbackList = userFeedBackList;
+            _feedBackPreviewMap[userFeedBack.feedbackId] = feedBackPreview;
+          });
+        }
+      }
       print(userFeedBackList.toString());
     }
   }
 
-  String getStatusString(int status){
-    switch(Status.values[status]){
-      case Status.IN_PROCESS : return 'INPROCESS';
-      case Status.PENDING : return 'PENDING';
-      case Status.INVALID : return 'INVALID';
-      case Status.VALID : return 'VALID';
-      case Status.COMPLETED : return 'COMPLETED';
-    }
-    return '';
+  _onExpansion(int index, bool isExpanded){
+//    print("Index::: "+index.toString());
+    FeedBackPreview feedBackPreview = _feedBackPreviewMap[_userFeedbackList[index].feedbackId];
+    feedBackPreview.expanded = !feedBackPreview.expanded;
+    setState(() {
+      _feedBackPreviewMap[_userFeedbackList[index].feedbackId] = feedBackPreview;
+    });
   }
 
   @override
@@ -75,69 +88,32 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
       ),
       body: Card(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text("All FeedBacks"),
-              paddingData(),
-              Container(
-                height: MediaQuery.of(context).size.height * 7 / 8,
-                decoration: BoxDecoration(
-                  color: Constants.mainBackgroundColor,
-                  border: Border.all(
-                    color: Colors.white70,
-                    width: 1.0,
+          child: Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                    "All feedback threads",
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 0.0, top: 18.0, right: 0.0, bottom: 0.0),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 1,
+                    itemBuilder: (BuildContext context, int index){
+                      List<ExpansionPanel> myExpansionPanelList = [];
+                      for(int i=0; i<_feedBackPreviewMap.length; ++i ){
+                        myExpansionPanelList.add(_feedBackPreviewMap[_userFeedbackList[i].feedbackId].buildExpansionPanel());
+                      }
+                      return new ExpansionPanelList(
+                        children: myExpansionPanelList,
+                        expansionCallback: _onExpansion,
+                      );
+                    },
                   ),
                 ),
-                child: ListView.separated(
-                  itemCount: _userFeedbackList.length,
-                  separatorBuilder: (context, index) => Divider(
-                    color: Constants.mainBackgroundColor,
-                  ),
-                  itemBuilder: (BuildContext context, int index){
-                    return Column(
-                      children: <Widget>[
-                        Card(
-                          child: ListTile(
-                            title: Text(
-                              '${_userFeedbackList[index].subject}',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            contentPadding: EdgeInsets.all(15.0),
-                            isThreeLine: true,
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(left: 0.0, top: 8.0, right: 0.0, bottom: 0.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text('FeedBack ID : ${_userFeedbackList[index].feedbackId}'),
-                                  Text('Status : ${getStatusString(_userFeedbackList[index].feedbackStatus)}'),
-                                  Text('Date: ${_userFeedbackList[index].updatedDate}'),
-                                  Text('Place : ${_userFeedbackList[index].universe}'),
-                                ],
-                              ),
-                            ),
-                            trailing: Icon(Icons.arrow_right),
-                            onTap: () {
-                              Navigator.push(context,
-                                MaterialPageRoute(
-                                  builder: (context) => FeedBackPreview(
-                                      _userFeedbackList[index].feedbackId,
-                                      _userFeedbackList[index].universe),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

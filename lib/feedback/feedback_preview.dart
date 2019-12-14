@@ -4,44 +4,37 @@ import 'package:else_app_two/models/feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
-class FeedBackPreview extends StatefulWidget{
+import 'FeedbackStatus.dart';
 
-  String feedbackId;
-  String universe;
-  FeedBackPreview(this.feedbackId, this.universe);
+class FeedBackPreview{
 
-  @override
-  _FeedBackPreview createState() => _FeedBackPreview();
-}
+  final String feedbackId;
+  final String universe;
+  final FeedBack feedBack;
+  bool _expanded;
+  FeedBackPreview(this.feedbackId, this.universe, this.feedBack, this._expanded);
 
-class _FeedBackPreview extends State<FeedBackPreview>{
-  double value = 0.0;
-  FeedbackCrudModel feedbackCrudModel;
-  int _index = 0;
-  FeedBack _feedBack;
-  List imageUrls = [];
+  bool get expanded => _expanded;
 
-  @override
-  void didChangeDependencies() async{
-    super.didChangeDependencies();
-    print('FeedbackId :: '+widget.feedbackId);
-    String path = widget.universe + '/feedback/allfeedbacks';
-    feedbackCrudModel = new FeedbackCrudModel(new Api(path));
-    FeedBack feedBack = await feedbackCrudModel.getFeedBackById(widget.feedbackId);
-    if(feedBack != null){
-      setState(() {
-        _feedBack = feedBack;
-        _index = _feedBack.feedbackStatus;
-        imageUrls = _feedBack.imageUrls;
-      });
-      print(feedBack.toString());
-    }
+  set expanded(bool value) {
+    _expanded = value;
   }
 
   String getFeedBackType(bool feedbackType){
     if(feedbackType)
       return "POSITIVE";
     return "NEGATIVE";
+  }
+
+  String getStatusString(int status){
+    switch(Status.values[status]){
+      case Status.IN_PROCESS : return 'INPROCESS';
+      case Status.PENDING : return 'PENDING';
+      case Status.INVALID : return 'INVALID';
+      case Status.VALID : return 'VALID';
+      case Status.COMPLETED : return 'COMPLETED';
+    }
+    return '';
   }
 
   bool getIsActive(int currentIndex, int index){
@@ -52,126 +45,112 @@ class _FeedBackPreview extends State<FeedBackPreview>{
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Constants.textColor),
-        backgroundColor: Constants.titleBarBackgroundColor,
-        title: Text(
-          "Feedbacks Details",
-          style: TextStyle(
-            color: Constants.titleBarTextColor,
-            fontSize: 18,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.9,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              color: Colors.white70,
-              width: 1.0,
+  buildExpansionPanel(){
+    return ExpansionPanel(
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return ListTile(
+          title: Text(
+            '${feedBack.subject}',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
+          contentPadding: EdgeInsets.all(15.0),
+          isThreeLine: true,
+          subtitle: Padding(
+            padding: const EdgeInsets.only(left: 0.0, top: 8.0, right: 0.0, bottom: 0.0),
             child: Column(
-//            crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  "${_feedBack.subject}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22.0,
-                  ),
-                ),
-                Stepper(
-                  steps: [
-                    Step(
-                      title: Text("Pending"),
-                      content: Text("FeedBack is just submitted and still not verified"),
-                      isActive: getIsActive(0, _index),
-                    ),
-                    Step(
-                      title: Text("Valid"),
-                      content: Text("FeedBack is verified. We'll start working on this"),
-                      isActive: getIsActive(1, _index),
-                    ),
-                    Step(
-                      title: Text("InValid"),
-                      content: Text("Invalid feedback found."),
-                      isActive: getIsActive(2, _index),
-                    ),
-                    Step(
-                      title: Text("InProgess"),
-                      content: Text("Started working on your feedback. You will observe the change soon"),
-                      isActive: getIsActive(3, _index),
-                    ),
-                    Step(
-                      title: Text("Completed"),
-                      content: Text("Thanks for your valuable feedback task is completed"),
-                      isActive: getIsActive(4, _index),
-                    ),
-                  ],
-                  currentStep: _index,
-                  onStepTapped: (index) {
-                    setState(() {
-                      _index = index;
-                    });
-                  },
-                  controlsBuilder: (BuildContext context,
-                      {VoidCallback onStepContinue, VoidCallback onStepCancel}) =>
-                      Container(),
-                ),
-                paddingData(),
-                Expanded(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height / 16,
-                    width: MediaQuery.of(context).size.width ,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: imageUrls.length,
-                        itemBuilder: (context, index){
-                          return Center(
-                            child: Card(
-                              child: Image(
-                                image: NetworkImage('${imageUrls[index]}'),
-                              ),
-                            ),
-                          );
-                        }
-                    ),
-                  ),
-                ),
-                paddingData(),
-                paddingData(),
-                paddingData(),
-                Text("FeedBack ID: ${_feedBack.id}"),
-                Text(_feedBack.content),
-                /*Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Type: ${getFeedBackType(_feedBack.typeOfFeedBack)}"),
-                  Text("Intensity: ${_feedBack.feedbackIntensity}"),
-                ],
-              ),
-              paddingData(),
-              Text('Created Date: ${_feedBack.createdDate}'),
-              Text('Updated Date: ${_feedBack.updatedDate}'),*/
+                richTextData('Status', getStatusString(feedBack.feedbackStatus)),
+                richTextData('Updated On', feedBack.updatedDate.toString()),
+                richTextData('Place', universe),
               ],
             ),
           ),
+        );
+      },
+      body: Card(
+        borderOnForeground: false,
+        child: ListTile(
+          contentPadding: EdgeInsets.only(left: 8.0, top: 0.0, right: 8.0, bottom: 8.0),
+          title: Container(
+//            height:60.0,
+            child: GridView.builder(
+              shrinkWrap: true,
+//              scrollDirection: Axis.horizontal,
+              itemCount: feedBack.imageUrls.length,
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3),
+              itemBuilder: (context, index){
+                return Center(
+                  child: Card(
+                    elevation: 10.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))
+                    ),
+                    child: Image(
+                      image: NetworkImage('${feedBack.imageUrls[index]}'),
+                      fit: BoxFit.cover,
+                      height: 200.0,
+                      width: 230.0,
+                    ),
+                  ),
+                );
+              }
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              paddingData(),
+              paddingData(),
+              paddingData(),
+              paddingData(),
+              Text(feedBack.content),
+              paddingData(),
+              paddingData(),
+              richTextData('FeedBack ID', feedBack.id),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  richTextData("Type", getFeedBackType(feedBack.typeOfFeedBack)),
+                  richTextData("Intensity", feedBack.feedbackIntensity.toString()),
+                ],
+              ),
+//              Text("Type: ${getFeedBackType(feedBack.typeOfFeedBack)}"),
+//              Text("Intensity: ${feedBack.feedbackIntensity}"),
+            ],
+          ),
         ),
       ),
+      isExpanded: _expanded,
     );
   }
 
   Widget paddingData(){
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0),
+      padding: const EdgeInsets.only(bottom: 5.0),
+    );
+  }
+
+  Widget richTextData(String heading, String data){
+    return RichText(
+      text: TextSpan(
+          text: '$heading : ',
+          style: TextStyle(
+              color: Constants.textColor,
+              fontWeight: FontWeight.w600),
+          children: <TextSpan>[
+            TextSpan(text: '$data',
+              style: TextStyle(
+                  color: Constants.textColor,
+                  fontWeight: FontWeight.w400
+              ),
+            ),
+          ]
+      ),
     );
   }
 }
