@@ -1,5 +1,6 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:else_app_two/utils/sql_lite.dart';
 
@@ -33,17 +34,17 @@ class BeaconServiceImpl {
     if (await wasBeaconSeenRecently(major, minor)) {
       //do not update this visit to firestore
     } else {
-      await db.markUserVisitForBeacon(major, minor);
+      await db.markUserVisitForBeacon(major, minor,"advertisement");
     }
   }
 
   postHandlingForParkingBeacons(String major, String minor) async {
-    //get if the proxi is on or off
-    //if proxi is off(no object detected by the proxi) then do nothing
-    //if proxi has detected an object check if there is already a user mapped
-    //if user is already mapped do nothing
-    //if user is not mapped check for timestamp when proxi went from off to on
-    //if timestamp is within 1-2 secs then stamp this user against the beacon
+    if(Constants.parkingEligibleUser){
+      //mark his visits against all parking beacons
+
+      //distance should also be uplaoded
+      db.markUserVisitForParkingBeacon(major, minor,"parking");
+    }
   }
 
   postHandlingForAdvtsmntBeacon(String major, String minor) async {

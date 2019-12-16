@@ -8,6 +8,7 @@ import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/models/firestore/loc_submission_model.dart';
 import 'package:else_app_two/models/firestore/offline_submission_model.dart';
 import 'package:else_app_two/models/firestore/online_submission_model.dart';
+import 'package:else_app_two/models/firestore/user_parking_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -129,16 +130,30 @@ class DatabaseManager {
     return model;
   }
 
-  markUserVisitForBeacon(String major, String minor) async {
+  markUserVisitForBeacon(String major, String minor, String beaconType) async {
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
-        .collection("advertisement")
+        .collection(beaconType)
         .document(major)
         .collection(minor)
         .document("user")
         .collection(StartupData.userid)
         .add({"timestamp": DateTime.now().millisecondsSinceEpoch});
+  }
+
+  markUserVisitForParkingBeacon(
+      String major, String minor, String beaconType) async {
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection(beaconType)
+        .document(major)
+        .collection(minor)
+        .add({
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "userUid": StartupData.userid
+    });
   }
 
   Future getAdMetaForBeacon(String major, String minor) async {
@@ -303,7 +318,7 @@ class DatabaseManager {
       "uploaded_at": DateTime.now(),
       "likes": 0,
       "type": "online",
-      "participatedAt":DateTime.now().millisecondsSinceEpoch
+      "participatedAt": DateTime.now().millisecondsSinceEpoch
     });
 
     //upload submission and event details to user data.
@@ -393,7 +408,7 @@ class DatabaseManager {
       Map event = allEventAndSubmissionUrls[i];
       String eUrl = event["eventUrl"];
       String sUrl = event["submissionUrl"];
-      logger.i("start "+DateTime.now().millisecondsSinceEpoch.toString());
+      logger.i("start " + DateTime.now().millisecondsSinceEpoch.toString());
       await FirebaseDatabase.instance
           .reference()
           .child(eUrl)
@@ -425,7 +440,7 @@ class DatabaseManager {
 
       listParticipatedEvents.add(returnData);
     }
-    logger.i("end "+DateTime.now().millisecondsSinceEpoch.toString());
+    logger.i("end " + DateTime.now().millisecondsSinceEpoch.toString());
     return listParticipatedEvents;
   }
 
@@ -447,5 +462,15 @@ class DatabaseManager {
 
   FirebaseStorage getStorageReference() {
     return storageRef;
+  }
+
+  getUserParkingReference() async {
+    ParkingModel parkingModel ;
+    await store.collection('users').document(StartupData.userid).collection('parking').where('status',isEqualTo: 'active').getDocuments().then((querySnapshot){
+      querySnapshot.documents.forEach((docSnap){
+        parkingModel =  ParkingModel(docSnap);
+      });
+    });
+    return parkingModel;
   }
 }
