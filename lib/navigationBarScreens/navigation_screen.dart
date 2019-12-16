@@ -1,14 +1,23 @@
+import 'package:else_app_two/navigationTab/category_screen.dart';
+import 'package:else_app_two/navigationTab/search_screen.dart';
 import 'package:flutter/material.dart';
 
-class NavigationScreen extends StatelessWidget{
+class NavigationScreen extends StatefulWidget{
+  @override
+  _NavigationScreen createState() => _NavigationScreen();
+}
+
+class _NavigationScreen extends State<NavigationScreen>{
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return ListView(
-      padding: const EdgeInsets.all(8),
-      children: <Widget>[
-        Text('navigation page')
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          SearchScreen(),
+          CategoryScreen(),
+        ],
+      ),
     );
   }
+
 }

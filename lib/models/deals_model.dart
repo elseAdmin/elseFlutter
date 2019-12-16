@@ -1,7 +1,7 @@
 import 'package:else_app_two/Models/base_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class DealModel extends BaseModel{
+class DealModel{
   List tnc;
   String validity;
 
