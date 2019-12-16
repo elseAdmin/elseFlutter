@@ -46,6 +46,7 @@ class MyEventState extends State<MyEvents> {
             ),
           ),
           body: Container(
+            color:Colors.white,
               child: CustomScrollView(
             slivers: <Widget>[
               SliverList(
@@ -64,7 +65,12 @@ class MyEventState extends State<MyEvents> {
                               style: TextStyle(fontSize: 15),
                             )
                           ],
-                        ))
+                        )),
+                    Divider(
+                        indent: SizeConfig.blockSizeHorizontal * 7,
+                        endIndent: SizeConfig.blockSizeHorizontal * 7,
+                        color: Colors.black87,
+                        height: SizeConfig.blockSizeVertical * 5)
                   ],
                 ),
               ),

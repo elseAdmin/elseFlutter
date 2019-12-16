@@ -20,18 +20,19 @@ class MyEventCard extends StatelessWidget {
     EventModel eventDetails = details['eventDetails'];
     String displayDate = getDisplayDateForParticipatedAt(eventDetails);
     return Container(
-        margin: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
+      color:Colors.grey[200],
         //color: Colors.cyan,
         child: Column(
           children: <Widget>[
         Container(
-        padding:EdgeInsets.only(left: SizeConfig.blockSizeHorizontal*2,right: SizeConfig.blockSizeHorizontal*5,bottom: SizeConfig.blockSizeHorizontal),
+
+        padding:EdgeInsets.only(top: SizeConfig.blockSizeVertical,left: SizeConfig.blockSizeHorizontal*2,right: SizeConfig.blockSizeHorizontal*5,bottom: SizeConfig.blockSizeHorizontal),
       child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[Text(eventDetails.name,style: TextStyle(fontSize: 19),)],
             )),
             Container(
-              padding:EdgeInsets.only(top:SizeConfig.blockSizeHorizontal*2,left: SizeConfig.blockSizeHorizontal*5,right: SizeConfig.blockSizeHorizontal*5,bottom: SizeConfig.blockSizeHorizontal),
+              padding:EdgeInsets.only(top:SizeConfig.blockSizeHorizontal*2,left: SizeConfig.blockSizeHorizontal*5,right: SizeConfig.blockSizeHorizontal*5),
                 child:Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[Text("Status",style: TextStyle(fontSize: 15),),
@@ -45,13 +46,17 @@ class MyEventCard extends StatelessWidget {
                Text(displayDate)],
             )),
             Container(
-                padding:EdgeInsets.only(top:SizeConfig.blockSizeHorizontal*2,left: SizeConfig.blockSizeHorizontal*5,right: SizeConfig.blockSizeHorizontal*2),
+                padding:EdgeInsets.only(bottom:SizeConfig.blockSizeHorizontal,top:SizeConfig.blockSizeHorizontal*2,left: SizeConfig.blockSizeHorizontal*5,right: SizeConfig.blockSizeHorizontal*2),
                 child:Row(
              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[GestureDetector(
                   onTap: () => _redirectToSingleEventPage(context,eventDetails),
-                  child:Text("more details"))],
-            ))
+                  child:Text("more details",style: TextStyle(fontWeight: FontWeight.bold),))],
+            )),
+            Container(
+                color: Colors.white,
+                height: SizeConfig.blockSizeVertical,
+            width:SizeConfig.blockSizeHorizontal*100)
           ],
         ));
   }
