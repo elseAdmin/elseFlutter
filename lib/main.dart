@@ -1,5 +1,6 @@
 import 'package:else_app_two/basicElements/AdScreen.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';

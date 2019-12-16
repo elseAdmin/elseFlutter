@@ -17,4 +17,5 @@ class Constants {
    static String pendingStatusMessage = "Your submssion is pending approval";
 
    static String universe = "Else";
+   static bool parkingEligibleUser = true;
 }
