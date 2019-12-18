@@ -17,5 +17,8 @@ class Constants {
    static String pendingStatusMessage = "Your submssion is pending approval";
 
    static String universe = "Else";
-   static bool parkingEligibleUser = true;
+
+   //below have to go into mysql
+   static bool parkingEligibleUser = false;
+   static bool hasScannedForParking = false;
 }
