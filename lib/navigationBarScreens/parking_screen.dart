@@ -1,8 +1,10 @@
-import 'dart:io';
-
-import 'package:else_app_two/basicElements/camera_impl.dart';
+import 'package:else_app_two/basicElements/qr_scanner.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/models/firestore/user_parking_model.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 
 class Parking extends StatefulWidget{
   @override
@@ -10,9 +12,33 @@ class Parking extends StatefulWidget{
 }
 
 class ParkingState  extends State<Parking> {
+  ParkingModel parking;
+  @override
+  void initState() {
+    // TODO: implement initState
+   DatabaseManager().getUserParkingModel().then((model){
+     setState(() {
+       parking = model;
+     });
+   });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return Text("parking");
+    if(parking == null) {
+      return Container(
+          padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
+          child: Center(
+            child: Loading(
+                indicator: BallPulseIndicator(),
+                size: 50.0,
+                color: Colors.blue),
+          ));
+    }else if(parking.sensorName==null){
+      return QrScanner();
+    }else{
+      return Text("your car is parked at "+parking.sensorName);
+    }
   }
 
 }

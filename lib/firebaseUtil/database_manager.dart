@@ -143,16 +143,19 @@ class DatabaseManager {
   }
 
   markUserVisitForParkingBeacon(
-      String major, String minor, String beaconType) async {
+      String major, String minor, String distance) async {
+    logger.i(distance);
+    logger.i(double.parse(distance));
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
-        .collection(beaconType)
+        .collection("parking")
         .document(major)
         .collection(minor)
         .add({
       "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "userUid": StartupData.userid
+      "userUid": StartupData.userid,
+      "distance": double.parse(distance)
     });
   }
 
@@ -464,13 +467,21 @@ class DatabaseManager {
     return storageRef;
   }
 
-  getUserParkingReference() async {
+  Future getUserParkingModel() async {
     ParkingModel parkingModel ;
     await store.collection('users').document(StartupData.userid).collection('parking').where('status',isEqualTo: 'active').getDocuments().then((querySnapshot){
       querySnapshot.documents.forEach((docSnap){
         parkingModel =  ParkingModel(docSnap);
       });
     });
+
+    if(parkingModel!=null){
+      Constants.parkingEligibleUser=false;
+    }
+    if(parkingModel==null)
+      parkingModel = ParkingModel(null);
     return parkingModel;
   }
+
+
 }

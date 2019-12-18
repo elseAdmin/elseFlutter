@@ -8,10 +8,14 @@ class ParkingModel{
   int minor;
   String sensorName;
   ParkingModel(DocumentSnapshot snapshot){
-    this.parkingInTime = DateTime.fromMillisecondsSinceEpoch(snapshot.data['parkingInTime']);
-    this.parkingOutTime = DateTime.fromMillisecondsSinceEpoch(snapshot.data['parkingOutTime']);
-    this.major = snapshot.data['major'];
-    this.minor = snapshot.data['minor'];
-    this.sensorName = snapshot.data['proxiName'];
+    if(snapshot!=null) {
+      this.parkingInTime =
+          DateTime.fromMillisecondsSinceEpoch(snapshot.data['parkingInTime']);
+      this.parkingOutTime =
+          DateTime.fromMillisecondsSinceEpoch(snapshot.data['parkingOutTime']);
+      this.major = snapshot.data['major'];
+      this.minor = snapshot.data['minor'];
+      this.sensorName = snapshot.data['proxiName'];
+    }
   }
 }

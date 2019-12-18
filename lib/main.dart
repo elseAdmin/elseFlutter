@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _postBeaconFound(arguments) async {
-    await beaconService.handleBeacon(arguments[1], arguments[2]);
+    await beaconService.handleBeacon(arguments[1], arguments[2], arguments[3]);
 
     if (Constants.universe.compareTo("Else") == 0 &&
         arguments[0].compareTo("00000000-0000-0000-0000-000000000000") == 0) {

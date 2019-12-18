@@ -16,10 +16,10 @@ class BeaconServiceImpl {
   DatabaseManager db;
   SqlLiteManager sql;
 
-  handleBeacon(String major, String minor) async {
+  handleBeacon(String major, String minor, String distance) async {
     switch (determineBeaconType(major)) {
       case "parking":
-        await postHandlingForParkingBeacons(major, minor);
+        await postHandlingForParkingBeacons(major, minor, distance);
         break;
       case "advtsmntInt":
         await postHandlingForAdvtsmntBeacon(major, minor);
@@ -38,12 +38,12 @@ class BeaconServiceImpl {
     }
   }
 
-  postHandlingForParkingBeacons(String major, String minor) async {
+  postHandlingForParkingBeacons(String major, String minor, String distance) async {
     if(Constants.parkingEligibleUser){
       //mark his visits against all parking beacons
 
       //distance should also be uplaoded
-      db.markUserVisitForParkingBeacon(major, minor,"parking");
+      db.markUserVisitForParkingBeacon(major, minor,distance);
     }
   }
 
