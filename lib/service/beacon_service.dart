@@ -5,9 +5,9 @@ import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:else_app_two/utils/sql_lite.dart';
 
 class BeaconServiceImpl {
-  Function(String) adScreenCallback;
+  Function(AdBeacon) adScreenCallback;
 
-  BeaconServiceImpl(Function(String) callback) {
+  BeaconServiceImpl(Function(AdBeacon) callback) {
     this.adScreenCallback = callback;
     if (db == null) db = DatabaseManager();
   }
@@ -51,9 +51,9 @@ class BeaconServiceImpl {
     //get firestore record for this beacon
     AdBeacon adBeacon = await db.getAdMetaForBeacon(major, minor);
 
-    if (adBeacon.allowedUsers.contains(StartupData.userid)) {
+    if (adBeacon.isUserAllowed()) {
       //throw notification to user
-      adScreenCallback(adBeacon.imageUrl);
+      adScreenCallback(adBeacon);
     }
     //check if this user has seen the beacon before or not
   }
@@ -89,7 +89,7 @@ class BeaconServiceImpl {
     if (major.length == 3) {
       return "parking";
     }
-    if (major[2].compareTo("2") == 0) {
+    if (major[0].compareTo("2") == 0) {
       return "advtsmntInt";
     }
     if (major[0].compareTo("1") == 0) {

@@ -1,6 +1,7 @@
 import 'package:else_app_two/basicElements/AdScreen.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -55,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
     //_getBridgeStatus();
+    beaconService.handleBeacon("2230","1230" ,"1");
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
@@ -106,10 +108,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return null;
   }
 
-  void pushAdScreen(String imageUrl) {
+  void pushAdScreen(AdBeacon adBeacon) {
+
     showDialog(
         context: context,
-        builder: (BuildContext context) => AdScreen(imageUrl));
+        builder: (BuildContext context) => AdScreen(adBeacon));
   }
 
   @override
