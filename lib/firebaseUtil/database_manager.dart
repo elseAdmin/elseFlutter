@@ -33,7 +33,16 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
-
+  Future markDealGrabbedForUser(AdBeacon beacon)async {
+    return await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("deals")
+        .add({
+      "imageUrl": beacon.imageUrl,
+      "dealGrabbedAt":DateTime.now().millisecondsSinceEpoch
+    });
+  }
   markLocationEventCompleted(EventModel event) async {
     await store
         .collection(StartupData.dbreference)
@@ -342,6 +351,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": pathToUserSubmission,
+      "participatedAt":DateTime.now().millisecondsSinceEpoch
     });
 
     logger.i("Event submission details saved successfully");
@@ -380,6 +390,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
+      "participatedAt":DateTime.now().millisecondsSinceEpoch
     });
 
     return;

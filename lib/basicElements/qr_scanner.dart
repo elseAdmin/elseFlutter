@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
-import 'package:qrscan/qrscan.dart' as scanner;
+import 'package:barcode_scan/barcode_scan.dart';
 
 class QrScanner extends StatefulWidget{
   @override
@@ -44,10 +44,19 @@ class QrScannerState extends State<QrScanner>{
     }
   }
   Future _scan() async {
-    String barcode = await scanner.scan();
-
     Constants.parkingEligibleUser=true;
     Constants.hasScannedForParking = true;
-    setState(() => this.barcodeString = barcode);
+    try {
+      String barcode = await BarcodeScanner.scan();
+      setState(() => this.barcodeString = barcode);
+    } catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        setState(() {
+          this.barcodeString = 'The user did not grant the camera permission!';
+        });
+      } else {
+        setState(() => this.barcodeString = 'Unknown error: $e');
+      }
+    }
   }
 }
