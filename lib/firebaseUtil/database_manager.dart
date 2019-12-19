@@ -33,7 +33,16 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
-
+  Future markDealGrabbedForUser(AdBeacon beacon)async {
+    return await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("deals")
+        .add({
+      "imageUrl": beacon.imageUrl,
+      "dealGrabbedAt":DateTime.now().millisecondsSinceEpoch
+    });
+  }
   markLocationEventCompleted(EventModel event) async {
     await store
         .collection(StartupData.dbreference)
@@ -143,16 +152,19 @@ class DatabaseManager {
   }
 
   markUserVisitForParkingBeacon(
-      String major, String minor, String beaconType) async {
+      String major, String minor, String distance) async {
+    logger.i(distance);
+    logger.i(double.parse(distance));
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
-        .collection(beaconType)
+        .collection("parking")
         .document(major)
         .collection(minor)
         .add({
       "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "userUid": StartupData.userid
+      "userUid": StartupData.userid,
+      "distance": double.parse(distance)
     });
   }
 
@@ -339,6 +351,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": pathToUserSubmission,
+      "participatedAt":DateTime.now().millisecondsSinceEpoch
     });
 
     logger.i("Event submission details saved successfully");
@@ -377,6 +390,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
+      "participatedAt":DateTime.now().millisecondsSinceEpoch
     });
 
     return;
@@ -468,13 +482,21 @@ class DatabaseManager {
     return storageRef;
   }
 
-  getUserParkingReference() async {
+  Future getUserParkingModel() async {
     ParkingModel parkingModel ;
     await store.collection('users').document(StartupData.userid).collection('parking').where('status',isEqualTo: 'active').getDocuments().then((querySnapshot){
       querySnapshot.documents.forEach((docSnap){
         parkingModel =  ParkingModel(docSnap);
       });
     });
+
+    if(parkingModel!=null){
+      Constants.parkingEligibleUser=false;
+    }
+    if(parkingModel==null)
+      parkingModel = ParkingModel(null);
     return parkingModel;
   }
+
+
 }
