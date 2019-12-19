@@ -1,8 +1,14 @@
+import 'dart:collection';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:else_app_two/models/shop_model.dart';
+import 'package:else_app_two/navigationTab/vendor_list.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
 class CategoryGrid extends StatelessWidget{
+  final HashMap<String, Set<ShopModel>> _indexShopMap;
+  CategoryGrid(this._indexShopMap);
 
   final List categoryList = ['FASHION', 'BEAUTY', 'KIDS', 'ELECTRONICS',
     'HOME FURNISHING', 'RESTAURANTS', 'PUBS', 'ENTERTAINMENT'];
@@ -18,6 +24,20 @@ class CategoryGrid extends StatelessWidget{
     "https://firebasestorage.googleapis.com/v0/b/elseconsumerdatabase.appspot.com/o/unityOneRohini%2Fcategory%2FEntertainment.jpg?alt=media&token=8e5d0eee-97aa-4836-a0d2-c385526c4371"
   ];
 
+  String getKeyOnIndex(int index){
+    switch (index){
+      case 0 : return "fashion";
+      case 1 : return "beauty";
+      case 2 : return "kids";
+      case 3 : return "electronics";
+      case 4 : return "home";
+      case 5 : return "restaurants";
+      case 6 : return "pubs";
+      case 7 : return "entertainment";
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +52,11 @@ class CategoryGrid extends StatelessWidget{
                 color: Constants.mainBackgroundColor,
                 child: GestureDetector(
                   onTap: () {
-                    // add next tb here
+                    return Navigator.push(context,
+                      MaterialPageRoute(
+                        builder: (context) => VendorList(_indexShopMap, getKeyOnIndex(index)),
+                      ),
+                    );
                   },
                   child: Stack(
                     fit: StackFit.passthrough,

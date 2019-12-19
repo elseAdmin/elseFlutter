@@ -452,6 +452,10 @@ class DatabaseManager {
     return baseDatabase.child('dealsStaticData');
   }
 
+  DatabaseReference getShopsDBRef() {
+    return baseDatabase.child('shopStaticData');
+  }
+
   DatabaseReference getBaseDBRef() {
     return baseDatabase;
   }

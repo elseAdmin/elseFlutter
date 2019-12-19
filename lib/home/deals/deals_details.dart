@@ -71,7 +71,7 @@ class _DealsDetails extends State<DealsDetails>{
                   paddingData(),
                   Card(
                     child: ListTile(
-                      title: Text('Points to Note',
+                      title: Text('Terms and Conditions',
                           style: TextStyle(
                               fontSize: 20,
                               color: Constants.textColor,
@@ -95,7 +95,7 @@ class _DealsDetails extends State<DealsDetails>{
                   paddingData(),
                   Card(
                     child: ListTile(
-                      title: Text('Points to Note',
+                      title: Text('Details',
                           style: TextStyle(
                               fontSize: 20,
                               color: Constants.textColor,
