@@ -1,7 +1,18 @@
-import 'package:else_app_two/models/deals_model.dart';
+import 'dart:collection';
+
+import 'package:else_app_two/models/shop_model.dart';
+import 'package:else_app_two/navigationTab/vendor_list.dart';
+import 'package:else_app_two/navigationTab/vendor_stream_id.dart';
 import 'package:flutter/material.dart';
 
-class VendorSearch extends SearchDelegate<DealModel>{
+class VendorSearch extends SearchDelegate<ShopModel>{
+  List<String> keys;
+  HashMap<String, Set<ShopModel>> _indexShopMap;
+  VendorStreamId _vendorStreamId;
+  VendorSearch(this.keys, this._indexShopMap){
+    _vendorStreamId = VendorStreamId(this.keys);
+  }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -26,13 +37,64 @@ class VendorSearch extends SearchDelegate<DealModel>{
 
   @override
   Widget buildResults(BuildContext context) {
-    return Container();
+    return StreamBuilder<UnmodifiableListView<String>>(
+      stream: _vendorStreamId.shopStream,
+      builder: (context, AsyncSnapshot<UnmodifiableListView<String>> snapshot){
+        if(!snapshot.hasData){
+          return Center(
+            child: Text("No data"),
+          );
+        }
+
+        final results = snapshot.data.where((a) => a.toLowerCase().contains(query));
+
+        return ListView(
+          children: results.map<ListTile>((a) => ListTile(
+            title: Text(a),
+            trailing: Icon(Icons.chevron_right),
+            onTap: (){
+              query = a;
+              return Navigator.push(context,
+                MaterialPageRoute(
+                  builder: (context) => VendorList(_indexShopMap,query),
+                ),
+              );
+            },
+          )).toList(),
+        );
+      },
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
-    return null;
+    return StreamBuilder<UnmodifiableListView<String>>(
+      stream: _vendorStreamId.shopStream,
+      builder: (context, AsyncSnapshot<UnmodifiableListView<String>> snapshot){
+        if(!snapshot.hasData){
+          return Center(
+            child: Text("No data"),
+          );
+        }
+
+        final results = snapshot.data.where((a) => a.toLowerCase().contains(query));
+
+        return ListView(
+          children: results.map<ListTile>((a) => ListTile(
+            title: Text(a),
+            trailing: Icon(Icons.chevron_right),
+            onTap: (){
+              query = a;
+              return Navigator.push(context,
+                MaterialPageRoute(
+                  builder: (context) => VendorList(_indexShopMap,query),
+                ),
+              );
+            },
+          )).toList(),
+        );
+      },
+    );
   }
 
 }

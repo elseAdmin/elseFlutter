@@ -21,15 +21,20 @@ class CategoryScreen extends StatelessWidget{
         ),
       ),
       child: ListView(
-//        scrollDirection: Axis.vertical,
-//        shrinkWrap: true,
         children: <Widget>[
           Center(
             child: Text("All Categories"),
           ),
           CategoryGrid(_indexShopMap),
+          paddingData()
         ],
       ),
+    );
+  }
+
+  Widget paddingData(){
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
     );
   }
 }
