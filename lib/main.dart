@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
     //_getBridgeStatus();
-    beaconService.handleBeacon("2230","1230" ,"1");
+//    beaconService.handleBeacon("2230","1230" ,"1");
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {

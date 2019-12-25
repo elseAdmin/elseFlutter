@@ -29,7 +29,11 @@ class FireBaseApi{
   }
   Future<void> updateDocument(Map data , String id) {
     return ref.child(id).update(data);
- }
+  }
+
+  DatabaseReference getReference(){
+    return ref;
+  }
 
 
 }

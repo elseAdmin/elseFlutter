@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
 import 'package:else_app_two/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/category_screen.dart';
@@ -15,7 +14,6 @@ class NavigationScreen extends StatefulWidget{
 class _NavigationScreen extends State<NavigationScreen>{
 
   List<ShopModel> shops = new List();
-  final DatabaseManager manager = DatabaseManager();
 
   HashMap<String, Set<ShopModel>> _indexShopMap = new HashMap();
   FireBaseApi _fireBaseApi = FireBaseApi("shopStaticData");
