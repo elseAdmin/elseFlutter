@@ -33,16 +33,53 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
-  Future markDealGrabbedForUser(AdBeacon beacon)async {
-    return await store
-        .collection(StartupData.userReference)
-        .document(StartupData.userid)
-        .collection("deals")
-        .add({
-      "imageUrl": beacon.imageUrl,
-      "dealGrabbedAt":DateTime.now().millisecondsSinceEpoch
-    });
+  markDealSeenForUser(AdBeacon beacon,String status) async {
+    if(status.compareTo("grab")==0) {
+      await store
+          .collection(StartupData.userReference)
+          .document(StartupData.userid)
+          .collection("deals")
+          .add({
+        "imageUrl": beacon.imageUrl,
+        "timestamp": DateTime
+            .now()
+            .millisecondsSinceEpoch
+      });
+
+      await store
+          .collection(StartupData.dbreference)
+          .document("beacons")
+          .collection("advertisement")
+          .document(beacon.major)
+          .collection(beacon.minor)
+          .document("user")
+          .collection(StartupData.userid).add({
+        "status": "grab",
+        "timestamp": DateTime
+            .now()
+            .millisecondsSinceEpoch
+      }).catchError((error){
+        logger.e(error);
+      });
+    }else{
+      await store
+          .collection(StartupData.dbreference)
+          .document("beacons")
+          .collection("advertisement")
+          .document(beacon.major)
+          .collection(beacon.minor)
+          .document("user")
+          .collection(StartupData.userid).add({
+        "status": "pass",
+        "timestamp": DateTime
+            .now()
+            .millisecondsSinceEpoch
+      }).catchError((error){
+        logger.e(error);
+      });
+    }
   }
+
   markLocationEventCompleted(EventModel event) async {
     await store
         .collection(StartupData.dbreference)
@@ -110,7 +147,7 @@ class DatabaseManager {
             isGreaterThanOrEqualTo: event.startDate.millisecondsSinceEpoch)
         .where('timestamp',
             isLessThanOrEqualTo: event.endDate.millisecondsSinceEpoch)
-        .orderBy('timestamp')
+        .orderBy('timestamp', descending: true)
         .getDocuments()
         .then((docs) {
       visits = docs.documents;
@@ -139,11 +176,11 @@ class DatabaseManager {
     return model;
   }
 
-  markUserVisitForBeacon(String major, String minor, String beaconType) async {
+  markUserVisitForMonitoringBeacon(String major, String minor) async {
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
-        .collection(beaconType)
+        .collection("monitoring")
         .document(major)
         .collection(minor)
         .document("user")
@@ -351,7 +388,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": pathToUserSubmission,
-      "participatedAt":DateTime.now().millisecondsSinceEpoch
+      "participatedAt": DateTime.now().millisecondsSinceEpoch
     });
 
     logger.i("Event submission details saved successfully");
@@ -390,7 +427,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
-      "participatedAt":DateTime.now().millisecondsSinceEpoch
+      "participatedAt": DateTime.now().millisecondsSinceEpoch
     });
 
     return;
@@ -458,6 +495,72 @@ class DatabaseManager {
     return listParticipatedEvents;
   }
 
+  Future getUserParkingModel() async {
+    ParkingModel parkingModel;
+    await store
+        .collection('users')
+        .document(StartupData.userid)
+        .collection('parking')
+        .where('status', isEqualTo: 'active')
+        .getDocuments()
+        .then((querySnapshot) {
+      querySnapshot.documents.forEach((docSnap) {
+        parkingModel = ParkingModel(docSnap);
+      });
+    });
+
+    if (parkingModel != null) {
+      Constants.parkingEligibleUser = false;
+    }
+    if (parkingModel == null) parkingModel = ParkingModel(null);
+    return parkingModel;
+  }
+
+  getLastestVisitForMonitoringBeacon(String major, String minor) async {
+    int time=0;
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection("monitoring")
+        .document(major)
+        .collection(minor)
+        .document("user")
+        .collection(StartupData.userid)
+        .orderBy("timestamp", descending: true)
+        .limit(1)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((doc) {
+        time = doc.data['timestamp'];
+      });
+    }).catchError((error){
+      time=0;
+    });
+    return time;
+  }
+
+  Future<bool> hasUserSeenAdBefore(String major, String minor) async{
+    bool seen=false;
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection("advertisement")
+        .document(major)
+        .collection(minor)
+        .document("user")
+        .collection(StartupData.userid)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((doc) {
+        seen=true;
+      });
+    }).catchError((error){
+      seen=false;
+    });
+    return seen;
+  }
+
+
   DatabaseReference getEventsDBRef() {
     return baseDatabase.child('eventStaticData');
   }
@@ -481,22 +584,4 @@ class DatabaseManager {
   FirebaseStorage getStorageReference() {
     return storageRef;
   }
-
-  Future getUserParkingModel() async {
-    ParkingModel parkingModel ;
-    await store.collection('users').document(StartupData.userid).collection('parking').where('status',isEqualTo: 'active').getDocuments().then((querySnapshot){
-      querySnapshot.documents.forEach((docSnap){
-        parkingModel =  ParkingModel(docSnap);
-      });
-    });
-
-    if(parkingModel!=null){
-      Constants.parkingEligibleUser=false;
-    }
-    if(parkingModel==null)
-      parkingModel = ParkingModel(null);
-    return parkingModel;
-  }
-
-
 }

@@ -32,6 +32,7 @@ dependencies:
   cached_network_image: ^2.0.0-rc.1
   fluttertoast:
   barcode_scan:
+  sqflite:
   rxdart:
 
   # The following adds the Cupertino Icons font to your application.
