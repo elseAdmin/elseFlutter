@@ -33,16 +33,17 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
-  Future markDealGrabbedForUser(AdBeacon beacon)async {
+  Future markDealGrabbedForUser(AdBeacon beacon) async {
     return await store
         .collection(StartupData.userReference)
         .document(StartupData.userid)
         .collection("deals")
         .add({
       "imageUrl": beacon.imageUrl,
-      "dealGrabbedAt":DateTime.now().millisecondsSinceEpoch
+      "dealGrabbedAt": DateTime.now().millisecondsSinceEpoch
     });
   }
+
   markLocationEventCompleted(EventModel event) async {
     await store
         .collection(StartupData.dbreference)
@@ -110,7 +111,7 @@ class DatabaseManager {
             isGreaterThanOrEqualTo: event.startDate.millisecondsSinceEpoch)
         .where('timestamp',
             isLessThanOrEqualTo: event.endDate.millisecondsSinceEpoch)
-        .orderBy('timestamp')
+        .orderBy('timestamp', descending: true)
         .getDocuments()
         .then((docs) {
       visits = docs.documents;
@@ -351,7 +352,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": pathToUserSubmission,
-      "participatedAt":DateTime.now().millisecondsSinceEpoch
+      "participatedAt": DateTime.now().millisecondsSinceEpoch
     });
 
     logger.i("Event submission details saved successfully");
@@ -390,7 +391,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
-      "participatedAt":DateTime.now().millisecondsSinceEpoch
+      "participatedAt": DateTime.now().millisecondsSinceEpoch
     });
 
     return;
@@ -483,20 +484,45 @@ class DatabaseManager {
   }
 
   Future getUserParkingModel() async {
-    ParkingModel parkingModel ;
-    await store.collection('users').document(StartupData.userid).collection('parking').where('status',isEqualTo: 'active').getDocuments().then((querySnapshot){
-      querySnapshot.documents.forEach((docSnap){
-        parkingModel =  ParkingModel(docSnap);
+    ParkingModel parkingModel;
+    await store
+        .collection('users')
+        .document(StartupData.userid)
+        .collection('parking')
+        .where('status', isEqualTo: 'active')
+        .getDocuments()
+        .then((querySnapshot) {
+      querySnapshot.documents.forEach((docSnap) {
+        parkingModel = ParkingModel(docSnap);
       });
     });
 
-    if(parkingModel!=null){
-      Constants.parkingEligibleUser=false;
+    if (parkingModel != null) {
+      Constants.parkingEligibleUser = false;
     }
-    if(parkingModel==null)
-      parkingModel = ParkingModel(null);
+    if (parkingModel == null) parkingModel = ParkingModel(null);
     return parkingModel;
   }
 
-
+  getLastestVisitForBeacon(String major, String minor) async {
+    int time=0;
+    await store
+        .collection(StartupData.dbreference)
+        .document("beacons")
+        .collection("advertisement")
+        .document(major)
+        .collection(minor)
+        .document("user")
+        .collection(StartupData.userid)
+        .orderBy("timestamp", descending: true)
+        .limit(1)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((doc) {
+        time = doc.data['timestamp'];
+      });
+    });
+    logger.i("last visit for beacon - "+time.toString());
+    return time;
+  }
 }
