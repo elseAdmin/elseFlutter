@@ -11,17 +11,30 @@ class SearchScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: GestureDetector(
-        onTap: (){
-          showSearch(context: context, delegate: VendorSearch());
-        },
-        child: TextFormField(
-          decoration: const InputDecoration(
-            labelText: 'Search for category or brand',
-          ),
+      child: TextFormField(
+        decoration: const InputDecoration(
+          labelText: 'Search for category or brand',
         ),
+        readOnly: true,
+        onTap: (){
+          showSearch(
+              context: context,
+              delegate: VendorSearch(_indexShopMap.keys.toList(), _indexShopMap));
+        },
       ),
     );
   }
 
 }
+
+/*
+IconButton(
+      icon: Icon(Icons.search),
+      onPressed: (){
+        showSearch(
+          context: context,
+          delegate: VendorSearch(),
+        );
+      },
+    )
+ */

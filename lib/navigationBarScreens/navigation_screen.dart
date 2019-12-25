@@ -54,8 +54,15 @@ class _NavigationScreen extends State<NavigationScreen>{
         children: <Widget>[
           SearchScreen(_indexShopMap),
           CategoryScreen(_indexShopMap),
+          paddingData()
         ],
       ),
+    );
+  }
+
+  Widget paddingData(){
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15.0),
     );
   }
 

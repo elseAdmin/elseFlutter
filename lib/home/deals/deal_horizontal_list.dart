@@ -75,13 +75,13 @@ class _DealSectionState extends State<DealSection> {
             padding: EdgeInsets.only(
                 left: SizeConfig.blockSizeHorizontal * 1,
                 right: SizeConfig.blockSizeHorizontal * 1),
-            height: MediaQuery.of(context).size.height * 0.20,
+            height: MediaQuery.of(context).size.height * 0.22,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: deals.length,
                 itemBuilder: (context, index) {
                   return Container(
-                      width: MediaQuery.of(context).size.width * 0.45,
+                      width: MediaQuery.of(context).size.width * 0.50,
                       child: Card(
                         child: GestureDetector(
                           onTap:  () {
@@ -91,20 +91,28 @@ class _DealSectionState extends State<DealSection> {
                                     builder: (BuildContext context) =>
                                         DealsDetails(deals[index], deals[index].tnc.toList(), deals[index].details.toList())));
                           },
-                          child: Column(
+                          child: Stack(
+                            fit: StackFit.passthrough,
                             children: <Widget>[
+                              Opacity(
+                                opacity: 0.4,
+                                child:CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: deals[index].blurUrl,
+//                                    height: MediaQuery.of(context).size.height * 0.15,
+                                ),
+                              ),
                               Card(
-//                                opacity: 0.8,
-                                  child:CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: deals[index].blurUrl,
-                                    height: MediaQuery.of(context).size.height * 0.15,
-                                  )),
-                              Text(deals[index].shortDetails,
-                                  style: TextStyle(color: Colors.black,
-                                      fontWeight: FontWeight.w800,
-                                      backgroundColor: Colors.white,
-                                      fontSize: 12)),
+                                margin: EdgeInsets.all(0.0),
+                                color: Colors.transparent,
+                                child: Center(
+                                  child:  Text(deals[index].shortDetails,
+                                      style: TextStyle(
+                                          color: Constants.mainBackgroundColor,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 16)),
+                                ),
+                              )
                             ],
                           ),
                         ),
