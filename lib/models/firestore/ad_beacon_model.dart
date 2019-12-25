@@ -5,6 +5,7 @@ class AdBeacon{
   String imageUrl;
   String status;
   List allowedUsers;
+  String major,minor;
 
   AdBeacon(DocumentSnapshot snapshot){
     this.imageUrl = snapshot.data['imageUrl'];
