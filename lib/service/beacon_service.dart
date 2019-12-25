@@ -5,16 +5,18 @@ import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/sql_lite.dart';
 import 'package:logger/logger.dart';
+import 'package:synchronized/synchronized.dart';
 
 class BeaconServiceImpl {
   final logger = Logger();
   Function(AdBeacon) adScreenCallback;
   Map<String,int> visitMap = HashMap();
+  Map<String,AdBeacon> adMap = HashMap();
   BeaconServiceImpl(Function(AdBeacon) callback) {
     this.adScreenCallback = callback;
     if (db == null) db = DatabaseManager();
   }
-
+  var lock = new Lock();
   int timeBeforeMarkingNextVisit = 120000; //time is in milisecs;
   DatabaseManager db;
   SqlLiteManager sql;
@@ -30,6 +32,8 @@ class BeaconServiceImpl {
       case "monitoring":
         await postHandlingForMonitoringBeacon(major, minor);
         break;
+      case "advtsmntExt":
+        break;
       case "none":
         break;
     }
@@ -44,11 +48,11 @@ class BeaconServiceImpl {
     int lastVisitTime;
 
     if(!visitMap.containsKey(key)) {
-      lastVisitTime = await DatabaseManager().getLastestVisitForBeacon(
+      lastVisitTime = await db.getLastestVisitForMonitoringBeacon(
           major, minor);
-      logger.i(lastVisitTime.toString());
       if(lastVisitTime==0) {
         lastVisitTime = DateTime.now().millisecondsSinceEpoch;
+        await db.markUserVisitForMonitoringBeacon(major, minor);
       }
         visitMap.putIfAbsent(key, () => lastVisitTime);
     }else{
@@ -57,7 +61,7 @@ class BeaconServiceImpl {
 
     if(hasEnoughTimePassedPastVisit(lastVisitTime)){
       visitMap.update(key, (v) => DateTime.now().millisecondsSinceEpoch, ifAbsent: () => DateTime.now().millisecondsSinceEpoch);
-      await db.markUserVisitForBeacon(major, minor,"advertisement");
+      await db.markUserVisitForMonitoringBeacon(major, minor);
     }
   }
 
@@ -76,15 +80,26 @@ class BeaconServiceImpl {
   }
 
   postHandlingForAdvtsmntBeacon(String major, String minor) async {
-    //get firestore record for this beacon
-    AdBeacon adBeacon = await db.getAdMetaForBeacon(major, minor);
-
-    if (adBeacon.isUserAllowed()) {
-      //throw notification to user
-      adScreenCallback(adBeacon);
-    }
-    //check if this user has seen the beacon before or not
+    String key = major+minor;
+    bool adShown =false;
+    await lock.synchronized(() async {
+      if(!adMap.containsKey(key)) {
+        AdBeacon adBeacon = await db.getAdMetaForBeacon(major, minor);
+        adBeacon.major=major;
+        adBeacon.minor=minor;
+        adMap.putIfAbsent(key, () => adBeacon);
+        if (adBeacon.isUserAllowed() &&
+            !await db.hasUserSeenAdBefore(major, minor)) {
+          //throw notification to user
+          if(!adShown) {
+            adShown=true;
+            adScreenCallback(adBeacon);
+          }
+        }
+      }
+    });
   }
+
   String determineBeaconType(String major) {
     if (major.length == 3) {
       return "parking";
@@ -95,10 +110,11 @@ class BeaconServiceImpl {
     if (major[0].compareTo("1") == 0) {
       return "monitoring";
     }
+    if (major[0].compareTo("3") == 0) {
+      return "advtsmntExt";
+    }
     return "none";
   }
-
-
 
 /*
   Future<bool> wasBeaconSeenRecentlySQLiteVersion(String major, String minor) async {
