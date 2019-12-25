@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (Constants.universe.compareTo("Else") == 0 &&
         arguments[0].compareTo("00000000-0000-0000-0000-000000000000") == 0) {
-      Constants.universe = "unityOneRohini";
+      Constants.universe = "UnityOne Rohini";
       if (_appTitle.compareTo(arguments.toString()) == 0) {
         //no need to update as previous title has been called
       } else {

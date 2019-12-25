@@ -15,7 +15,7 @@ class BeaconServiceImpl {
     if (db == null) db = DatabaseManager();
   }
 
-  int timeBeforeMarkingNextVisit = 60000; //time is in milisecs;
+  int timeBeforeMarkingNextVisit = 120000; //time is in milisecs;
   DatabaseManager db;
   SqlLiteManager sql;
 
@@ -42,15 +42,15 @@ class BeaconServiceImpl {
   wasBeaconSeenRecentlyOnlineVersion(String major, String minor) async {
     String key = major+minor;
     int lastVisitTime;
+
     if(!visitMap.containsKey(key)) {
       lastVisitTime = await DatabaseManager().getLastestVisitForBeacon(
           major, minor);
       logger.i(lastVisitTime.toString());
-      if(lastVisitTime!=null && lastVisitTime!=0) {
-        visitMap.putIfAbsent(key, () => lastVisitTime);
-      }else{
-        visitMap.putIfAbsent(key, () => DateTime.now().millisecondsSinceEpoch);
+      if(lastVisitTime==0) {
+        lastVisitTime = DateTime.now().millisecondsSinceEpoch;
       }
+        visitMap.putIfAbsent(key, () => lastVisitTime);
     }else{
       lastVisitTime = visitMap[key];
     }
@@ -87,15 +87,15 @@ class BeaconServiceImpl {
   }
   String determineBeaconType(String major) {
     if (major.length == 3) {
-      return "monitoring";
+      return "parking";
     }
     if (major[0].compareTo("2") == 0) {
-      return "monitoring";
+      return "advtsmntInt";
     }
     if (major[0].compareTo("1") == 0) {
       return "monitoring";
     }
-    return "monitoring";
+    return "none";
   }
 
 

@@ -521,6 +521,8 @@ class DatabaseManager {
       snapshot.documents.forEach((doc) {
         time = doc.data['timestamp'];
       });
+    }).catchError((error){
+      time=0;
     });
     logger.i("last visit for beacon - "+time.toString());
     return time;
