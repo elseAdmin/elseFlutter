@@ -13,7 +13,7 @@ class UserFeedBackCrudModel extends ChangeNotifier{
   Future<List<UserFeedBack>> fetchUserFeedBackList() async {
     var result = await _api.getDataCollection();
     userFeedBackList = result.documents
-    .map((doc) => UserFeedBack.fromMap(doc.data, doc.documentID))
+    .map((doc) => UserFeedBack.fromMap(doc.data))
     .toList();
     return userFeedBackList;
   }
@@ -30,7 +30,7 @@ class UserFeedBackCrudModel extends ChangeNotifier{
     if(doc.data == null){
       return null;
     }
-    return UserFeedBack.fromMap(doc.data, doc.documentID);
+    return UserFeedBack.fromMap(doc.data);
   }
 
   Future removeUserFeedBack(String id) async{
@@ -43,14 +43,9 @@ class UserFeedBackCrudModel extends ChangeNotifier{
     return ;
   }
 
-  Future addUserFeedBack(UserFeedBack data) async{
+   addUserFeedBack(UserFeedBack data) async{
     var result  = await _api.addDocument(data.toJson()) ;
-    return result.documentID;
   }
 
-  Future addUserFeedBackById(UserFeedBack data) async{
-    var result = await _api.addDocumentById(data.id, data.toJson());
-    return ;
-  }
 
 }

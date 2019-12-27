@@ -5,6 +5,7 @@ import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/feedback/feedback_preview.dart';
 import 'package:else_app_two/feedback/new_feedback.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/feedback_crud_model.dart';
 import 'package:else_app_two/models/feedback_model.dart';
 import 'package:else_app_two/models/user_feedback_crud_model.dart';
@@ -23,7 +24,7 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
 
   UserFeedBackCrudModel userFeedBackCrudModel;
   List<UserFeedBack> _userFeedbackList = [];
-  Map<String, FeedBackPreview> _feedBackPreviewMap = new HashMap();
+  List<FeedBackPreview> _feedBackPreviewMap = List();
   FeedbackCrudModel feedbackCrudModel;
 
   @override
@@ -36,15 +37,13 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
     List<UserFeedBack> userFeedBackList = await userFeedBackCrudModel.fetchUserFeedBackList();
     if(userFeedBackList.isNotEmpty){
       for(UserFeedBack userFeedBack in userFeedBackList){
-        String path = userFeedBack.universe + '/feedback/allfeedbacks';
-        feedbackCrudModel = new FeedbackCrudModel(new Api(path));
-        FeedBack feedBack = await feedbackCrudModel.getFeedBackById(userFeedBack.feedbackId);
+        FeedBack feedBack = await DatabaseManager().getUserFeedbackDetails(userFeedBack.url);
         if(feedBack != null){
           FeedBackPreview feedBackPreview = new FeedBackPreview
-            (userFeedBack.feedbackId, userFeedBack.universe, feedBack, false);
+            (feedBack.id, userFeedBack.universe, feedBack, false);
           setState(() {
             _userFeedbackList = userFeedBackList;
-            _feedBackPreviewMap[userFeedBack.feedbackId] = feedBackPreview;
+            _feedBackPreviewMap.add(feedBackPreview);
           });
         }
       }
@@ -54,10 +53,10 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
 
   _onExpansion(int index, bool isExpanded){
 //    print("Index::: "+index.toString());
-    FeedBackPreview feedBackPreview = _feedBackPreviewMap[_userFeedbackList[index].feedbackId];
+    FeedBackPreview feedBackPreview = _feedBackPreviewMap[index];
     feedBackPreview.expanded = !feedBackPreview.expanded;
     setState(() {
-      _feedBackPreviewMap[_userFeedbackList[index].feedbackId] = feedBackPreview;
+      _feedBackPreviewMap[index] = feedBackPreview;
     });
   }
 
@@ -103,7 +102,7 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
                     itemBuilder: (BuildContext context, int index){
                       List<ExpansionPanel> myExpansionPanelList = [];
                       for(int i=0; i<_feedBackPreviewMap.length; ++i ){
-                        myExpansionPanelList.add(_feedBackPreviewMap[_userFeedbackList[i].feedbackId].buildExpansionPanel());
+                        myExpansionPanelList.add(_feedBackPreviewMap[i].buildExpansionPanel());
                       }
                       return new ExpansionPanelList(
                         children: myExpansionPanelList,

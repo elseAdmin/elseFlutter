@@ -79,13 +79,10 @@ class _NewFeedBack extends State<NewFeedBack>{
     FeedBack feedBack = new FeedBack(subject, typeOfFeedBack, feedbackIntensity,
         content, imageUrls, Status.PENDING.index, DateTime.now(), DateTime.now());
 
-    var feedBackFuture = await feedbackCrudModel.addFeedBack(feedBack);
-    if(feedBackFuture != null){
-      UserFeedBack userFeedBack = new UserFeedBack(feedBackFuture,
-          StartupData.dbreference, subject, Status.PENDING.index,
-          DateTime.now(), DateTime.now());
-      var userData = await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
-      print("Feeddata mapped to user"+userData);
+    String feedBackUrl = await feedbackCrudModel.addFeedBack(feedBack);
+    if(feedBackUrl != null){
+      UserFeedBack userFeedBack = new UserFeedBack(feedBackUrl);
+      await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
       showModalBottomSheet(context: context, builder: (context){
         return getModal();
       });
