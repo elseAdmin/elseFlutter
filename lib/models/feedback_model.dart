@@ -1,5 +1,4 @@
-class FeedBack{
-
+class FeedBack {
   String id;
   String subject;
   bool typeOfFeedBack;
@@ -10,33 +9,37 @@ class FeedBack{
   DateTime createdDate;
   DateTime updatedDate;
 
-
-  FeedBack(this.subject, this.typeOfFeedBack, this.feedbackIntensity,
-      this.content, this.imageUrls, this.feedbackStatus, this.createdDate,
+  FeedBack(
+      this.subject,
+      this.typeOfFeedBack,
+      this.feedbackIntensity,
+      this.content,
+      this.imageUrls,
+      this.feedbackStatus,
+      this.createdDate,
       this.updatedDate);
 
-  FeedBack.fromMap(Map snapshot, String id) :
-      id = id ?? '',
-      subject = snapshot['subject'] ?? '',
-      typeOfFeedBack = snapshot['typeOfFeedBack'] ?? '',
-      feedbackIntensity = snapshot['feedbackIntensity'] ?? '',
-      content = snapshot['content'] ?? '',
-      imageUrls = snapshot['imageUrls'] ?? '',
-      feedbackStatus = snapshot['feedbackStatus'] ?? '',
-      createdDate = snapshot['createdDate'].toDate(),
-      updatedDate = snapshot['updatedDate'].toDate();
+  FeedBack.fromMap(Map snapshot, String id)
+      : this.id = id ?? '',
+        this.subject = snapshot['subject'] ?? '',
+        this.typeOfFeedBack = snapshot['typeOfFeedBack'] ?? '',
+        this.feedbackIntensity = snapshot['feedbackIntensity'] ?? '',
+        this.content = snapshot['content'] ?? '',
+        this.imageUrls = snapshot['imageUrls'] ?? '',
+        this.feedbackStatus = snapshot['feedbackStatus'] ?? '',
+        this.createdDate = snapshot['createdDate'].toDate(),
+        this.updatedDate = snapshot['updatedDate'].toDate();
 
-  toJson(){
-    return{
-      "subject":subject,
-      "typeOfFeedBack":typeOfFeedBack,
-      "feedbackIntensity":feedbackIntensity,
-      "content":content,
-      "imageUrls":imageUrls,
-      "feedbackStatus":feedbackStatus,
-      "createdDate":createdDate,
-      "updatedDate":updatedDate
+  toJson() {
+    return {
+      "subject": subject,
+      "typeOfFeedBack": typeOfFeedBack,
+      "feedbackIntensity": feedbackIntensity,
+      "content": content,
+      "imageUrls": imageUrls,
+      "feedbackStatus": feedbackStatus,
+      "createdDate": createdDate,
+      "updatedDate": updatedDate
     };
   }
-
 }

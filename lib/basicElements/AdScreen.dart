@@ -57,10 +57,12 @@ class AdScreen extends StatelessWidget {
           )
         ]);
   }
+
   markDealGrabbed(BuildContext context){
     DatabaseManager().markDealSeenForUser(this.adBeaconModel,"grab");
       Navigator.pop(context);
   }
+
   onPass(BuildContext context){
     DatabaseManager().markDealSeenForUser(this.adBeaconModel,"pass");
     Navigator.pop(context);

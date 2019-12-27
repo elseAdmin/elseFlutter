@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:else_app_two/models/sensor_model.dart';
-import 'package:else_app_two/parkingElements/parking_slot.dart';
+import 'package:else_app_two/parkingTab/parkingElements/parking_slot.dart';
 import 'package:flutter/material.dart';
 
 class SectionCParking extends StatefulWidget{

@@ -1,5 +1,5 @@
-import 'package:else_app_two/parkingElements/elevator.dart';
-import 'package:else_app_two/parkingElements/stairs.dart';
+import 'package:else_app_two/parkingTab/parkingElements/elevator.dart';
+import 'package:else_app_two/parkingTab/parkingElements/stairs.dart';
 import 'package:flutter/material.dart';
 
 class Lobby extends StatefulWidget{

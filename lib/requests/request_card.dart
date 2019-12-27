@@ -1,5 +1,6 @@
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/request_model.dart';
 import 'package:else_app_two/models/user_model.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
@@ -8,6 +9,7 @@ import 'package:else_app_two/models/user_crud_model.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 
 class RequestCard extends StatefulWidget{
 
@@ -16,6 +18,7 @@ class RequestCard extends StatefulWidget{
 }
 
 class _RequestCard extends State<RequestCard>{
+  final logger = Logger();
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -46,8 +49,9 @@ class _RequestCard extends State<RequestCard>{
 
   void _addRequest(BuildContext context, String name, String phone, String message) async{
     Request request = new Request(phone, name, message, _userIdController.text);
-    var requestFuture = await requestCrudModel.addRequest(request);
+    String requestFuture = await requestCrudModel.addRequest(request);
     if(requestFuture !=null){
+      await DatabaseManager().saveUserRequest(requestFuture);
       print('Request added successfully ' + requestFuture.toString());
       showModalBottomSheet(context: context, builder: (context){
         return getModal();

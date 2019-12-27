@@ -45,7 +45,7 @@ class FeedbackCrudModel extends ChangeNotifier{
 
   Future addFeedBack(FeedBack data) async{
     var result  = await _api.addDocument(data.toJson()) ;
-    return result.documentID;
+    return result.path;
   }
 
   Future addFeedBackById(FeedBack data) async{

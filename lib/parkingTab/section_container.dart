@@ -65,7 +65,7 @@ class _SectionContainer extends State<SectionContainer>{
     setState(() {
       if(changeData){
         _sensorModelMap[sensorModel.name] = sensorModel;
-        if(sensorModel.userUid == StartupData.userid){
+        if(sensorModel.userUid == currentUser){
           _userMap[sensorModel.name] = true;
         } else{
           _userMap[sensorModel.name] = false;

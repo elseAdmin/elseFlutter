@@ -46,7 +46,7 @@ class RequestCrudModel extends ChangeNotifier{
 
   Future addRequest(Request data) async{
     var result  = await _api.addDocument(data.toJson()) ;
-    return result.documentID;
+    return result.path;
   }
 
   Future addRequestById(Request data) async{

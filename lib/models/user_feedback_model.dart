@@ -1,35 +1,22 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:else_app_two/utils/Contants.dart';
 
 class UserFeedBack{
-
-  String id;
-  String feedbackId;
   String universe;
-  String subject;
-  int feedbackStatus;
-  DateTime createdDate;
-  DateTime updatedDate;
+  String url;
+  DateTime timestamp;
 
-  UserFeedBack(this.feedbackId, this.universe, this.subject,
-      this.feedbackStatus, this.createdDate, this.updatedDate);
+  UserFeedBack(this.url);
 
-  UserFeedBack.fromMap(Map snapshot, String id) :
-      id = id ?? '',
-      subject = snapshot['subject'] ?? '',
-      feedbackId = snapshot['feedbackId'] ?? '',
-      universe = snapshot['universe'] ?? '',
-      feedbackStatus = snapshot['feedbackStatus'] ?? '',
-      createdDate = snapshot['createdDate'].toDate(),
-      updatedDate = snapshot['updatedDate'].toDate();
+  UserFeedBack.fromMap(Map snapshot) :
+        timestamp = DateTime.fromMillisecondsSinceEpoch(snapshot['timestamp']) ?? '',
+        url = snapshot['feedbackurl'] ?? '',
+        universe = snapshot['universe'] ?? '';
 
   toJson(){
     return{
-      "subject":subject,
-      "feedbackId":feedbackId,
-      "universe":universe,
-      "feedbackStatus":feedbackStatus,
-      "createdDate":createdDate,
-      "updatedDate":updatedDate
+      "timestamp":DateTime.now().millisecondsSinceEpoch,
+      "feedbackurl":url,
+      "universe":Constants.universe
     };
   }
 

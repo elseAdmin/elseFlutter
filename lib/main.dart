@@ -1,5 +1,6 @@
 import 'package:else_app_two/basicElements/AdScreen.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
@@ -7,6 +8,7 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'auth/auth.dart';
 import 'auth/auth_provider.dart';
@@ -51,6 +53,30 @@ class _MyHomePageState extends State<MyHomePage> {
   dispose() {
     logger.i("app killed");
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    DatabaseManager().getAllParkings().then((result){
+      //logger.i(result.length);
+    });
+
+    DatabaseManager().getGrabbedDeals().then((result){
+      //logger.i(result.length);
+    });
+
+    DatabaseManager().getAllEventsForUser().then((result){
+      //logger.i(result.length);
+    });
+
+    DatabaseManager().getRequestsForUser().then((result){
+     //logger.i(result.length);
+    });
+    DatabaseManager().getAllFeedbacksForUser().then((result){
+      logger.i(result.length);
+    });
   }
 
   @override
