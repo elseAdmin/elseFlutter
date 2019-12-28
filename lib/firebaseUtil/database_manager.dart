@@ -16,6 +16,7 @@ import 'package:else_app_two/requests/models/user_request_model.dart';
 import 'package:else_app_two/feedback/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
+import 'package:else_app_two/utils/helper_methods.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:logger/logger.dart';
@@ -40,6 +41,7 @@ class DatabaseManager {
   }
 
   getAllActivityOfUser() async {
+    ///IMP
     //below querries should fetch max 1 month data
     List<ParkingModel> parkingActivityList =
         await DatabaseManager().getAllParkings();
@@ -53,37 +55,52 @@ class DatabaseManager {
         await DatabaseManager().getAllFeedbacksForUser();
 
     Map map = HashMap();
-    List activities = List();
     List timestamps = List();
-    parkingActivityList.forEach((parking){
-      map.putIfAbsent(parking.timestamp, ()=>parking);
+    parkingActivityList.forEach((parking) {
+      map.putIfAbsent(parking.timestamp, () => parking);
       timestamps.add(parking.timestamp);
     });
-    userDealsActivityList.forEach((deal){
-      map.putIfAbsent(deal.timestamp, ()=>deal);
+    userDealsActivityList.forEach((deal) {
+      map.putIfAbsent(deal.timestamp, () => deal);
       timestamps.add(deal.timestamp);
     });
-    allEventAndSubmissionList.forEach((event){
-      map.putIfAbsent(event.timestamp, ()=>event);
+    allEventAndSubmissionList.forEach((event) {
+      map.putIfAbsent(event.timestamp, () => event);
       timestamps.add(event.timestamp);
     });
-    requestList.forEach((request){
-      map.putIfAbsent(request.timestamp, ()=>request);
+    requestList.forEach((request) {
+      map.putIfAbsent(request.timestamp, () => request);
       timestamps.add(request.timestamp);
     });
-    feedbackList.forEach((feedback){
-      map.putIfAbsent(feedback.timestamp, ()=>feedback);
+    feedbackList.forEach((feedback) {
+      map.putIfAbsent(feedback.timestamp, () => feedback);
       timestamps.add(feedback.timestamp);
     });
+
     timestamps.sort();
-    timestamps.forEach((act){
-      //logger.i(act);
-    });
-    for(int i=timestamps.length-1;i>=0;i--){
-      activities.add(map[timestamps[i]]);
+
+    List todaysActivities = List();
+    List thisWeekActivities = List();
+    List thisMonthActivities = List();
+    HelperMethods helper = HelperMethods();
+    for (int i = timestamps.length - 1; i >= 0; i--) {
+      if(helper.isTimestampForToday(timestamps[i])){
+        todaysActivities.add(map[timestamps[i]]);
+      }else if(helper.isTimestampForThisWeek(timestamps[i])){
+        thisWeekActivities.add(map[timestamps[i]]);
+      }else{
+        thisMonthActivities.add(map[timestamps[i]]);
+      }
+
     }
-    return activities;
-   }
+
+    Map activityTimelineMap = HashMap();
+    activityTimelineMap.putIfAbsent("today",() => todaysActivities);
+    activityTimelineMap.putIfAbsent("week",() => thisWeekActivities);
+    activityTimelineMap.putIfAbsent("month",() => thisMonthActivities);
+
+    return activityTimelineMap;
+  }
 
   getUserFeedbackDetails(String path) async {
     FeedBack feedBack;
@@ -98,7 +115,7 @@ class DatabaseManager {
     List<UserFeedBack> feedbacks = List();
     await store
         .collection(StartupData.userReference)
-    // VERY IMP , remove hard coded user
+        // VERY IMP , remove hard coded user
         .document("3myGjUrtkOW0lwwjnMLIj7UUWKW2")
         .collection("feedbacks")
         .getDocuments()

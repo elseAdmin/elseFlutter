@@ -10,7 +10,7 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class NotificationScreenState extends State<NotificationScreen> {
-  List activities;
+  Map activities;
   @override
   void initState() {
     // TODO: implement initState

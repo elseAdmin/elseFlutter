@@ -5,6 +5,7 @@ class UserEventSubmissionModel {
   String submissionUrl;
   int timestamp;
   String eventName;
+  String universe;
 
   UserEventSubmissionModel(DocumentSnapshot doc) {
     if (doc != null) {
@@ -12,6 +13,7 @@ class UserEventSubmissionModel {
       this.eventUrl = doc.data['eventUrl'];
       this.submissionUrl = doc.data['submissionUrl'];
       this.timestamp = doc.data['timestamp'];
+      this.universe=doc.data['universe'];
     }
   }
 }

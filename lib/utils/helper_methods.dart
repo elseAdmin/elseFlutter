@@ -35,7 +35,24 @@ class HelperMethods {
       }
       if (int.parse(mon) == 12) {
         return "Dec";
-
     }
+  }
+
+  bool isTimestampForToday(int timestamp) {
+    DateTime receivedDate = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateTime currentDate = DateTime.now();
+    if(currentDate.day==receivedDate.day && currentDate.month==receivedDate.month && currentDate.year==receivedDate.year){
+      return true;
+    }
+    return false;
+  }
+
+  bool isTimestampForThisWeek(timestamp) {
+    DateTime recievedDate = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    DateTime currentDate = DateTime.now();
+    if(DateTime.now().millisecondsSinceEpoch - timestamp < 604800000){ ///604800000 milisec = 7 days
+      return true;
+    }
+    return false;
   }
 }
