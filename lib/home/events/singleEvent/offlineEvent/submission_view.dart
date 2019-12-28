@@ -1,8 +1,8 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/home/events/singleEvent/offlineEvent/not_participated_view.dart';
 import 'package:else_app_two/home/events/singleEvent/offlineEvent/participated_view.dart';
-import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/models/firestore/offline_submission_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
+import 'package:else_app_two/home/events/models/offline_submission_model.dart';
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';

@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/DividerAboveSubmissionGrid.dart';
 import 'package:else_app_two/home/events/singleEvent/EventStaticData.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/SubmissionGridViewHandler.dart';
@@ -17,8 +17,6 @@ class OnlineEventScreen extends StatefulWidget {
 }
 
 class OnlineEventScreenState extends State<OnlineEventScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -39,11 +37,14 @@ class OnlineEventScreenState extends State<OnlineEventScreen> {
                         color: Colors.white,
                         fontSize: 18.0,
                       )),
-                  background: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    imageUrl: widget.event.url,
-                  )),
+                  background: Opacity(
+                      opacity: 0.6,
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        imageUrl: widget.event.url,
+                      ))),
             ),
             SliverList(
               delegate: SliverChildListDelegate(

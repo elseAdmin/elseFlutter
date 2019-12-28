@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/home/events/singleEvent/EventRulesDialog.dart';
 import 'package:else_app_two/home/events/singleEvent/EventStaticData.dart';
 import 'package:else_app_two/home/events/singleEvent/locationEvent/submission_view.dart';
@@ -42,11 +42,13 @@ class LocationEventScreenState extends State<LocationEventScreen> {
                         color: Colors.white,
                         fontSize: 18.0,
                       )),
-                  background: CachedNetworkImage(
+                  background: Opacity(
+                      opacity: 0.6,
+                      child:CachedNetworkImage(
                     fit: BoxFit.cover,
                     placeholder: (context, url) => CircularProgressIndicator(),
                     imageUrl: widget.event.url,
-                  )),
+                  ))),
             ),
             SliverList(
               delegate: SliverChildListDelegate(

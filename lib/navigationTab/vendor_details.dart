@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:else_app_two/models/shop_model.dart';
+import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';

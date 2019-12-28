@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/home/events/singleEvent/SingleEventPageViewHandler.dart';
 import 'package:else_app_two/home/events/all_event_list_page.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -102,7 +102,7 @@ class EventSectionState extends State<EventSection> {
                               fit: StackFit.passthrough,
                               children: <Widget>[
                                 Opacity(
-                                    opacity: 0.8,
+                                    opacity: 0.6,
                                     child: CachedNetworkImage(
                                       fit: BoxFit.cover,
                                       imageUrl: events[index].blurUrl,

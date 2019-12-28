@@ -1,4 +1,4 @@
-import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/WinnerSectionView.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/submission_grid_view.dart';
 import 'package:flutter/material.dart';

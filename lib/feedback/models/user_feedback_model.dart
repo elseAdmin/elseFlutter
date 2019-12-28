@@ -3,12 +3,14 @@ import 'package:else_app_two/utils/Contants.dart';
 class UserFeedBack{
   String universe;
   String url;
-  DateTime timestamp;
+  DateTime date;
+  int timestamp;
 
   UserFeedBack(this.url);
 
   UserFeedBack.fromMap(Map snapshot) :
-        timestamp = DateTime.fromMillisecondsSinceEpoch(snapshot['timestamp']) ?? '',
+        timestamp = snapshot['timestamp'],
+        date = DateTime.fromMillisecondsSinceEpoch(snapshot['timestamp']) ?? '',
         url = snapshot['feedbackurl'] ?? '',
         universe = snapshot['universe'] ?? '';
 
