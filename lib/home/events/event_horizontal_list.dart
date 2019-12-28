@@ -102,7 +102,7 @@ class EventSectionState extends State<EventSection> {
                               fit: StackFit.passthrough,
                               children: <Widget>[
                                 Opacity(
-                                    opacity: 0.8,
+                                    opacity: 0.6,
                                     child: CachedNetworkImage(
                                       fit: BoxFit.cover,
                                       imageUrl: events[index].blurUrl,

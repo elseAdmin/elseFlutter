@@ -15,7 +15,6 @@ class OfflineEventScreen extends StatefulWidget {
 }
 
 class OfflineEventScreenState extends State<OfflineEventScreen> {
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -36,11 +35,14 @@ class OfflineEventScreenState extends State<OfflineEventScreen> {
                         color: Colors.white,
                         fontSize: 18.0,
                       )),
-                  background: CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    imageUrl: widget.event.url,
-                  )),
+                  background: Opacity(
+                      opacity: 0.6,
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        imageUrl: widget.event.url,
+                      ))),
             ),
             SliverList(
               delegate: SliverChildListDelegate(

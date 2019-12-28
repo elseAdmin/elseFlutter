@@ -42,11 +42,13 @@ class LocationEventScreenState extends State<LocationEventScreen> {
                         color: Colors.white,
                         fontSize: 18.0,
                       )),
-                  background: CachedNetworkImage(
+                  background: Opacity(
+                      opacity: 0.6,
+                      child:CachedNetworkImage(
                     fit: BoxFit.cover,
                     placeholder: (context, url) => CircularProgressIndicator(),
                     imageUrl: widget.event.url,
-                  )),
+                  ))),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
