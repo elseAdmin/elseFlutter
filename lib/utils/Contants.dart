@@ -21,4 +21,5 @@ class Constants {
    //below have to go into mysql, how and who will set these back to false logically?
    static bool parkingEligibleUser = false;
    static bool hasScannedForParking = false;
+   static int parkingLevel=-1;
 }
