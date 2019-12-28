@@ -1,7 +1,7 @@
 import 'package:else_app_two/models/beacon_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'base_model.dart';
+import '../../../models/base_model.dart';
 
 class EventModel extends BaseModel{
   String description;

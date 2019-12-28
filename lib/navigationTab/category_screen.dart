@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:else_app_two/models/shop_model.dart';
+import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/category_grid.dart';
 import 'package:flutter/material.dart';
 

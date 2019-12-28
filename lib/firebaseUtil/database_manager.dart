@@ -2,17 +2,18 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
+import 'package:else_app_two/beaconAds/models/user_deal_model.dart';
+import 'package:else_app_two/home/events/models/user_event_submission_model.dart';
 import 'package:else_app_two/models/base_model.dart';
-import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/models/feedback_model.dart';
-import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
-import 'package:else_app_two/models/firestore/loc_submission_model.dart';
-import 'package:else_app_two/models/firestore/offline_submission_model.dart';
-import 'package:else_app_two/models/firestore/online_submission_model.dart';
-import 'package:else_app_two/models/firestore/user_parking_model.dart';
-import 'package:else_app_two/models/firestore/user_request_model.dart';
-import 'package:else_app_two/models/user_deal_model.dart';
-import 'package:else_app_two/models/user_feedback_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
+import 'package:else_app_two/feedback/models/feedback_model.dart';
+import 'package:else_app_two/home/events/models/loc_submission_model.dart';
+import 'package:else_app_two/home/events/models/offline_submission_model.dart';
+import 'package:else_app_two/home/events/models/online_submission_model.dart';
+import 'package:else_app_two/parkingTab/models/user_parking_model.dart';
+import 'package:else_app_two/requests/models/user_request_model.dart';
+import 'package:else_app_two/feedback/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -38,23 +39,71 @@ class DatabaseManager {
     }
   }
 
-  getUserFeedbackDetails(String path) async{
+  getAllActivityOfUser() async {
+    //below querries should fetch max 1 month data
+    List<ParkingModel> parkingActivityList =
+        await DatabaseManager().getAllParkings();
+    List<UserDealModel> userDealsActivityList =
+        await DatabaseManager().getGrabbedDeals();
+    List<UserEventSubmissionModel> allEventAndSubmissionList =
+        await DatabaseManager().getAllEventActivityForUser();
+    List<UserRequestModal> requestList =
+        await DatabaseManager().getRequestsForUser();
+    List<UserFeedBack> feedbackList =
+        await DatabaseManager().getAllFeedbacksForUser();
+
+    Map map = HashMap();
+    List activities = List();
+    List timestamps = List();
+    parkingActivityList.forEach((parking){
+      map.putIfAbsent(parking.timestamp, ()=>parking);
+      timestamps.add(parking.timestamp);
+    });
+    userDealsActivityList.forEach((deal){
+      map.putIfAbsent(deal.timestamp, ()=>deal);
+      timestamps.add(deal.timestamp);
+    });
+    allEventAndSubmissionList.forEach((event){
+      map.putIfAbsent(event.timestamp, ()=>event);
+      timestamps.add(event.timestamp);
+    });
+    requestList.forEach((request){
+      map.putIfAbsent(request.timestamp, ()=>request);
+      timestamps.add(request.timestamp);
+    });
+    feedbackList.forEach((feedback){
+      map.putIfAbsent(feedback.timestamp, ()=>feedback);
+      timestamps.add(feedback.timestamp);
+    });
+    timestamps.sort();
+    timestamps.forEach((act){
+      //logger.i(act);
+    });
+    for(int i=timestamps.length-1;i>=0;i--){
+      activities.add(map[timestamps[i]]);
+    }
+    return activities;
+   }
+
+  getUserFeedbackDetails(String path) async {
     FeedBack feedBack;
     logger.i(path);
-    await store.document(path).get().then((doc){
-      feedBack = FeedBack.fromMap(doc.data,doc.documentID);
+    await store.document(path).get().then((doc) {
+      feedBack = FeedBack.fromMap(doc.data, doc.documentID);
     });
     return feedBack;
   }
 
-  Future getAllFeedbacksForUser() async{
+  Future getAllFeedbacksForUser() async {
     List<UserFeedBack> feedbacks = List();
     await store
         .collection(StartupData.userReference)
+    // VERY IMP , remove hard coded user
         .document("3myGjUrtkOW0lwwjnMLIj7UUWKW2")
         .collection("feedbacks")
-        .getDocuments().then((docs){
-      docs.documents.forEach((doc){
+        .getDocuments()
+        .then((docs) {
+      docs.documents.forEach((doc) {
         UserFeedBack request = UserFeedBack.fromMap(doc.data);
         feedbacks.add(request);
       });
@@ -355,6 +404,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
+      "eventName": event.name,
       "timestamp": DateTime.now().millisecondsSinceEpoch
     });
     return;
@@ -415,6 +465,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": pathToUserSubmission,
+      "eventName": event.name,
       "participatedAt": DateTime.now().millisecondsSinceEpoch
     });
 
@@ -454,6 +505,7 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
+      "eventName": event.name,
       "participatedAt": DateTime.now().millisecondsSinceEpoch
     });
 
@@ -538,7 +590,7 @@ class DatabaseManager {
 
     if (parkingModel != null) {
       Constants.parkingEligibleUser = false;
-    }else{
+    } else {
       parkingModel = ParkingModel(null);
     }
 
@@ -629,7 +681,7 @@ class DatabaseManager {
     return seen;
   }
 
-  saveUserRequest(String requestPath) async{
+  saveUserRequest(String requestPath) async {
     await store
         .collection(StartupData.userReference)
         .document(StartupData.userid)
@@ -641,19 +693,38 @@ class DatabaseManager {
     });
   }
 
-  getRequestsForUser() async{
+  Future getRequestsForUser() async {
     List<UserRequestModal> requests = List();
     await store
-      .collection(StartupData.userReference)
-      .document(StartupData.userid)
-      .collection("requests")
-      .getDocuments().then((docs){
-        docs.documents.forEach((doc){
-            UserRequestModal request = UserRequestModal(doc);
-            requests.add(request);
-        });
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("requests")
+        .getDocuments()
+        .then((docs) {
+      docs.documents.forEach((doc) {
+        UserRequestModal request = UserRequestModal(doc);
+        requests.add(request);
+      });
     });
     return requests;
+  }
+
+  Future getAllEventActivityForUser() async {
+    List<UserEventSubmissionModel> allEventAndSubmissionUrls = List();
+
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("events")
+        .getDocuments()
+        .then((snapshot) {
+      snapshot.documents.forEach((doc) {
+        UserEventSubmissionModel model = UserEventSubmissionModel(doc);
+        allEventAndSubmissionUrls.add(model);
+      });
+    });
+
+    return allEventAndSubmissionUrls;
   }
 
   DatabaseReference getEventsDBRef() {

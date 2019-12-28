@@ -1,10 +1,10 @@
 
 import 'package:else_app_two/home/events/singleEvent/SingleEventPageViewHandler.dart';
 import 'package:else_app_two/models/base_model.dart';
-import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/models/firestore/loc_submission_model.dart';
-import 'package:else_app_two/models/firestore/offline_submission_model.dart';
-import 'package:else_app_two/models/firestore/online_submission_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
+import 'package:else_app_two/home/events/models/loc_submission_model.dart';
+import 'package:else_app_two/home/events/models/offline_submission_model.dart';
+import 'package:else_app_two/home/events/models/online_submission_model.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/helper_methods.dart';
 import 'package:flutter/material.dart';

@@ -1,6 +1,6 @@
 import 'package:else_app_two/firebaseUtil/api.dart';
-import 'package:else_app_two/models/feedback_crud_model.dart';
-import 'package:else_app_two/models/feedback_model.dart';
+import 'package:else_app_two/feedback/models/feedback_crud_model.dart';
+import 'package:else_app_two/feedback/models/feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 

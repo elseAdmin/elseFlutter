@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
-import 'package:else_app_two/models/feedback_model.dart';
+import 'package:else_app_two/feedback/models/feedback_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class FeedbackCrudModel extends ChangeNotifier{

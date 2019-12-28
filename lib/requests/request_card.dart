@@ -1,11 +1,11 @@
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/request_model.dart';
-import 'package:else_app_two/models/user_model.dart';
+import 'package:else_app_two/requests/models/request_model.dart';
+import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
-import 'package:else_app_two/models/request_crud_model.dart';
-import 'package:else_app_two/models/user_crud_model.dart';
+import 'package:else_app_two/requests/models/request_crud_model.dart';
+import 'package:else_app_two/auth/models/user_crud_model.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

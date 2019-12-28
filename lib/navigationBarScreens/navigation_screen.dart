@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
-import 'package:else_app_two/models/shop_model.dart';
+import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/category_screen.dart';
 import 'package:else_app_two/navigationTab/search_screen.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:else_app_two/models/request_model.dart';
+import 'package:else_app_two/requests/models/request_model.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:flutter/material.dart';
 

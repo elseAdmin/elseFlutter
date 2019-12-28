@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/pick_gallery_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/past_submission_view.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/submission_confirmation_dialogue.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/just_submitted_view.dart';

@@ -1,7 +1,7 @@
-import 'package:else_app_two/basicElements/AdScreen.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
+import 'package:else_app_two/beaconAds/AdScreen.dart';
+import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -59,24 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    DatabaseManager().getAllParkings().then((result){
-      //logger.i(result.length);
-    });
-
-    DatabaseManager().getGrabbedDeals().then((result){
-      //logger.i(result.length);
-    });
-
-    DatabaseManager().getAllEventsForUser().then((result){
-      //logger.i(result.length);
-    });
-
-    DatabaseManager().getRequestsForUser().then((result){
-     //logger.i(result.length);
-    });
-    DatabaseManager().getAllFeedbacksForUser().then((result){
-      logger.i(result.length);
-    });
+    DatabaseManager().getAllActivityOfUser();
   }
 
   @override
