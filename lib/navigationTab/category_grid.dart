@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/vendor_list.dart';
 import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
 class CategoryGrid extends StatelessWidget{
@@ -41,8 +42,8 @@ class CategoryGrid extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(left:SizeConfig.blockSizeHorizontal*1,right:SizeConfig.blockSizeHorizontal*1,bottom:SizeConfig.blockSizeVertical*20),
         height: MediaQuery.of(context).size.height * 0.9,
-        margin: EdgeInsets.all(10),
         child: GridView.builder(
             itemCount: categoryList.length,
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(

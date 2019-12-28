@@ -30,6 +30,26 @@ class MyEventState extends State<MyEvents> {
   Widget build(BuildContext context) {
     // TODO: implement build
     if (details != null) {
+      if(details.isEmpty){
+        return Scaffold(
+            backgroundColor: Constants.mainBackgroundColor,
+            appBar: AppBar(
+              backgroundColor: Constants.titleBarBackgroundColor,
+              iconTheme: IconThemeData(
+                color: Constants.textColor, //change your color here
+              ),
+              title: Text(
+                "My Events",
+                style: TextStyle(
+                  color: Constants.titleBarTextColor,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            body: Center(
+              child:Text("You have not participated in any event till now"),
+            ));
+      }
       return Scaffold(
           backgroundColor: Constants.mainBackgroundColor,
           appBar: AppBar(

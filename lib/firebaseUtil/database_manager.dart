@@ -744,6 +744,20 @@ class DatabaseManager {
     return allEventAndSubmissionUrls;
   }
 
+  Future getEventModelFromEventUrl(String url) async{
+    EventModel event;
+    await FirebaseDatabase.instance
+        .reference()
+        .child(url)
+        .once()
+        .then((receivedEvents) {
+       event = EventModel(receivedEvents);
+    }).catchError((error) {
+      logger.e(error);
+    });
+    return event;
+  }
+
   DatabaseReference getEventsDBRef() {
     return baseDatabase.child('eventStaticData');
   }
