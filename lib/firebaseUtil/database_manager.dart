@@ -39,6 +39,15 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
+  
+  saveUserRatingForStore(String storeName,double rating) async{
+    await store.collection(Constants.universe).document("store").collection("rating").add({
+      "rating":rating,
+      "timestamp":DateTime.now().millisecondsSinceEpoch,
+      "userUid":StartupData.userid,
+      "storeName":storeName
+    });
+  }
 
   getAllActivityOfUser() async {
     ///IMP
@@ -104,7 +113,6 @@ class DatabaseManager {
 
   getUserFeedbackDetails(String path) async {
     FeedBack feedBack;
-    logger.i(path);
     await store.document(path).get().then((doc) {
       feedBack = FeedBack.fromMap(doc.data, doc.documentID);
     });
