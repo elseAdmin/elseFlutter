@@ -16,7 +16,7 @@ class Constants {
 
    static String pendingStatusMessage = "Your submssion is pending approval";
 
-   static String universe = "Else";
+   static String universe = "unityOneRohini";
 
    //below have to go into mysql, how and who will set these back to false logically?
    static bool parkingEligibleUser = false;

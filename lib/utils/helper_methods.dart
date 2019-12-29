@@ -1,5 +1,5 @@
 class HelperMethods {
-  getMonthNameForMonth(String mon) {
+  String getMonthNameForMonth(String mon) {
       if (int.parse(mon) == 1) {
         return "Jan";
       }
@@ -36,6 +36,7 @@ class HelperMethods {
       if (int.parse(mon) == 12) {
         return "Dec";
     }
+      return "None";
   }
 
   bool isTimestampForToday(int timestamp) {
