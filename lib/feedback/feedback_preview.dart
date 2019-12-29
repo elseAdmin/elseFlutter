@@ -3,6 +3,7 @@ import 'package:else_app_two/feedback/models/feedback_crud_model.dart';
 import 'package:else_app_two/feedback/models/feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
+import 'package:else_app_two/utils/helper_methods.dart';
 import 'package:flutter/material.dart';
 
 import 'FeedbackStatus.dart';
@@ -72,7 +73,7 @@ class FeedBackPreview {
               children: <Widget>[
                 richTextData(
                     'Status', getStatusString(feedBack.feedbackStatus)),
-                richTextData('Updated On', feedBack.updatedDate.toString()),
+                richTextData('Updated On', feedBack.updatedDate.day.toString()+" "+HelperMethods().getMonthNameForMonth(feedBack.updatedDate.month.toString())),
                 richTextData('Place', universe),
               ],
             ),
@@ -121,7 +122,7 @@ class FeedBackPreview {
                 children: <Widget>[
                   richTextData(
                       'Status', getStatusString(feedBack.feedbackStatus)),
-                  richTextData('Updated On', feedBack.updatedDate.toString()),
+                  richTextData('Updated On', feedBack.updatedDate.day.toString()+" "+HelperMethods().getMonthNameForMonth(feedBack.updatedDate.month.toString())),
                   richTextData('Place', universe),
                 ],
               ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
+import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/feedback/FeedbackStatus.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
@@ -36,6 +37,9 @@ class _NewFeedBack extends State<NewFeedBack>{
   final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
   final StorageManager _storageManager = StorageManager(StartupData.dbreference+'/feedback/');
 
+  setUserRating(double rating) {
+    _intensityValue = rating;
+  }
   onImageSelectedFromCamera(file) async {
 //    print('Uploading File :: ' + file.toString());
     int id = new DateTime.now().millisecondsSinceEpoch;
@@ -191,20 +195,7 @@ class _NewFeedBack extends State<NewFeedBack>{
                   ),
                   paddingData(),
                   Text("Rate your experience"),
-                  Slider(
-                    value: _intensityValue,
-                    min: 0.0,
-                    max: 5.0,
-                    divisions: 5,
-                    onChanged: (double newValue) {
-                      setState(() {
-                        _intensityValue = newValue;
-                      });
-                    },
-                    activeColor: Colors.blue,
-                    inactiveColor: Colors.black45,
-                    label: _intensityValue.toString(),
-                  ),
+                  SliderImpl(this.setUserRating),
                   paddingData(),
                   TextFormField(
                     maxLines: 8,
