@@ -14,33 +14,33 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class MyFeedbackPage extends StatefulWidget {
   @override
   _MyFeedbackPage createState() => _MyFeedbackPage();
 }
 
 class _MyFeedbackPage extends State<MyFeedbackPage> {
-
   UserFeedBackCrudModel userFeedBackCrudModel;
   List<UserFeedBack> _userFeedbackList = [];
   List<FeedBackPreview> _feedBackPreviewMap = List();
   FeedbackCrudModel feedbackCrudModel;
 
   @override
-  void didChangeDependencies() async{
+  void didChangeDependencies() async {
     super.didChangeDependencies();
     final BaseAuth _auth = AuthProvider.of(context).auth;
     final String userId = await _auth.currentUser();
     String path = 'users/$userId/feedbacks';
     userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
-    List<UserFeedBack> userFeedBackList = await userFeedBackCrudModel.fetchUserFeedBackList();
-    if(userFeedBackList.isNotEmpty){
-      for(UserFeedBack userFeedBack in userFeedBackList){
-        FeedBack feedBack = await DatabaseManager().getUserFeedbackDetails(userFeedBack.url);
-        if(feedBack != null){
-          FeedBackPreview feedBackPreview = new FeedBackPreview
-            (feedBack.id, userFeedBack.universe, feedBack, false);
+    List<UserFeedBack> userFeedBackList =
+        await userFeedBackCrudModel.fetchUserFeedBackList();
+    if (userFeedBackList.isNotEmpty) {
+      for (UserFeedBack userFeedBack in userFeedBackList) {
+        FeedBack feedBack =
+            await DatabaseManager().getUserFeedbackDetails(userFeedBack.url);
+        if (feedBack != null) {
+          FeedBackPreview feedBackPreview = new FeedBackPreview(
+              feedBack.id, userFeedBack.universe, feedBack, false);
           setState(() {
             _userFeedbackList = userFeedBackList;
             _feedBackPreviewMap.add(feedBackPreview);
@@ -51,7 +51,7 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
     }
   }
 
-  _onExpansion(int index, bool isExpanded){
+  _onExpansion(int index, bool isExpanded) {
 //    print("Index::: "+index.toString());
     FeedBackPreview feedBackPreview = _feedBackPreviewMap[index];
     feedBackPreview.expanded = !feedBackPreview.expanded;
@@ -64,62 +64,46 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Constants.textColor),
-        backgroundColor: Constants.titleBarBackgroundColor,
-        title: Text(
-          "Feedbacks",
-          style: TextStyle(
-            color: Constants.titleBarTextColor,
-            fontSize: 18,
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: (){
-          Navigator.push(context,
-            MaterialPageRoute(
-              builder: (context) => NewFeedBack(),
-            ),
-          );
-        },
-      ),
-      body: Card(
-        child: SingleChildScrollView(
-          child: Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                    "All feedback threads",
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 0.0, top: 18.0, right: 0.0, bottom: 0.0),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 1,
-                    itemBuilder: (BuildContext context, int index){
-                      List<ExpansionPanel> myExpansionPanelList = [];
-                      for(int i=0; i<_feedBackPreviewMap.length; ++i ){
-                        myExpansionPanelList.add(_feedBackPreviewMap[i].buildExpansionPanel());
-                      }
-                      return new ExpansionPanelList(
-                        children: myExpansionPanelList,
-                        expansionCallback: _onExpansion,
-                      );
-                    },
-                  ),
-                ),
-              ],
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Constants.textColor),
+          backgroundColor: Constants.titleBarBackgroundColor,
+          title: Text(
+            "Feedbacks",
+            style: TextStyle(
+              color: Constants.titleBarTextColor,
+              fontSize: 18,
             ),
           ),
         ),
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NewFeedBack(),
+              ),
+            );
+          },
+        ),
+        body: ListView.builder(
+          shrinkWrap: true,
+          itemCount: 1,
+          itemBuilder: (BuildContext context, int index) {
+            List<ExpansionPanel> myExpansionPanelList = [];
+            for (int i = 0; i < _feedBackPreviewMap.length; ++i) {
+              myExpansionPanelList
+                  .add(_feedBackPreviewMap[i].buildExpansionPanel());
+            }
+            return new ExpansionPanelList(
+              children: myExpansionPanelList,
+              expansionCallback: _onExpansion,
+            );
+          },
+        ));
   }
 
-  Widget paddingData(){
+  Widget paddingData() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0),
     );
