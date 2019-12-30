@@ -49,6 +49,15 @@ class DatabaseManager {
     });
   }
 
+  void saveUserReviewForStore(String storeName, String userReview) async{
+    await store.collection(Constants.universe).document("store").collection("review").add({
+      "review":userReview,
+      "timestamp":DateTime.now().millisecondsSinceEpoch,
+      "userUid":StartupData.userid,
+      "storeName":storeName
+    });
+  }
+
   getAllActivityOfUser() async {
     ///IMP
     //below querries should fetch max 1 month data
