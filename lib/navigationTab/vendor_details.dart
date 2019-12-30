@@ -11,10 +11,25 @@ class VendorDetails extends StatelessWidget {
   final ShopModel _shopModel;
   VendorDetails(this._shopModel);
   double userRating = -1;
+  String userReview;
 
   _submitUserRating() {
     if (userRating != -1) {
       DatabaseManager().saveUserRatingForStore(_shopModel.name, userRating);
+      Fluttertoast.showToast(
+          msg: "Thanks for the effort",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: 14.0);
+    }
+  }
+
+  _submitUserReview() {
+    if (userReview != null) {
+      DatabaseManager().saveUserReviewForStore(_shopModel.name, userReview);
       Fluttertoast.showToast(
           msg: "Thanks for the effort",
           toastLength: Toast.LENGTH_SHORT,
@@ -32,6 +47,7 @@ class VendorDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String storeName = _shopModel.name;
     SizeConfig().init(context);
     return Scaffold(
       body: Container(
@@ -56,10 +72,8 @@ class VendorDetails extends StatelessWidget {
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  paddingData(),
                   Card(
                     child: ListTile(
-                      contentPadding: EdgeInsets.all(12.0),
                       title: Text('${_shopModel.name}',
                           style: TextStyle(
                               fontSize: 20,
@@ -75,12 +89,10 @@ class VendorDetails extends StatelessWidget {
                                   fontSize: 15,
                                   color: Constants.textColor,
                                   fontWeight: FontWeight.w300)),
-                          paddingData(),
                         ],
                       ),
                     ),
                   ),
-                  paddingData(),
                   Card(
                     child: ListTile(
                       title: Text('Details',
@@ -103,7 +115,6 @@ class VendorDetails extends StatelessWidget {
                       ),
                     ),
                   ),
-                  paddingData(),
                   Card(
                     child: ListTile(
                       title: Text('Offers',
@@ -141,6 +152,41 @@ class VendorDetails extends StatelessWidget {
                       ]),
                     ),
                   ),
+                  Card(
+                    child: ListTile(
+                      title: Text('Review',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Constants.textColor,
+                              fontWeight: FontWeight.w600)),
+                      subtitle: Column(children: <Widget>[
+                        TextField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 2,
+                          onChanged: (text) {
+                            userReview = text;
+                          },
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Write a review for $storeName'),
+                        ),
+                        GestureDetector(
+                          child: Container(
+                              padding: EdgeInsets.only(
+                                  top: SizeConfig.blockSizeVertical,
+                                  bottom: SizeConfig.blockSizeVertical * 2),
+                              child: Text(
+                                "Submit",
+                                style: TextStyle(fontSize: 16),
+                              )),
+                          onTap: () => _submitUserReview(),
+                        )
+                      ]),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical*3),
+                  )
                 ],
               ),
             ),
