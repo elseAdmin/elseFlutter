@@ -122,10 +122,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }*/
 
-  Future<Null> _handleRefresh() async {
-    await new Future.delayed(new Duration(seconds: 1));
-    return null;
-  }
 
   void pushAdScreen(AdBeacon adBeacon) {
     showDialog(
@@ -147,10 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        child: handler.getViewForNavigationBarIndex(bottomNavIndex),
-        onRefresh: _handleRefresh,
-      ),
+      body: handler.getViewForNavigationBarIndex(bottomNavIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: bottomNavIndex,
         type: BottomNavigationBarType.fixed,
