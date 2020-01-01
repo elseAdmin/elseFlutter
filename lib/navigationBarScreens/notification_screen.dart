@@ -14,7 +14,7 @@ class NotificationScreenState extends State<NotificationScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    DatabaseManager().getAllActivityOfUser().then((activities) {
+    DatabaseManager().getAllActivityOfUser(false).then((activities) {
       setState(() {
         this.activities = activities;
       });

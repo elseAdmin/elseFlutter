@@ -59,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    DatabaseManager().getAllActivityOfUser();
   }
 
   @override

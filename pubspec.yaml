@@ -26,7 +26,6 @@ dependencies:
   firebase_database:
   logger:
   image_picker:
-  pull_to_refresh:
   firebase_storage:
   loading:
   cached_network_image: ^2.0.0-rc.1
