@@ -27,6 +27,8 @@ class DatabaseManager {
   DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
   FirebaseStorage storageRef;
   Map<String, List> universeVsParticipatedEvents = HashMap();
+  static Map activityTimelineMap;
+
   DatabaseManager() {
     if (storageRef == null) {
       storageRef = FirebaseStorage.instance;
@@ -39,85 +41,96 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
-  
-  saveUserRatingForStore(String storeName,double rating) async{
-    await store.collection(Constants.universe).document("store").collection("rating").add({
-      "rating":rating,
-      "timestamp":DateTime.now().millisecondsSinceEpoch,
-      "userUid":StartupData.userid,
-      "storeName":storeName
+
+  saveUserRatingForStore(String storeName, double rating) async {
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("rating")
+        .add({
+      "rating": rating,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "userUid": StartupData.userid,
+      "storeName": storeName
     });
   }
 
-  void saveUserReviewForStore(String storeName, String userReview) async{
-    await store.collection(Constants.universe).document("store").collection("review").add({
-      "review":userReview,
-      "timestamp":DateTime.now().millisecondsSinceEpoch,
-      "userUid":StartupData.userid,
-      "storeName":storeName
+  void saveUserReviewForStore(String storeName, String userReview) async {
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("review")
+        .add({
+      "review": userReview,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "userUid": StartupData.userid,
+      "storeName": storeName
     });
   }
 
-  getAllActivityOfUser() async {
+  getAllActivityOfUser(bool refresh) async {
     ///IMP
-    //below querries should fetch max 1 month data
-    List<ParkingModel> parkingActivityList =
-        await DatabaseManager().getAllParkings();
-    List<UserDealModel> userDealsActivityList =
-        await DatabaseManager().getGrabbedDeals();
-    List<UserEventSubmissionModel> allEventAndSubmissionList =
-        await DatabaseManager().getAllEventActivityForUser();
-    List<UserRequestModal> requestList =
-        await DatabaseManager().getRequestsForUser();
-    List<UserFeedBack> feedbackList =
-        await DatabaseManager().getAllFeedbacksForUser();
+    //below queries should fetch max 1 month data
+    if (activityTimelineMap == null || refresh) {
+      activityTimelineMap = HashMap();
+      List<ParkingModel> parkingActivityList =
+          await DatabaseManager().getAllParkings();
+      List<UserDealModel> userDealsActivityList =
+          await DatabaseManager().getGrabbedDeals();
+      List<UserEventSubmissionModel> allEventAndSubmissionList =
+          await DatabaseManager().getAllEventActivityForUser();
+      List<UserRequestModal> requestList =
+          await DatabaseManager().getRequestsForUser();
+      List<UserFeedBack> feedbackList =
+          await DatabaseManager().getAllFeedbacksForUser();
 
-    Map map = HashMap();
-    List timestamps = List();
-    parkingActivityList.forEach((parking) {
-      map.putIfAbsent(parking.timestamp, () => parking);
-      timestamps.add(parking.timestamp);
-    });
-    userDealsActivityList.forEach((deal) {
-      map.putIfAbsent(deal.timestamp, () => deal);
-      timestamps.add(deal.timestamp);
-    });
-    allEventAndSubmissionList.forEach((event) {
-      map.putIfAbsent(event.timestamp, () => event);
-      timestamps.add(event.timestamp);
-    });
-    requestList.forEach((request) {
-      map.putIfAbsent(request.timestamp, () => request);
-      timestamps.add(request.timestamp);
-    });
-    feedbackList.forEach((feedback) {
-      map.putIfAbsent(feedback.timestamp, () => feedback);
-      timestamps.add(feedback.timestamp);
-    });
+      Map map = HashMap();
+      List timestamps = List();
+      parkingActivityList.forEach((parking) {
+        map.putIfAbsent(parking.timestamp, () => parking);
+        timestamps.add(parking.timestamp);
+      });
+      userDealsActivityList.forEach((deal) {
+        map.putIfAbsent(deal.timestamp, () => deal);
+        timestamps.add(deal.timestamp);
+      });
+      allEventAndSubmissionList.forEach((event) {
+        map.putIfAbsent(event.timestamp, () => event);
+        timestamps.add(event.timestamp);
+      });
+      requestList.forEach((request) {
+        map.putIfAbsent(request.timestamp, () => request);
+        timestamps.add(request.timestamp);
+      });
+      feedbackList.forEach((feedback) {
+        map.putIfAbsent(feedback.timestamp, () => feedback);
+        timestamps.add(feedback.timestamp);
+      });
 
-    timestamps.sort();
+      timestamps.sort();
 
-    List todaysActivities = List();
-    List thisWeekActivities = List();
-    List thisMonthActivities = List();
-    HelperMethods helper = HelperMethods();
-    for (int i = timestamps.length - 1; i >= 0; i--) {
-      if(helper.isTimestampForToday(timestamps[i])){
-        todaysActivities.add(map[timestamps[i]]);
-      }else if(helper.isTimestampForThisWeek(timestamps[i])){
-        thisWeekActivities.add(map[timestamps[i]]);
-      }else{
-        thisMonthActivities.add(map[timestamps[i]]);
+      List todaysActivities = List();
+      List thisWeekActivities = List();
+      List thisMonthActivities = List();
+      HelperMethods helper = HelperMethods();
+      for (int i = timestamps.length - 1; i >= 0; i--) {
+        if (helper.isTimestampForToday(timestamps[i])) {
+          todaysActivities.add(map[timestamps[i]]);
+        } else if (helper.isTimestampForThisWeek(timestamps[i])) {
+          thisWeekActivities.add(map[timestamps[i]]);
+        } else {
+          thisMonthActivities.add(map[timestamps[i]]);
+        }
       }
 
+      activityTimelineMap.putIfAbsent("today", () => todaysActivities);
+      activityTimelineMap.putIfAbsent("week", () => thisWeekActivities);
+      activityTimelineMap.putIfAbsent("month", () => thisMonthActivities);
+
+      return activityTimelineMap;
+    } else {
+      return activityTimelineMap;
     }
-
-    Map activityTimelineMap = HashMap();
-    activityTimelineMap.putIfAbsent("today",() => todaysActivities);
-    activityTimelineMap.putIfAbsent("week",() => thisWeekActivities);
-    activityTimelineMap.putIfAbsent("month",() => thisMonthActivities);
-
-    return activityTimelineMap;
   }
 
   getUserFeedbackDetails(String path) async {
@@ -500,7 +513,7 @@ class DatabaseManager {
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": pathToUserSubmission,
       "eventName": event.name,
-      "participatedAt": DateTime.now().millisecondsSinceEpoch
+      "timestamp": DateTime.now().millisecondsSinceEpoch
     });
 
     logger.i("Event submission details saved successfully");
@@ -540,7 +553,7 @@ class DatabaseManager {
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
       "eventName": event.name,
-      "participatedAt": DateTime.now().millisecondsSinceEpoch
+      "timestamp": DateTime.now().millisecondsSinceEpoch
     });
 
     return;
@@ -761,14 +774,14 @@ class DatabaseManager {
     return allEventAndSubmissionUrls;
   }
 
-  Future getEventModelFromEventUrl(String url) async{
+  Future getEventModelFromEventUrl(String url) async {
     EventModel event;
     await FirebaseDatabase.instance
         .reference()
         .child(url)
         .once()
         .then((receivedEvents) {
-       event = EventModel(receivedEvents);
+      event = EventModel(receivedEvents);
     }).catchError((error) {
       logger.e(error);
     });

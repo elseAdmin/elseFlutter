@@ -20,6 +20,7 @@ class EventSectionState extends State<EventSection> {
   final logger = Logger();
   List<EventModel> events = new List();
   final DatabaseManager manager = DatabaseManager();
+  List<EventModel> events2 = new List();
 
   @override
   void initState() {
@@ -60,19 +61,19 @@ class EventSectionState extends State<EventSection> {
                             EventListPage(events)));
               },
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                Text(
-                  "Events",
-                  style: TextStyle(
-                    fontSize: Constants.homePageHeadingsFontSize,
-                  ),
-                ),
-                Divider(
-                    endIndent: SizeConfig.blockSizeHorizontal * 60,
-                    color: Colors.black87,
-                    height: SizeConfig.blockSizeVertical)
-              ]),
+                    Text(
+                      "Events",
+                      style: TextStyle(
+                        fontSize: Constants.homePageHeadingsFontSize,
+                      ),
+                    ),
+                    Divider(
+                        endIndent: SizeConfig.blockSizeHorizontal * 60,
+                        color: Colors.black87,
+                        height: SizeConfig.blockSizeVertical)
+                  ]),
             )),
         Container(
             padding: EdgeInsets.only(
