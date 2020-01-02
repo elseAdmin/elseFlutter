@@ -1,19 +1,19 @@
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
 import 'package:else_app_two/beaconAds/AdScreen.dart';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'auth/auth.dart';
 import 'auth/auth_provider.dart';
 
 void main() {
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
   runApp(MaterialApp(
     title: 'Else',
     home: MyApp(),

@@ -32,11 +32,13 @@ class _DealsDetails extends State<DealsDetails>{
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  background: CachedNetworkImage(
+                  background:Opacity(
+                      opacity: 0.6,
+                      child:  CachedNetworkImage(
                     fit: BoxFit.cover,
                     placeholder: (context, url) => CircularProgressIndicator(),
                     imageUrl: widget.deals.url,
-                  )),
+                  ))),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
