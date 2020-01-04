@@ -11,8 +11,13 @@ import 'package:else_app_two/parkingTab/section_c_parking.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+typedef BoolCallback = void Function(bool);
 
 class SectionContainer extends StatefulWidget{
+  final BoolCallback onParkedVehicle;
+  SectionContainer(this.onParkedVehicle);
 
   @override
   _SectionContainer createState() => _SectionContainer();
@@ -26,6 +31,7 @@ class _SectionContainer extends State<SectionContainer>{
   HashMap<String, bool> _userMap = new HashMap();
   FireBaseApi _fireBaseApi = FireBaseApi("parking");
   var _sensorStream = StreamController<String>();
+//  PanelController _panelController = new PanelController();
 
   @override
   Future didChangeDependencies() async{
@@ -38,12 +44,14 @@ class _SectionContainer extends State<SectionContainer>{
     var results = await _fireBaseApi.getDataSnapshot();
     List sensorNameList = results.value.keys.toList();
     Map<dynamic, dynamic> values = results.value;
+
     for(String sensor in sensorNameList){
       SensorModel sensorModel = SensorModel.fromMap(values[sensor]);
       sensorModelMap[sensor] = sensorModel;
       userMap[sensor] = false;
       if(sensorModelMap[sensor].userUid == currentUser){
         userMap[sensor] = true;
+        widget.onParkedVehicle(true);
       }
       sensorStream.add(sensor);
     }
@@ -67,6 +75,7 @@ class _SectionContainer extends State<SectionContainer>{
         _sensorModelMap[sensorModel.name] = sensorModel;
         if(sensorModel.userUid == StartupData.userid){
           _userMap[sensorModel.name] = true;
+          widget.onParkedVehicle(true);
         } else{
           _userMap[sensorModel.name] = false;
         }
@@ -92,6 +101,7 @@ class _SectionContainer extends State<SectionContainer>{
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Container(
+//        height: MediaQuery.of(context).size.height / 10 * 4,
         decoration: BoxDecoration(
           color: Colors.blueGrey[100],
           border: Border.all(
@@ -124,6 +134,46 @@ class _SectionContainer extends State<SectionContainer>{
         ),
       ),
     );
+
+    /*return SlidingUpPanel(
+      controller: _panelController,
+      minHeight: 4.0,
+      panel: Center(child: Text('Sliding panel'),),
+      body: SizedBox.expand(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.blueGrey[100],
+            border: Border.all(
+              color: Colors.black,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.all(
+                Radius.circular(5.0)
+            ),
+          ),
+          child: FittedBox(
+            alignment: Alignment.topLeft,
+            child: StreamBuilder(
+              stream: _sensorStream.stream,
+              builder: (context, asyncSnapshot){
+                if(asyncSnapshot.hasData){
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SectionAParking(_sensorModelMap,_userMap,factor),
+                      SectionBParking(_sensorModelMap, _userMap, factor),
+                      SectionCParking(_sensorModelMap, _userMap, factor),
+                    ],
+                  );
+                } else {
+                  return Container(child: Center(child: Text('Loading data'),),);
+                }
+              },
+            ),
+          ),
+        ),
+      ),
+    );*/
   }
 
 }

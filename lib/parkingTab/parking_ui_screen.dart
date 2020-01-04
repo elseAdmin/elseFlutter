@@ -2,6 +2,7 @@ import 'package:else_app_two/parkingTab/section_a_parking.dart';
 import 'package:else_app_two/parkingTab/section_container.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class ParkingUIScreen extends StatefulWidget{
   @override
@@ -11,6 +12,15 @@ class ParkingUIScreen extends StatefulWidget{
 class _ParkingUIScreen extends State<ParkingUIScreen>{
   List<String> _floorLevel = ['Level -1', 'Level 0', 'Level 1', 'Level 2']; // Option 2
   String _selectedLocation = 'Level 0';
+  PanelController _panelController = new PanelController();
+  bool _isUserParked = false;
+
+  void _parkedVehicle(bool _isUserParked){
+    
+    setState(() {
+      _isUserParked = _isUserParked;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,15 +93,29 @@ class _ParkingUIScreen extends State<ParkingUIScreen>{
           ),
         ),
       ),
-      body: Container(
-        color: Colors.white,
-        alignment: AlignmentDirectional(0.0, 0.0),
-        child: Container(
-          margin: new EdgeInsets.all(10.0),
-          child: SectionContainer(),
+      body: SlidingUpPanel(
+        controller: _panelController,
+        minHeight: 50.0,
+        panel: Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              richTextData('Vacant on this Floor','42'),
+              richTextData('Total on this Floor','204'),
+            ],
+          ),
+        ),
+        body: Container(
+          color: Colors.white,
+          alignment: AlignmentDirectional(0.0, 0.0),
+          child: Container(
+            margin: new EdgeInsets.all(10.0),
+//            padding: EdgeInsets.only(bottom: 50.0),
+            child: SectionContainer(_parkedVehicle),
+          ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
+      /*bottomNavigationBar: BottomAppBar(
         child: Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -101,8 +125,14 @@ class _ParkingUIScreen extends State<ParkingUIScreen>{
             ],
           ),
         ),
-      ),
+      ),*/
     );
+  }
+
+  Widget slidingPanelData(){
+    if(_isUserParked){
+      return null;
+    }
   }
 
   Widget richTextData(String heading, String data){
