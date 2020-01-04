@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/events_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/home/events/singleEvent/SingleEventPageViewHandler.dart';
 import 'package:else_app_two/home/events/all_event_list_page.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -20,6 +20,7 @@ class EventSectionState extends State<EventSection> {
   final logger = Logger();
   List<EventModel> events = new List();
   final DatabaseManager manager = DatabaseManager();
+  List<EventModel> events2 = new List();
 
   @override
   void initState() {
@@ -60,19 +61,19 @@ class EventSectionState extends State<EventSection> {
                             EventListPage(events)));
               },
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                Text(
-                  "Events",
-                  style: TextStyle(
-                    fontSize: Constants.homePageHeadingsFontSize,
-                  ),
-                ),
-                Divider(
-                    endIndent: SizeConfig.blockSizeHorizontal * 60,
-                    color: Colors.black87,
-                    height: SizeConfig.blockSizeVertical)
-              ]),
+                    Text(
+                      "Events",
+                      style: TextStyle(
+                        fontSize: Constants.homePageHeadingsFontSize,
+                      ),
+                    ),
+                    Divider(
+                        endIndent: SizeConfig.blockSizeHorizontal * 60,
+                        color: Colors.black87,
+                        height: SizeConfig.blockSizeVertical)
+                  ]),
             )),
         Container(
             padding: EdgeInsets.only(
@@ -102,7 +103,7 @@ class EventSectionState extends State<EventSection> {
                               fit: StackFit.passthrough,
                               children: <Widget>[
                                 Opacity(
-                                    opacity: 0.8,
+                                    opacity: 0.6,
                                     child: CachedNetworkImage(
                                       fit: BoxFit.cover,
                                       imageUrl: events[index].blurUrl,

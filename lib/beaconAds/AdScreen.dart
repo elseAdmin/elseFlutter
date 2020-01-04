@@ -1,5 +1,5 @@
+import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
@@ -57,10 +57,12 @@ class AdScreen extends StatelessWidget {
           )
         ]);
   }
+
   markDealGrabbed(BuildContext context){
     DatabaseManager().markDealSeenForUser(this.adBeaconModel,"grab");
       Navigator.pop(context);
   }
+
   onPass(BuildContext context){
     DatabaseManager().markDealSeenForUser(this.adBeaconModel,"pass");
     Navigator.pop(context);

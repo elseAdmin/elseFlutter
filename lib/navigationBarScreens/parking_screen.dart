@@ -1,6 +1,6 @@
 import 'package:else_app_two/basicElements/qr_scanner.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/firestore/user_parking_model.dart';
+import 'package:else_app_two/parkingTab/models/user_parking_model.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -16,7 +16,7 @@ class ParkingState  extends State<Parking> {
   @override
   void initState() {
     // TODO: implement initState
-   DatabaseManager().getUserParkingModel().then((model){
+   DatabaseManager().getActiveParking().then((model){
      setState(() {
        parking = model;
      });

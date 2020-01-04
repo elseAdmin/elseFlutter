@@ -2,15 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
+import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/feedback/FeedbackStatus.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
 import 'package:else_app_two/firebaseUtil/storage_manager.dart';
-import 'package:else_app_two/models/feedback_crud_model.dart';
-import 'package:else_app_two/models/feedback_model.dart';
-import 'package:else_app_two/models/user_crud_model.dart';
-import 'package:else_app_two/models/user_feedback_crud_model.dart';
-import 'package:else_app_two/models/user_feedback_model.dart';
+import 'package:else_app_two/feedback/models/feedback_crud_model.dart';
+import 'package:else_app_two/feedback/models/feedback_model.dart';
+import 'package:else_app_two/auth/models/user_crud_model.dart';
+import 'package:else_app_two/feedback/models/user_feedback_crud_model.dart';
+import 'package:else_app_two/feedback/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,9 @@ class _NewFeedBack extends State<NewFeedBack>{
   final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
   final StorageManager _storageManager = StorageManager(StartupData.dbreference+'/feedback/');
 
+  setUserRating(double rating) {
+    _intensityValue = rating;
+  }
   onImageSelectedFromCamera(file) async {
 //    print('Uploading File :: ' + file.toString());
     int id = new DateTime.now().millisecondsSinceEpoch;
@@ -79,13 +83,10 @@ class _NewFeedBack extends State<NewFeedBack>{
     FeedBack feedBack = new FeedBack(subject, typeOfFeedBack, feedbackIntensity,
         content, imageUrls, Status.PENDING.index, DateTime.now(), DateTime.now());
 
-    var feedBackFuture = await feedbackCrudModel.addFeedBack(feedBack);
-    if(feedBackFuture != null){
-      UserFeedBack userFeedBack = new UserFeedBack(feedBackFuture,
-          StartupData.dbreference, subject, Status.PENDING.index,
-          DateTime.now(), DateTime.now());
-      var userData = await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
-      print("Feeddata mapped to user"+userData);
+    String feedBackUrl = await feedbackCrudModel.addFeedBack(feedBack);
+    if(feedBackUrl != null){
+      UserFeedBack userFeedBack = new UserFeedBack(feedBackUrl);
+      await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
       showModalBottomSheet(context: context, builder: (context){
         return getModal();
       });
@@ -194,20 +195,7 @@ class _NewFeedBack extends State<NewFeedBack>{
                   ),
                   paddingData(),
                   Text("Rate your experience"),
-                  Slider(
-                    value: _intensityValue,
-                    min: 0.0,
-                    max: 5.0,
-                    divisions: 5,
-                    onChanged: (double newValue) {
-                      setState(() {
-                        _intensityValue = newValue;
-                      });
-                    },
-                    activeColor: Colors.blue,
-                    inactiveColor: Colors.black45,
-                    label: _intensityValue.toString(),
-                  ),
+                  SliderImpl(this.setUserRating),
                   paddingData(),
                   TextFormField(
                     maxLines: 8,

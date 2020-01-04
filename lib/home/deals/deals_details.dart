@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:else_app_two/models/deals_model.dart';
+import 'package:else_app_two/home/deals/models/deals_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +32,13 @@ class _DealsDetails extends State<DealsDetails>{
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  background: CachedNetworkImage(
+                  background:Opacity(
+                      opacity: 0.6,
+                      child:  CachedNetworkImage(
                     fit: BoxFit.cover,
                     placeholder: (context, url) => CircularProgressIndicator(),
                     imageUrl: widget.deals.url,
-                  )),
+                  ))),
             ),
             SliverList(
               delegate: SliverChildListDelegate(

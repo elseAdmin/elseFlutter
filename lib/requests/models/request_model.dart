@@ -20,7 +20,8 @@ class Request{
       "name":name,
       "phoneNumber":phoneNumber,
       "messsage":message,
-      "uid":uid
+      "uid":uid,
+      "timestamp":DateTime.now().millisecondsSinceEpoch
     };
   }
 }

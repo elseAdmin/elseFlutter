@@ -2,15 +2,21 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
+import 'package:else_app_two/beaconAds/models/user_deal_model.dart';
+import 'package:else_app_two/home/events/models/user_event_submission_model.dart';
 import 'package:else_app_two/models/base_model.dart';
-import 'package:else_app_two/models/events_model.dart';
-import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
-import 'package:else_app_two/models/firestore/loc_submission_model.dart';
-import 'package:else_app_two/models/firestore/offline_submission_model.dart';
-import 'package:else_app_two/models/firestore/online_submission_model.dart';
-import 'package:else_app_two/models/firestore/user_parking_model.dart';
+import 'package:else_app_two/home/events/models/events_model.dart';
+import 'package:else_app_two/feedback/models/feedback_model.dart';
+import 'package:else_app_two/home/events/models/loc_submission_model.dart';
+import 'package:else_app_two/home/events/models/offline_submission_model.dart';
+import 'package:else_app_two/home/events/models/online_submission_model.dart';
+import 'package:else_app_two/parkingTab/models/user_parking_model.dart';
+import 'package:else_app_two/requests/models/user_request_model.dart';
+import 'package:else_app_two/feedback/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
+import 'package:else_app_two/utils/helper_methods.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:logger/logger.dart';
@@ -21,6 +27,8 @@ class DatabaseManager {
   DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
   FirebaseStorage storageRef;
   Map<String, List> universeVsParticipatedEvents = HashMap();
+  static Map activityTimelineMap;
+
   DatabaseManager() {
     if (storageRef == null) {
       storageRef = FirebaseStorage.instance;
@@ -33,17 +41,133 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
-  markDealSeenForUser(AdBeacon beacon,String status) async {
-    if(status.compareTo("grab")==0) {
+
+  saveUserRatingForStore(String storeName, double rating) async {
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("rating")
+        .add({
+      "rating": rating,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "userUid": StartupData.userid,
+      "storeName": storeName
+    });
+  }
+
+  void saveUserReviewForStore(String storeName, String userReview) async {
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("review")
+        .add({
+      "review": userReview,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "userUid": StartupData.userid,
+      "storeName": storeName
+    });
+  }
+
+  getAllActivityOfUser(bool refresh) async {
+    ///IMP
+    //below queries should fetch max 1 month data
+    if (activityTimelineMap == null || refresh) {
+      activityTimelineMap = HashMap();
+      List<ParkingModel> parkingActivityList =
+          await DatabaseManager().getAllParkings();
+      List<UserDealModel> userDealsActivityList =
+          await DatabaseManager().getGrabbedDeals();
+      List<UserEventSubmissionModel> allEventAndSubmissionList =
+          await DatabaseManager().getAllEventActivityForUser();
+      List<UserRequestModal> requestList =
+          await DatabaseManager().getRequestsForUser();
+      List<UserFeedBack> feedbackList =
+          await DatabaseManager().getAllFeedbacksForUser();
+
+      Map map = HashMap();
+      List timestamps = List();
+      parkingActivityList.forEach((parking) {
+        map.putIfAbsent(parking.timestamp, () => parking);
+        timestamps.add(parking.timestamp);
+      });
+      userDealsActivityList.forEach((deal) {
+        map.putIfAbsent(deal.timestamp, () => deal);
+        timestamps.add(deal.timestamp);
+      });
+      allEventAndSubmissionList.forEach((event) {
+        map.putIfAbsent(event.timestamp, () => event);
+        timestamps.add(event.timestamp);
+      });
+      requestList.forEach((request) {
+        map.putIfAbsent(request.timestamp, () => request);
+        timestamps.add(request.timestamp);
+      });
+      feedbackList.forEach((feedback) {
+        map.putIfAbsent(feedback.timestamp, () => feedback);
+        timestamps.add(feedback.timestamp);
+      });
+
+      timestamps.sort();
+
+      List todaysActivities = List();
+      List thisWeekActivities = List();
+      List thisMonthActivities = List();
+      HelperMethods helper = HelperMethods();
+      for (int i = timestamps.length - 1; i >= 0; i--) {
+        if (helper.isTimestampForToday(timestamps[i])) {
+          todaysActivities.add(map[timestamps[i]]);
+        } else if (helper.isTimestampForThisWeek(timestamps[i])) {
+          thisWeekActivities.add(map[timestamps[i]]);
+        } else {
+          thisMonthActivities.add(map[timestamps[i]]);
+        }
+      }
+
+      activityTimelineMap.putIfAbsent("today", () => todaysActivities);
+      activityTimelineMap.putIfAbsent("week", () => thisWeekActivities);
+      activityTimelineMap.putIfAbsent("month", () => thisMonthActivities);
+
+      return activityTimelineMap;
+    } else {
+      return activityTimelineMap;
+    }
+  }
+
+  getUserFeedbackDetails(String path) async {
+    FeedBack feedBack;
+    await store.document(path).get().then((doc) {
+      feedBack = FeedBack.fromMap(doc.data, doc.documentID);
+    });
+    return feedBack;
+  }
+
+  Future getAllFeedbacksForUser() async {
+    List<UserFeedBack> feedbacks = List();
+    await store
+        .collection(StartupData.userReference)
+        // VERY IMP , remove hard coded user
+        .document("3myGjUrtkOW0lwwjnMLIj7UUWKW2")
+        .collection("feedbacks")
+        .getDocuments()
+        .then((docs) {
+      docs.documents.forEach((doc) {
+        UserFeedBack request = UserFeedBack.fromMap(doc.data);
+        feedbacks.add(request);
+      });
+    });
+    return feedbacks;
+  }
+
+  markDealSeenForUser(AdBeacon beacon, String status) async {
+    if (status.compareTo("grab") == 0) {
       await store
           .collection(StartupData.userReference)
           .document(StartupData.userid)
           .collection("deals")
           .add({
         "imageUrl": beacon.imageUrl,
-        "timestamp": DateTime
-            .now()
-            .millisecondsSinceEpoch
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+        "universe": Constants.universe
       });
 
       await store
@@ -53,15 +177,14 @@ class DatabaseManager {
           .document(beacon.major)
           .collection(beacon.minor)
           .document("user")
-          .collection(StartupData.userid).add({
+          .collection(StartupData.userid)
+          .add({
         "status": "grab",
-        "timestamp": DateTime
-            .now()
-            .millisecondsSinceEpoch
-      }).catchError((error){
+        "timestamp": DateTime.now().millisecondsSinceEpoch
+      }).catchError((error) {
         logger.e(error);
       });
-    }else{
+    } else {
       await store
           .collection(StartupData.dbreference)
           .document("beacons")
@@ -69,12 +192,11 @@ class DatabaseManager {
           .document(beacon.major)
           .collection(beacon.minor)
           .document("user")
-          .collection(StartupData.userid).add({
+          .collection(StartupData.userid)
+          .add({
         "status": "pass",
-        "timestamp": DateTime
-            .now()
-            .millisecondsSinceEpoch
-      }).catchError((error){
+        "timestamp": DateTime.now().millisecondsSinceEpoch
+      }).catchError((error) {
         logger.e(error);
       });
     }
@@ -329,6 +451,8 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
+      "eventName": event.name,
+      "timestamp": DateTime.now().millisecondsSinceEpoch
     });
     return;
   }
@@ -388,7 +512,8 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": pathToUserSubmission,
-      "participatedAt": DateTime.now().millisecondsSinceEpoch
+      "eventName": event.name,
+      "timestamp": DateTime.now().millisecondsSinceEpoch
     });
 
     logger.i("Event submission details saved successfully");
@@ -427,7 +552,8 @@ class DatabaseManager {
       "universe": StartupData.dbreference,
       "eventUrl": getEventsDBRef().child(event.uid).path,
       "submissionUrl": submissionPath,
-      "participatedAt": DateTime.now().millisecondsSinceEpoch
+      "eventName": event.name,
+      "timestamp": DateTime.now().millisecondsSinceEpoch
     });
 
     return;
@@ -495,7 +621,7 @@ class DatabaseManager {
     return listParticipatedEvents;
   }
 
-  Future getUserParkingModel() async {
+  Future getActiveParking() async {
     ParkingModel parkingModel;
     await store
         .collection('users')
@@ -511,13 +637,55 @@ class DatabaseManager {
 
     if (parkingModel != null) {
       Constants.parkingEligibleUser = false;
+    } else {
+      parkingModel = ParkingModel(null);
     }
-    if (parkingModel == null) parkingModel = ParkingModel(null);
+
     return parkingModel;
   }
 
+  Future getAllParkings() async {
+    List<ParkingModel> allParkingData = List();
+    await store
+        .collection('users')
+        .document(StartupData.userid)
+        .collection('parking')
+        .getDocuments()
+        .then((querySnapshot) {
+      querySnapshot.documents.forEach((docSnap) {
+        ParkingModel parkingModel = ParkingModel(docSnap);
+        if (parkingModel.major != null) {
+          allParkingData.add(parkingModel);
+        }
+      });
+    }).catchError((error) {
+      logger.e(error);
+    });
+    return allParkingData;
+  }
+
+  Future getGrabbedDeals() async {
+    List<UserDealModel> userDeals = List();
+    await store
+        .collection('users')
+        .document(StartupData.userid)
+        .collection('deals')
+        .getDocuments()
+        .then((querySnapshot) {
+      querySnapshot.documents.forEach((docSnap) {
+        UserDealModel deal = UserDealModel(docSnap);
+        if (deal.imageUrl != null) {
+          userDeals.add(deal);
+        }
+      });
+    }).catchError((error) {
+      logger.e(error);
+    });
+    return userDeals;
+  }
+
   getLastestVisitForMonitoringBeacon(String major, String minor) async {
-    int time=0;
+    int time = 0;
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
@@ -533,14 +701,14 @@ class DatabaseManager {
       snapshot.documents.forEach((doc) {
         time = doc.data['timestamp'];
       });
-    }).catchError((error){
-      time=0;
+    }).catchError((error) {
+      time = 0;
     });
     return time;
   }
 
-  Future<bool> hasUserSeenAdBefore(String major, String minor) async{
-    bool seen=false;
+  Future<bool> hasUserSeenAdBefore(String major, String minor) async {
+    bool seen = false;
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
@@ -552,14 +720,73 @@ class DatabaseManager {
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
-        seen=true;
+        seen = true;
       });
-    }).catchError((error){
-      seen=false;
+    }).catchError((error) {
+      seen = false;
     });
     return seen;
   }
 
+  saveUserRequest(String requestPath) async {
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("requests")
+        .add({
+      "requestUrl": requestPath,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "universe": Constants.universe
+    });
+  }
+
+  Future getRequestsForUser() async {
+    List<UserRequestModal> requests = List();
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("requests")
+        .getDocuments()
+        .then((docs) {
+      docs.documents.forEach((doc) {
+        UserRequestModal request = UserRequestModal(doc);
+        requests.add(request);
+      });
+    });
+    return requests;
+  }
+
+  Future getAllEventActivityForUser() async {
+    List<UserEventSubmissionModel> allEventAndSubmissionUrls = List();
+
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.userid)
+        .collection("events")
+        .getDocuments()
+        .then((snapshot) {
+      snapshot.documents.forEach((doc) {
+        UserEventSubmissionModel model = UserEventSubmissionModel(doc);
+        allEventAndSubmissionUrls.add(model);
+      });
+    });
+
+    return allEventAndSubmissionUrls;
+  }
+
+  Future getEventModelFromEventUrl(String url) async {
+    EventModel event;
+    await FirebaseDatabase.instance
+        .reference()
+        .child(url)
+        .once()
+        .then((receivedEvents) {
+      event = EventModel(receivedEvents);
+    }).catchError((error) {
+      logger.e(error);
+    });
+    return event;
+  }
 
   DatabaseReference getEventsDBRef() {
     return baseDatabase.child('eventStaticData');

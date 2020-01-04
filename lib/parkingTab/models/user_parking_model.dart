@@ -2,14 +2,19 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ParkingModel{
-  DateTime parkingInTime,parkingOutTime;
+class ParkingModel {
+  int timestamp;
+  DateTime date;
+  DateTime parkingInTime, parkingOutTime;
   int major;
   int minor;
   String sensorName;
-  ParkingModel(DocumentSnapshot snapshot){
-    if(snapshot!=null) {
+  ParkingModel(DocumentSnapshot snapshot) {
+    if (snapshot != null) {
+      this.timestamp = snapshot.data['parkingInTime'];
       this.parkingInTime =
+          DateTime.fromMillisecondsSinceEpoch(snapshot.data['parkingInTime']);
+      this.date =
           DateTime.fromMillisecondsSinceEpoch(snapshot.data['parkingInTime']);
       this.parkingOutTime =
           DateTime.fromMillisecondsSinceEpoch(snapshot.data['parkingOutTime']);

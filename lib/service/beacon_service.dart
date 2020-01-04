@@ -1,7 +1,7 @@
 import 'dart:collection';
 
+import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/sql_lite.dart';
 import 'package:logger/logger.dart';
@@ -75,6 +75,7 @@ class BeaconServiceImpl {
 
   postHandlingForParkingBeacons(String major, String minor, String distance) async {
     if(Constants.parkingEligibleUser){
+      Constants.parkingLevel = int.parse(major[0]);
       db.markUserVisitForParkingBeacon(major, minor,distance);
     }
   }

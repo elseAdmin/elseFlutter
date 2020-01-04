@@ -1,17 +1,19 @@
-import 'package:else_app_two/basicElements/AdScreen.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
-import 'package:else_app_two/models/firestore/ad_beacon_model.dart';
+import 'package:else_app_two/beaconAds/AdScreen.dart';
+import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'auth/auth.dart';
 import 'auth/auth_provider.dart';
 
 void main() {
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
   runApp(MaterialApp(
     title: 'Else',
     home: MyApp(),
@@ -51,6 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
   dispose() {
     logger.i("app killed");
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
   }
 
   @override
@@ -113,10 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }*/
 
-  Future<Null> _handleRefresh() async {
-    await new Future.delayed(new Duration(seconds: 1));
-    return null;
-  }
 
   void pushAdScreen(AdBeacon adBeacon) {
     showDialog(
@@ -138,10 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        child: handler.getViewForNavigationBarIndex(bottomNavIndex),
-        onRefresh: _handleRefresh,
-      ),
+      body: handler.getViewForNavigationBarIndex(bottomNavIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: bottomNavIndex,
         type: BottomNavigationBarType.fixed,

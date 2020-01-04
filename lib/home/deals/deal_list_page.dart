@@ -1,4 +1,4 @@
-import 'package:else_app_two/models/deals_model.dart';
+import 'package:else_app_two/home/deals/models/deals_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
