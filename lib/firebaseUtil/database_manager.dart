@@ -621,11 +621,11 @@ class DatabaseManager {
     return listParticipatedEvents;
   }
 
-  Future getActiveParking() async {
+  Future getActiveParking(String userId) async {
     ParkingModel parkingModel;
     await store
         .collection('users')
-        .document(StartupData.userid)
+        .document(userId)
         .collection('parking')
         .where('status', isEqualTo: 'active')
         .getDocuments()

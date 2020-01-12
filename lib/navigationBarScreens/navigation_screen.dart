@@ -13,8 +13,6 @@ class NavigationScreen extends StatefulWidget{
 
 class _NavigationScreen extends State<NavigationScreen>{
 
-  List<ShopModel> shops = new List();
-
   HashMap<String, Set<ShopModel>> _indexShopMap = new HashMap();
   FireBaseApi _fireBaseApi = FireBaseApi("shopStaticData");
 
