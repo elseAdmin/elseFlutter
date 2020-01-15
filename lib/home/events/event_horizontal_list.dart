@@ -6,7 +6,6 @@ import 'package:else_app_two/home/events/singleEvent/SingleEventPageViewHandler.
 import 'package:else_app_two/home/events/all_event_list_page.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:logger/logger.dart';
@@ -20,27 +19,11 @@ class EventSectionState extends State<EventSection> {
   final logger = Logger();
   List<EventModel> events = new List();
   final DatabaseManager manager = DatabaseManager();
-  List<EventModel> events2 = new List();
 
   @override
   void initState() {
     super.initState();
-    manager.getEventsDBRef().onChildAdded.listen(_newEventAdded);
-  }
-
-  void _newEventAdded(Event e) {
-    EventModel newEvent = new EventModel(e.snapshot);
-    if (newEvent.status == 'active') {
-      setState(() {
-        events.add(newEvent);
-      });
-    } else if (newEvent.status == 'inactive') {
-      if (events.contains(newEvent)) {
-        setState(() {
-          events.remove(newEvent);
-        });
-      }
-    }
+    events = DatabaseManager.events;
   }
 
   @override

@@ -6,11 +6,13 @@ abstract class BaseAuth {
   Future<String> currentUser();
   Future<void> signOut();
 
-  verifyPhoneNumber({String phoneNumber, Duration timeout,
-    PhoneVerificationCompleted verificationCompleted,
-    PhoneVerificationFailed verificationFailed,
-    PhoneCodeSent codeSent,
-    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout}) {}
+  verifyPhoneNumber(
+      {String phoneNumber,
+      Duration timeout,
+      PhoneVerificationCompleted verificationCompleted,
+      PhoneVerificationFailed verificationFailed,
+      PhoneCodeSent codeSent,
+      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout}) {}
 }
 
 class Auth implements BaseAuth {
@@ -35,12 +37,13 @@ class Auth implements BaseAuth {
   }
 
   @override
-  verifyPhoneNumber({String phoneNumber, Duration timeout,
-    PhoneVerificationCompleted verificationCompleted,
-    PhoneVerificationFailed verificationFailed,
-    PhoneCodeSent codeSent,
-    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout}) async {
-
+  verifyPhoneNumber(
+      {String phoneNumber,
+      Duration timeout,
+      PhoneVerificationCompleted verificationCompleted,
+      PhoneVerificationFailed verificationFailed,
+      PhoneCodeSent codeSent,
+      PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout}) async {
     return await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 5),

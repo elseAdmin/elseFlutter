@@ -4,6 +4,7 @@ import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/profileTab/register_user.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/auth/models/user_crud_model.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -113,6 +114,10 @@ class _OauthManager extends State<OauthManager>{
     final String currentUserId = await _auth.currentUser();
     assert(userId == currentUserId);
     if(userId.isNotEmpty){
+      User user = await UserCrudModel('users', new Api('users')).getUserById(userId);
+        if (user != null && userId.isNotEmpty) {
+          StartupData.user = user;
+        }
       await _checkForNewUser(context, userId, _phoneNumberController.text);
     }
     setState(() {
@@ -131,7 +136,16 @@ class _OauthManager extends State<OauthManager>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        backgroundColor: Constants.titleBarBackgroundColor,
+        iconTheme: IconThemeData(
+          color: Constants.textColor, //change your color here
+        ),
+        title: Text("Login",
+          style: TextStyle(
+            color: Constants.titleBarTextColor,
+            fontSize: 18,
+          ),
+        ),
       ),
       body: Center(
         child: new Container(

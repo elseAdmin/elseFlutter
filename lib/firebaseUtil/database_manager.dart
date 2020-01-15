@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/beaconAds/models/user_deal_model.dart';
+import 'package:else_app_two/firebaseUtil/firebase_api.dart';
+import 'package:else_app_two/home/deals/models/deals_model.dart';
 import 'package:else_app_two/home/events/models/user_event_submission_model.dart';
 import 'package:else_app_two/models/base_model.dart';
 import 'package:else_app_two/home/events/models/events_model.dart';
@@ -11,6 +13,7 @@ import 'package:else_app_two/feedback/models/feedback_model.dart';
 import 'package:else_app_two/home/events/models/loc_submission_model.dart';
 import 'package:else_app_two/home/events/models/offline_submission_model.dart';
 import 'package:else_app_two/home/events/models/online_submission_model.dart';
+import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/parkingTab/models/user_parking_model.dart';
 import 'package:else_app_two/requests/models/user_request_model.dart';
 import 'package:else_app_two/feedback/models/user_feedback_model.dart';
@@ -25,9 +28,13 @@ class DatabaseManager {
   final logger = Logger();
   static Firestore store;
   DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
+
   FirebaseStorage storageRef;
   Map<String, List> universeVsParticipatedEvents = HashMap();
   static Map activityTimelineMap;
+  static List<EventModel> events;
+  static List<DealModel> deals;
+  static HashMap<String, Set<ShopModel>> indexShopMap;
 
   DatabaseManager() {
     if (storageRef == null) {
@@ -39,6 +46,78 @@ class DatabaseManager {
     if (baseDatabase == null) {
       baseDatabase =
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
+    }
+  }
+
+  getAllShops(bool refresh, FireBaseApi fireBaseApi) async {
+    if (indexShopMap == null || refresh) {
+      indexShopMap = HashMap();
+      var results = await fireBaseApi.getDataSnapshot();
+      List shopsKey = results.value.keys.toList();
+      Map<dynamic, dynamic> values = results.value;
+
+      for (String shop in shopsKey) {
+        Set<ShopModel> shopModelList = new Set();
+        ShopModel shopModel = ShopModel.fromMap(values[shop]);
+        shopModelList.add(shopModel);
+        indexShopMap[shop] = shopModelList;
+        for (String category in shopModel.category) {
+          Set<ShopModel> shopModelsCategory = indexShopMap[category];
+          if (shopModelsCategory == null) {
+            shopModelsCategory = new Set();
+          }
+          shopModelsCategory.add(shopModel);
+          indexShopMap[category] = shopModelsCategory;
+        }
+      }
+      return indexShopMap;
+    } else {
+      return indexShopMap;
+    }
+  }
+
+  getAllActiveDeals(bool refresh) async {
+    if (deals == null || refresh) {
+      await getDealsDBRef()
+          .orderByChild('status')
+          .equalTo('active')
+          .once()
+          .then((snapshot) {
+        if (snapshot.value.length != 0) {
+          deals = List();
+          for (int i = 1; i < snapshot.value.length; i++) {
+            if (snapshot.value[i] != null) {
+              DealModel deal = DealModel.fromMap(snapshot.value[i]);
+              deals.add(deal);
+            }
+          }
+        }
+      });
+      return deals;
+    } else {
+      return deals;
+    }
+  }
+
+  getAllActiveEvents(bool refresh) async {
+    if (events == null || refresh) {
+      await getEventsDBRef()
+          .orderByChild('status')
+          .equalTo('active')
+          .once()
+          .then((snapshot) {
+        if (snapshot.value.length != 0) {
+          events = List();
+          //print(snapshot.value);
+          snapshot.value.forEach((key, value) {
+            EventModel event = EventModel.fromMap(value);
+            events.add(event);
+          });
+        }
+      });
+      return events;
+    } else {
+      return events;
     }
   }
 
@@ -88,23 +167,43 @@ class DatabaseManager {
       List timestamps = List();
       parkingActivityList.forEach((parking) {
         map.putIfAbsent(parking.timestamp, () => parking);
-        timestamps.add(parking.timestamp);
+        if (parking.timestamp != null) {
+          timestamps.add(parking.timestamp);
+        } else {
+          logger.i(parking);
+        }
       });
       userDealsActivityList.forEach((deal) {
         map.putIfAbsent(deal.timestamp, () => deal);
-        timestamps.add(deal.timestamp);
+        if (deal.timestamp != null) {
+          timestamps.add(deal.timestamp);
+        } else {
+          logger.i(deal);
+        }
       });
       allEventAndSubmissionList.forEach((event) {
         map.putIfAbsent(event.timestamp, () => event);
-        timestamps.add(event.timestamp);
+        if (event.timestamp != null) {
+          timestamps.add(event.timestamp);
+        } else {
+          logger.i(event);
+        }
       });
       requestList.forEach((request) {
         map.putIfAbsent(request.timestamp, () => request);
-        timestamps.add(request.timestamp);
+        if (request.timestamp != null) {
+          timestamps.add(request.timestamp);
+        } else {
+          logger.i(request);
+        }
       });
       feedbackList.forEach((feedback) {
         map.putIfAbsent(feedback.timestamp, () => feedback);
-        timestamps.add(feedback.timestamp);
+        if (feedback.timestamp != null) {
+          timestamps.add(feedback.timestamp);
+        } else {
+          logger.i(feedback);
+        }
       });
 
       timestamps.sort();

@@ -4,7 +4,6 @@ import 'package:else_app_two/home/deals/deals_details.dart';
 import 'package:else_app_two/home/deals/models/deals_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -20,22 +19,7 @@ class _DealSectionState extends State<DealSection> {
   @override
   void initState() {
     super.initState();
-    manager.getDealsDBRef().onChildAdded.listen(_newDealAdded);
-  }
-
-  void _newDealAdded(Event e) {
-    DealModel newDeal = new DealModel(e.snapshot);
-    if (newDeal.status == 'active') {
-      setState(() {
-        deals.add(newDeal);
-      });
-    } else if (newDeal.status == 'inactive') {
-      if (deals.contains(newDeal)) {
-        setState(() {
-          deals.remove(newDeal);
-        });
-      }
-    }
+    deals = DatabaseManager.deals;
   }
 
   @override

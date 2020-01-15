@@ -1,5 +1,6 @@
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 
 import '../firebaseUtil/oauth_manager.dart';
@@ -21,6 +22,7 @@ class _LoginLogoutSection extends State<LoginLogoutSection>{
       final BaseAuth auth = AuthProvider.of(context).auth;
       await auth.signOut();
       widget.onSignedOut();
+      StartupData.user=null;
     } catch (e) {
       print(e);
     }
