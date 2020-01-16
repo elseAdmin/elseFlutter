@@ -13,39 +13,44 @@ class TodayActivityState extends State<TodayActivity> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
-        child: ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: widget.todayActivities.length,
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.only(
-                      top: SizeConfig.blockSizeVertical,
-                      left: SizeConfig.blockSizeHorizontal * 2),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text("Today", style: TextStyle(fontSize: 24)),
-                        Divider(
-                            endIndent: SizeConfig.blockSizeHorizontal * 40,
-                            color: Colors.black87,
-                            height: SizeConfig.blockSizeVertical)
-                      ])),
-              ActivityTypeHandler().getAppropriateViewForActivity(
+    if (widget.todayActivities != null) {
+      return Container(
+          child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: widget.todayActivities.length,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.blockSizeVertical,
+                            left: SizeConfig.blockSizeHorizontal * 2),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text("Today", style: TextStyle(fontSize: 24)),
+                              Divider(
+                                  endIndent: SizeConfig.blockSizeHorizontal *
+                                      40,
+                                  color: Colors.black87,
+                                  height: SizeConfig.blockSizeVertical)
+                            ])),
+                    ActivityTypeHandler().getAppropriateViewForActivity(
+                        widget.todayActivities[index].runtimeType.toString(),
+                        widget.todayActivities[index]),
+                  ],
+                );
+              }
+              return ActivityTypeHandler().getAppropriateViewForActivity(
                   widget.todayActivities[index].runtimeType.toString(),
-                  widget.todayActivities[index]),
-            ],
-          );
-        }
-        return ActivityTypeHandler().getAppropriateViewForActivity(
-            widget.todayActivities[index].runtimeType.toString(),
-            widget.todayActivities[index]);
-      },
-    ));
+                  widget.todayActivities[index]);
+            },
+          ));
+    } else {
+      return Container();
+    }
   }
 }

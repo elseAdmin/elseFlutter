@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/category_grid.dart';
-import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
 class CategoryScreen extends StatelessWidget{
@@ -23,19 +22,9 @@ class CategoryScreen extends StatelessWidget{
       ),
       child: ListView(
         children: <Widget>[
-          Center(
-            child: Text("All Categories"),
-          ),
           CategoryGrid(_indexShopMap),
-          paddingData()
         ],
       ),
-    );
-  }
-
-  Widget paddingData(){
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
     );
   }
 }

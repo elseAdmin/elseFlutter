@@ -1,7 +1,7 @@
 import 'package:else_app_two/Models/base_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class DealModel{
+class DealModel {
   List tnc;
   String validity;
 
@@ -15,7 +15,19 @@ class DealModel{
   String uid;
   String couponCode;
 
-  DealModel(DataSnapshot snapshot){
+  DealModel.fromMap(Map snapshot)
+      : this.tnc = snapshot['tnc'],
+        this.validity = snapshot['validity'],
+        this.shortDetails = snapshot['shortDetails'],
+        this.details = snapshot['details'],
+        this.url = snapshot['url'],
+        this.name = snapshot['name'],
+        this.status = snapshot['status'],
+        this.blurUrl = snapshot['blurUrl'],
+        this.uid = snapshot['uid'],
+        this.couponCode = snapshot['couponCode'];
+
+  DealModel(DataSnapshot snapshot) {
     this.tnc = snapshot.value['tnc'];
     this.validity = snapshot.value['validity'];
     this.shortDetails = snapshot.value['shortDetails'];
@@ -24,8 +36,8 @@ class DealModel{
     this.url = snapshot.value['url'];
     this.name = snapshot.value['name'];
     this.status = snapshot.value['status'];
-    this.blurUrl=snapshot.value['blurUrl'];
-    this.uid=snapshot.value['uid'];
-    this.couponCode=snapshot.value['couponCode'];
+    this.blurUrl = snapshot.value['blurUrl'];
+    this.uid = snapshot.value['uid'];
+    this.couponCode = snapshot.value['couponCode'];
   }
 }

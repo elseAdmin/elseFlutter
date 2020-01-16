@@ -3,6 +3,7 @@ import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/auth/models/user_crud_model.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 
 class UserProfileInfo extends StatefulWidget{
@@ -21,21 +22,20 @@ class _UserProfileInfo extends State<UserProfileInfo>{
   TextEditingController _phoneController = TextEditingController();
   final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
 
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(StartupData.user!=null) {
+      _nameController.text = StartupData.user.name;
+      _emailController.text = StartupData.user.email;
+      _phoneController.text = '+91-' + StartupData.user.phoneNumber;
+    }
+  }
 
   @override
   void didChangeDependencies() async {
-    super.didChangeDependencies();
-    final BaseAuth _auth = AuthProvider.of(context).auth;
-    final String userId = await _auth.currentUser();
-    User user = await userProvider.getUserById(userId);
-    if(user != null && userId.isNotEmpty){
-      setState(() {
-        _nameController.text = user.name;
-        _emailController.text = user.email;
-        _phoneController.text = '+91-'+user.phoneNumber;
-      });
-    }
+   super.didChangeDependencies();
   }
 
   @override

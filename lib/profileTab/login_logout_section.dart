@@ -1,10 +1,11 @@
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 
 import '../firebaseUtil/oauth_manager.dart';
 
-class LoginLogoutSection extends StatefulWidget{
+class LoginLogoutSection extends StatefulWidget {
   final bool isUserLoggedIn;
   final VoidCallback onSignedOut;
   final VoidCallback onSignedIn;
@@ -14,13 +15,13 @@ class LoginLogoutSection extends StatefulWidget{
   _LoginLogoutSection createState() => _LoginLogoutSection();
 }
 
-class _LoginLogoutSection extends State<LoginLogoutSection>{
-
+class _LoginLogoutSection extends State<LoginLogoutSection> {
   Future<void> _signOut(BuildContext context) async {
     try {
       final BaseAuth auth = AuthProvider.of(context).auth;
       await auth.signOut();
       widget.onSignedOut();
+      StartupData.user = null;
     } catch (e) {
       print(e);
     }
@@ -34,7 +35,8 @@ class _LoginLogoutSection extends State<LoginLogoutSection>{
 
   Future<void> _signIn(BuildContext context) async {
     try {
-      await Navigator.push(context,
+      await Navigator.push(
+        context,
         MaterialPageRoute(
           builder: (context) => OauthManager(onSignedIn: _signedIn),
         ),
@@ -54,53 +56,43 @@ class _LoginLogoutSection extends State<LoginLogoutSection>{
     );
   }
 
-  Widget userStatusChild(BuildContext context, isUserLogged){
-    if(isUserLogged){
+  Widget userStatusChild(BuildContext context, isUserLogged) {
+    if (isUserLogged) {
       return ListTile(
-        contentPadding: const EdgeInsets.only(left: 10, right: 10,top: 10,bottom: 10),
+        contentPadding:
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
         title: FlatButton(
           color: Colors.white,
           onPressed: () => _signOut(context),
           child: const Text(
             'LOGOUT',
-            style: TextStyle(
-                fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         subtitle: Text(
           'ELSE',
           textAlign: TextAlign.center,
-          style: TextStyle(
-              fontWeight: FontWeight.bold
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       );
-    }
-    else {
+    } else {
       return ListTile(
-        contentPadding: const EdgeInsets.only(left: 10, right: 10,top: 10,bottom: 10),
+        contentPadding:
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
         title: FlatButton(
           color: Colors.white,
           onPressed: () => _signIn(context),
           child: const Text(
             'LOGIN',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ),
         subtitle: Text(
           'ELSE',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
       );
     }
   }
-
 }

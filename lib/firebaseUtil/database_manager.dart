@@ -2,8 +2,13 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:else_app_two/auth/models/user_crud_model.dart';
+import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/beaconAds/models/user_deal_model.dart';
+import 'package:else_app_two/firebaseUtil/api.dart';
+import 'package:else_app_two/firebaseUtil/firebase_api.dart';
+import 'package:else_app_two/home/deals/models/deals_model.dart';
 import 'package:else_app_two/home/events/models/user_event_submission_model.dart';
 import 'package:else_app_two/models/base_model.dart';
 import 'package:else_app_two/home/events/models/events_model.dart';
@@ -11,12 +16,14 @@ import 'package:else_app_two/feedback/models/feedback_model.dart';
 import 'package:else_app_two/home/events/models/loc_submission_model.dart';
 import 'package:else_app_two/home/events/models/offline_submission_model.dart';
 import 'package:else_app_two/home/events/models/online_submission_model.dart';
+import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/parkingTab/models/user_parking_model.dart';
 import 'package:else_app_two/requests/models/user_request_model.dart';
 import 'package:else_app_two/feedback/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:else_app_two/utils/helper_methods.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:logger/logger.dart';
@@ -25,9 +32,13 @@ class DatabaseManager {
   final logger = Logger();
   static Firestore store;
   DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
+
   FirebaseStorage storageRef;
   Map<String, List> universeVsParticipatedEvents = HashMap();
   static Map activityTimelineMap;
+  static List<EventModel> events;
+  static List<DealModel> deals;
+  static HashMap<String, Set<ShopModel>> indexShopMap;
 
   DatabaseManager() {
     if (storageRef == null) {
@@ -42,30 +53,91 @@ class DatabaseManager {
     }
   }
 
-  saveUserRatingForStore(String storeName, double rating) async {
-    await store
-        .collection(Constants.universe)
-        .document("store")
-        .collection("rating")
-        .add({
-      "rating": rating,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "userUid": StartupData.userid,
-      "storeName": storeName
-    });
+  /// startup data methods  - start
+
+  initialiseCurrentUser() async {
+    final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+    User user;
+    if (firebaseUser != null && firebaseUser.uid != null) {
+      user = await userProvider.getUserById(firebaseUser.uid);
+    }
+    StartupData.user = user;
   }
 
-  void saveUserReviewForStore(String storeName, String userReview) async {
-    await store
-        .collection(Constants.universe)
-        .document("store")
-        .collection("review")
-        .add({
-      "review": userReview,
-      "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "userUid": StartupData.userid,
-      "storeName": storeName
-    });
+  getAllShops(bool refresh, FireBaseApi fireBaseApi) async {
+    if (indexShopMap == null || refresh) {
+      indexShopMap = HashMap();
+      var results = await fireBaseApi.getDataSnapshot();
+      List shopsKey = results.value.keys.toList();
+      Map<dynamic, dynamic> values = results.value;
+
+      for (String shop in shopsKey) {
+        Set<ShopModel> shopModelList = new Set();
+        ShopModel shopModel = ShopModel.fromMap(values[shop]);
+        shopModelList.add(shopModel);
+        indexShopMap[shop] = shopModelList;
+        for (String category in shopModel.category) {
+          Set<ShopModel> shopModelsCategory = indexShopMap[category];
+          if (shopModelsCategory == null) {
+            shopModelsCategory = new Set();
+          }
+          shopModelsCategory.add(shopModel);
+          indexShopMap[category] = shopModelsCategory;
+        }
+      }
+      return indexShopMap;
+    } else {
+      return indexShopMap;
+    }
+  }
+
+  getAllActiveDeals(bool refresh) async {
+    if (deals == null || refresh) {
+      await getDealsDBRef()
+          .orderByChild('status')
+          .equalTo('active')
+          .once()
+          .then((snapshot) {
+        if (snapshot.value.length != 0) {
+          deals = List();
+          for (int i = 1; i < snapshot.value.length; i++) {
+            if (snapshot.value[i] != null) {
+              DealModel deal = DealModel.fromMap(snapshot.value[i]);
+              deals.add(deal);
+            }
+          }
+        }
+      });
+      return deals;
+    } else {
+      return deals;
+    }
+  }
+
+  getAllActiveEvents(bool refresh) async {
+    if (events == null || refresh) {
+      await getEventsDBRef()
+          .orderByChild('status')
+          .equalTo('active')
+          .once()
+          .then((snapshot) {
+        if (snapshot.value.length != 0) {
+          events = List();
+          //print(snapshot.value);
+          snapshot.value.forEach((key, value) {
+            EventModel event = EventModel.fromMap(value);
+            events.add(event);
+          });
+        }
+      }).catchError((error) {
+        logger.i(error);
+      });
+      return events;
+    } else {
+      return events;
+    }
   }
 
   getAllActivityOfUser(bool refresh) async {
@@ -74,37 +146,57 @@ class DatabaseManager {
     if (activityTimelineMap == null || refresh) {
       activityTimelineMap = HashMap();
       List<ParkingModel> parkingActivityList =
-          await DatabaseManager().getAllParkings();
+      await DatabaseManager().getAllParkings();
       List<UserDealModel> userDealsActivityList =
-          await DatabaseManager().getGrabbedDeals();
+      await DatabaseManager().getGrabbedDeals();
       List<UserEventSubmissionModel> allEventAndSubmissionList =
-          await DatabaseManager().getAllEventActivityForUser();
+      await DatabaseManager().getAllEventActivityForUser();
       List<UserRequestModal> requestList =
-          await DatabaseManager().getRequestsForUser();
+      await DatabaseManager().getRequestsForUser();
       List<UserFeedBack> feedbackList =
-          await DatabaseManager().getAllFeedbacksForUser();
+      await DatabaseManager().getAllFeedbacksForUser();
 
       Map map = HashMap();
       List timestamps = List();
       parkingActivityList.forEach((parking) {
         map.putIfAbsent(parking.timestamp, () => parking);
-        timestamps.add(parking.timestamp);
+        if (parking.timestamp != null) {
+          timestamps.add(parking.timestamp);
+        } else {
+          logger.i(parking);
+        }
       });
       userDealsActivityList.forEach((deal) {
         map.putIfAbsent(deal.timestamp, () => deal);
-        timestamps.add(deal.timestamp);
+        if (deal.timestamp != null) {
+          timestamps.add(deal.timestamp);
+        } else {
+          logger.i(deal);
+        }
       });
       allEventAndSubmissionList.forEach((event) {
         map.putIfAbsent(event.timestamp, () => event);
-        timestamps.add(event.timestamp);
+        if (event.timestamp != null) {
+          timestamps.add(event.timestamp);
+        } else {
+          logger.i(event);
+        }
       });
       requestList.forEach((request) {
         map.putIfAbsent(request.timestamp, () => request);
-        timestamps.add(request.timestamp);
+        if (request.timestamp != null) {
+          timestamps.add(request.timestamp);
+        } else {
+          logger.i(request);
+        }
       });
       feedbackList.forEach((feedback) {
         map.putIfAbsent(feedback.timestamp, () => feedback);
-        timestamps.add(feedback.timestamp);
+        if (feedback.timestamp != null) {
+          timestamps.add(feedback.timestamp);
+        } else {
+          logger.i(feedback);
+        }
       });
 
       timestamps.sort();
@@ -131,6 +223,34 @@ class DatabaseManager {
     } else {
       return activityTimelineMap;
     }
+  }
+
+  /// startup data methods  - end
+
+  saveUserRatingForStore(String storeName, double rating) async {
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("rating")
+        .add({
+      "rating": rating,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "userUid": StartupData.user.id,
+      "storeName": storeName
+    });
+  }
+
+  void saveUserReviewForStore(String storeName, String userReview) async {
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("review")
+        .add({
+      "review": userReview,
+      "timestamp": DateTime.now().millisecondsSinceEpoch,
+      "userUid": StartupData.user.id,
+      "storeName": storeName
+    });
   }
 
   getUserFeedbackDetails(String path) async {
@@ -162,7 +282,7 @@ class DatabaseManager {
     if (status.compareTo("grab") == 0) {
       await store
           .collection(StartupData.userReference)
-          .document(StartupData.userid)
+          .document(StartupData.user.id)
           .collection("deals")
           .add({
         "imageUrl": beacon.imageUrl,
@@ -177,7 +297,7 @@ class DatabaseManager {
           .document(beacon.major)
           .collection(beacon.minor)
           .document("user")
-          .collection(StartupData.userid)
+          .collection(StartupData.user.id)
           .add({
         "status": "grab",
         "timestamp": DateTime.now().millisecondsSinceEpoch
@@ -192,7 +312,7 @@ class DatabaseManager {
           .document(beacon.major)
           .collection(beacon.minor)
           .document("user")
-          .collection(StartupData.userid)
+          .collection(StartupData.user.id)
           .add({
         "status": "pass",
         "timestamp": DateTime.now().millisecondsSinceEpoch
@@ -209,7 +329,7 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .updateData({
       "status": "complete",
     });
@@ -223,7 +343,7 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .get()
         .then((DocumentSnapshot snapshot) {
       //what if snapshot is null ?
@@ -264,7 +384,7 @@ class DatabaseManager {
         .document(event.beaconDataList[0].major.toString())
         .collection(event.beaconDataList[0].minor.toString())
         .document("user")
-        .collection(StartupData.userid)
+        .collection(StartupData.user.id)
         .where('timestamp',
             isGreaterThanOrEqualTo: event.startDate.millisecondsSinceEpoch)
         .where('timestamp',
@@ -287,7 +407,7 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .get()
         .then((DocumentSnapshot snapshot) {
       //what if snapshot is null ?
@@ -306,7 +426,7 @@ class DatabaseManager {
         .document(major)
         .collection(minor)
         .document("user")
-        .collection(StartupData.userid)
+        .collection(StartupData.user.id)
         .add({"timestamp": DateTime.now().millisecondsSinceEpoch});
   }
 
@@ -322,7 +442,7 @@ class DatabaseManager {
         .collection(minor)
         .add({
       "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "userUid": StartupData.userid,
+      "userUid": StartupData.user.id,
       "distance": double.parse(distance)
     });
   }
@@ -409,7 +529,7 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .get()
         .then((DocumentSnapshot snapshot) {
       //what if snapshot is null ?
@@ -427,7 +547,7 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .setData({
       "participatedAt": DateTime.now().millisecondsSinceEpoch,
       "participationId": "123",
@@ -440,12 +560,12 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .path;
 
     await store
         .collection(StartupData.userReference)
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection("events")
         .add({
       "universe": StartupData.dbreference,
@@ -527,7 +647,7 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .setData({
       "participatedAt": DateTime.now().millisecondsSinceEpoch,
       "date": DateTime.now(),
@@ -541,12 +661,12 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .path;
 
     await store
         .collection(StartupData.userReference)
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection("events")
         .add({
       "universe": StartupData.dbreference,
@@ -564,7 +684,7 @@ class DatabaseManager {
 
     await store
         .collection(StartupData.userReference)
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection("events")
         .getDocuments()
         .then((snapshot) {
@@ -625,7 +745,7 @@ class DatabaseManager {
     ParkingModel parkingModel;
     await store
         .collection('users')
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection('parking')
         .where('status', isEqualTo: 'active')
         .getDocuments()
@@ -648,7 +768,7 @@ class DatabaseManager {
     List<ParkingModel> allParkingData = List();
     await store
         .collection('users')
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection('parking')
         .getDocuments()
         .then((querySnapshot) {
@@ -668,7 +788,7 @@ class DatabaseManager {
     List<UserDealModel> userDeals = List();
     await store
         .collection('users')
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection('deals')
         .getDocuments()
         .then((querySnapshot) {
@@ -693,7 +813,7 @@ class DatabaseManager {
         .document(major)
         .collection(minor)
         .document("user")
-        .collection(StartupData.userid)
+        .collection(StartupData.user.id)
         .orderBy("timestamp", descending: true)
         .limit(1)
         .getDocuments()
@@ -716,7 +836,7 @@ class DatabaseManager {
         .document(major)
         .collection(minor)
         .document("user")
-        .collection(StartupData.userid)
+        .collection(StartupData.user.id)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
@@ -731,7 +851,7 @@ class DatabaseManager {
   saveUserRequest(String requestPath) async {
     await store
         .collection(StartupData.userReference)
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection("requests")
         .add({
       "requestUrl": requestPath,
@@ -744,7 +864,7 @@ class DatabaseManager {
     List<UserRequestModal> requests = List();
     await store
         .collection(StartupData.userReference)
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection("requests")
         .getDocuments()
         .then((docs) {
@@ -761,7 +881,7 @@ class DatabaseManager {
 
     await store
         .collection(StartupData.userReference)
-        .document(StartupData.userid)
+        .document(StartupData.user.id)
         .collection("events")
         .getDocuments()
         .then((snapshot) {

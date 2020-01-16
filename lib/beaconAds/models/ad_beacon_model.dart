@@ -14,7 +14,7 @@ class AdBeacon{
   }
 
   bool isUserAllowed(){
-    if(this.allowedUsers.contains(StartupData.userid) || this.allowedUsers.contains("all")){
+    if(this.allowedUsers.contains(StartupData.user.id) || this.allowedUsers.contains("all")){
       return true;
     }
     return false;
