@@ -20,12 +20,14 @@ class ActivityMainScreen extends StatefulWidget {
 class ActivityMainScreenState extends State<ActivityMainScreen> {
   final logger = Logger();
   Future<Null> _handleRefresh() async {
-    Map refreshedActivities = await DatabaseManager().getAllActivityOfUser(true);
+    Map refreshedActivities =
+        await DatabaseManager().getAllActivityOfUser(true);
     setState(() {
-      widget.activities=refreshedActivities;
+      widget.activities = refreshedActivities;
     });
     return null;
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -35,28 +37,38 @@ class ActivityMainScreenState extends State<ActivityMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: _handleRefresh,
-        child:Scaffold(
-      body: Container(
-        color: Constants.mainBackgroundColor,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverPadding(
-                padding:
-                    EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 2),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      TodayActivity(widget.activities['today']),
-                      WeekActivity(widget.activities['week']),
-                      MonthActivity(widget.activities['month'])
-                    ],
-                  ),
-                )),
-          ],
-        ),
-      ),
-    ));
+    if (widget.activities['today'] == null &&
+        widget.activities['week'] == null &&
+        widget.activities['month'] == null) {
+      return RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: Center(
+            child: Text("No activity so far"),
+          ));
+    } else {
+      return RefreshIndicator(
+          onRefresh: _handleRefresh,
+          child: Scaffold(
+            body: Container(
+              color: Constants.mainBackgroundColor,
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverPadding(
+                      padding: EdgeInsets.only(
+                          bottom: SizeConfig.blockSizeVertical * 2),
+                      sliver: SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            TodayActivity(widget.activities['today']),
+                            WeekActivity(widget.activities['week']),
+                            MonthActivity(widget.activities['month'])
+                          ],
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          ));
+    }
   }
 }

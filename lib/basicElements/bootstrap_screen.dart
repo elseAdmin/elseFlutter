@@ -1,13 +1,8 @@
 import 'dart:async';
-import 'package:else_app_two/auth/auth.dart';
-import 'package:else_app_two/auth/auth_provider.dart';
-import 'package:else_app_two/auth/models/user_crud_model.dart';
-import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
 import 'package:else_app_two/home/home_page.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
-import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 
 class Bootstrap extends StatefulWidget {
@@ -19,23 +14,20 @@ class BootstrapState extends State<Bootstrap> {
   @override
   void initState() {
     super.initState();
-
     FireBaseApi _fireBaseApi = FireBaseApi("shopStaticData");
 
-    DatabaseManager().getAllShops(true,_fireBaseApi);
-    DatabaseManager().getAllActivityOfUser(true);
     DatabaseManager().getAllActiveEvents(true);
+    DatabaseManager().getAllShops(true, _fireBaseApi);
+    DatabaseManager().getAllActivityOfUser(true);
     DatabaseManager().getAllActiveDeals(true);
-
+    _userRelatedStuff();
     var _duration = new Duration(seconds: 4);
     Timer(_duration, navigationPage);
   }
 
   @override
-  didChangeDependencies() {
+  didChangeDependencies() async {
     SizeConfig().init(context);
-    _userRelatedStuff();
-
     super.didChangeDependencies();
   }
 
@@ -71,15 +63,7 @@ class BootstrapState extends State<Bootstrap> {
     ));
   }
 
-  void _userRelatedStuff() {
-    final BaseAuth _auth = AuthProvider.of(context).auth;
-    _auth.currentUser().then((userId) {
-      UserCrudModel('users', new Api('users')).getUserById(userId).then((user) {
-        print(user);
-        if (user != null && userId.isNotEmpty) {
-          StartupData.user = user;
-        }
-      });
-    });
+  _userRelatedStuff() {
+    DatabaseManager().initialiseCurrentUser();
   }
 }

@@ -26,6 +26,7 @@ class _DealSectionState extends State<DealSection> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     // TODO: implement build
+    if(deals!=null){
     return Column(
       children: <Widget>[
         Container(
@@ -104,5 +105,9 @@ class _DealSectionState extends State<DealSection> {
                 }))
       ],
     );
+  }else{
+      return Text("No deals as such");
+    }
   }
+
 }

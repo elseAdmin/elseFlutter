@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:else_app_two/auth/models/user_model.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class BaseAuth {
@@ -20,15 +22,23 @@ class Auth implements BaseAuth {
 
   @override
   Future<String> signInwithPhoneNumber(AuthCredential credential) async {
-    FirebaseUser user =
+    FirebaseUser firebaseUser =
         (await _firebaseAuth.signInWithCredential(credential)).user;
-    return user?.uid;
+    User user = User(firebaseUser.uid,firebaseUser.phoneNumber,firebaseUser.displayName,firebaseUser.email);
+    return firebaseUser?.uid;
   }
 
   @override
   Future<String> currentUser() async {
-    final FirebaseUser user = await _firebaseAuth.currentUser();
-    return user?.uid;
+    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+    User user;
+    if(firebaseUser!=null && firebaseUser.uid!=null) {
+      user = User(
+          firebaseUser.uid, firebaseUser.phoneNumber, firebaseUser.displayName,
+          firebaseUser.email);
+    }
+    StartupData.user=user;
+    return user.id;
   }
 
   @override

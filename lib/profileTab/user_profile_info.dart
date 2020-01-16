@@ -35,17 +35,7 @@ class _UserProfileInfo extends State<UserProfileInfo>{
 
   @override
   void didChangeDependencies() async {
-    super.didChangeDependencies();
-    final BaseAuth _auth = AuthProvider.of(context).auth;
-    final String userId = await _auth.currentUser();
-    User user = await userProvider.getUserById(userId);
-    if(user != null && userId.isNotEmpty){
-      setState(() {
-        _nameController.text = user.name;
-        _emailController.text = user.email;
-        _phoneController.text = '+91-'+user.phoneNumber;
-      });
-    }
+   super.didChangeDependencies();
   }
 
   @override

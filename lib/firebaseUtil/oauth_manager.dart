@@ -86,17 +86,20 @@ class _OauthManager extends State<OauthManager>{
     widget.onSignedIn();
   }
 
-  Future _checkForNewUser(BuildContext context, String userId, String phoneNumber) async {
-    User user = await userProvider.getUserById(userId);
+  Future _checkForNewUser(BuildContext context, User user, String phoneNumber) async {
+
+    user = await userProvider.getUserById(user.id);
 
     if(user == null){
+      //StartupData.user = user;
       await Navigator.push(context,
         MaterialPageRoute(
-          builder: (context) => RegisterUser(userId, _phoneNumberController.text, _signedIn),
+          builder: (context) => RegisterUser(user, _phoneNumberController.text, _signedIn),
         ),
       );
     }
     else{
+      StartupData.user = user;
       _signedIn();
     }
   }
@@ -111,24 +114,23 @@ class _OauthManager extends State<OauthManager>{
     );
     final String userId =
         (await _auth.signInwithPhoneNumber(credential));
-    final String currentUserId = await _auth.currentUser();
-    assert(userId == currentUserId);
+    //final String currentUserId = await _auth.currentUser();
+    //assert(userId == currentUserId);
     if(userId.isNotEmpty){
       User user = await UserCrudModel('users', new Api('users')).getUserById(userId);
-        if (user != null && userId.isNotEmpty) {
-          StartupData.user = user;
+      await _checkForNewUser(context, user, _phoneNumberController.text);
+      setState(() {
+        if (userId != null) {
+          print('Successfully signed in, uid: ' + userId);
+          _message = 'Successfully signed in, uid: ' + userId;
+        } else {
+          print('Sign in failed');
+          _message = 'Sign In Failed!! Wrong OTP';
         }
-      await _checkForNewUser(context, userId, _phoneNumberController.text);
+      });
+    }else{
+
     }
-    setState(() {
-      if (userId != null) {
-        print('Successfully signed in, uid: ' + userId);
-        _message = 'Successfully signed in, uid: ' + userId;
-      } else {
-        print('Sign in failed');
-        _message = 'Sign In Failed!! Wrong OTP';
-      }
-    });
   }
 
 
