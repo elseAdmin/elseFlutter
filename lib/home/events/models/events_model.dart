@@ -10,7 +10,6 @@ class EventModel extends BaseModel {
   DateTime endDate;
   String rules;
   int totalRules;
-  String id;
   String url;
   String blurUrl;
   String name;
@@ -40,6 +39,7 @@ class EventModel extends BaseModel {
       BeaconData data = new BeaconData(list[i]['major'], list[i]['minor']);
       beaconList.add(data);
     }
+    return beaconList;
   }
 
   EventModel(DataSnapshot snapshot) {
@@ -57,7 +57,6 @@ class EventModel extends BaseModel {
       beaconDataList.add(data);
     }
 
-    this.id = snapshot.key;
     this.url = snapshot.value['url'];
     this.name = snapshot.value['name'];
     this.status = snapshot.value['status'];

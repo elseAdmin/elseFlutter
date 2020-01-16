@@ -55,7 +55,7 @@ class DatabaseManager {
 
   /// startup data methods  - start
 
-  initialiseCurrentUser() async {
+  Future initialiseCurrentUser() async {
     final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
