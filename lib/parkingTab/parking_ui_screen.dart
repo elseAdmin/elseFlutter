@@ -39,7 +39,7 @@ class _ParkingUIScreen extends State<ParkingUIScreen>{
   }
 
   void _parkedVehicle(bool isUserParked){
-    DatabaseManager().getActiveParking(StartupData.userid).then((model){
+    DatabaseManager().getActiveParking().then((model){
       setState(() {
         parking = model;
         _isUserParked = isUserParked;

@@ -4,6 +4,7 @@ import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/profileTab/register_user.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/auth/models/user_crud_model.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,17 +86,20 @@ class _OauthManager extends State<OauthManager>{
     widget.onSignedIn();
   }
 
-  Future _checkForNewUser(BuildContext context, String userId, String phoneNumber) async {
-    User user = await userProvider.getUserById(userId);
+  Future _checkForNewUser(BuildContext context, User user, String phoneNumber) async {
+
+    user = await userProvider.getUserById(user.id);
 
     if(user == null){
+      //StartupData.user = user;
       await Navigator.push(context,
         MaterialPageRoute(
-          builder: (context) => RegisterUser(userId, _phoneNumberController.text, _signedIn),
+          builder: (context) => RegisterUser(user, _phoneNumberController.text, _signedIn),
         ),
       );
     }
     else{
+      StartupData.user = user;
       _signedIn();
     }
   }
@@ -110,20 +114,23 @@ class _OauthManager extends State<OauthManager>{
     );
     final String userId =
         (await _auth.signInwithPhoneNumber(credential));
-    final String currentUserId = await _auth.currentUser();
-    assert(userId == currentUserId);
+    //final String currentUserId = await _auth.currentUser();
+    //assert(userId == currentUserId);
     if(userId.isNotEmpty){
-      await _checkForNewUser(context, userId, _phoneNumberController.text);
+      User user = await UserCrudModel('users', new Api('users')).getUserById(userId);
+      await _checkForNewUser(context, user, _phoneNumberController.text);
+      setState(() {
+        if (userId != null) {
+          print('Successfully signed in, uid: ' + userId);
+          _message = 'Successfully signed in, uid: ' + userId;
+        } else {
+          print('Sign in failed');
+          _message = 'Sign In Failed!! Wrong OTP';
+        }
+      });
+    }else{
+
     }
-    setState(() {
-      if (userId != null) {
-        print('Successfully signed in, uid: ' + userId);
-        _message = 'Successfully signed in, uid: ' + userId;
-      } else {
-        print('Sign in failed');
-        _message = 'Sign In Failed!! Wrong OTP';
-      }
-    });
   }
 
 
@@ -131,7 +138,16 @@ class _OauthManager extends State<OauthManager>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        backgroundColor: Constants.titleBarBackgroundColor,
+        iconTheme: IconThemeData(
+          color: Constants.textColor, //change your color here
+        ),
+        title: Text("Login",
+          style: TextStyle(
+            color: Constants.titleBarTextColor,
+            fontSize: 18,
+          ),
+        ),
       ),
       body: Center(
         child: new Container(

@@ -4,7 +4,7 @@ import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/vendor_search.dart';
 import 'package:flutter/material.dart';
 
-class SearchScreen extends StatelessWidget{
+class SearchScreen extends StatelessWidget {
   final HashMap<String, Set<ShopModel>> _indexShopMap;
   SearchScreen(this._indexShopMap);
 
@@ -16,25 +16,13 @@ class SearchScreen extends StatelessWidget{
           labelText: 'Search for category or brand',
         ),
         readOnly: true,
-        onTap: (){
+        onTap: () {
           showSearch(
               context: context,
-              delegate: VendorSearch(_indexShopMap.keys.toList(), _indexShopMap));
+              delegate:
+                  VendorSearch(_indexShopMap.keys.toList(), _indexShopMap));
         },
       ),
     );
   }
-
 }
-
-/*
-IconButton(
-      icon: Icon(Icons.search),
-      onPressed: (){
-        showSearch(
-          context: context,
-          delegate: VendorSearch(),
-        );
-      },
-    )
- */

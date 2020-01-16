@@ -5,6 +5,7 @@ import 'package:else_app_two/profileTab/general_section.dart';
 import 'package:else_app_two/profileTab/login_logout_section.dart';
 import 'package:else_app_two/profileTab/my_section.dart';
 import 'package:else_app_two/profileTab/user_profile_info.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget{
@@ -31,9 +32,7 @@ class _Profile extends State<Profile> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    final BaseAuth _auth = AuthProvider.of(context).auth;
-    final String userId = await _auth.currentUser();
-    if(userId != null && userId.isNotEmpty){
+    if(StartupData.user != null && StartupData.user.id!=null){
       setState(() {
         isUserLogged = true;
       });

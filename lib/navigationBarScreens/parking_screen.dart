@@ -19,7 +19,7 @@ class ParkingState  extends State<Parking> {
   @override
   void initState() {
     // TODO: implement initState
-   DatabaseManager().getActiveParking(StartupData.userid).then((model){
+   DatabaseManager().getActiveParking().then((model){
      setState(() {
        parking = model;
      });

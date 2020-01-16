@@ -1,32 +1,35 @@
 import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/auth/models/user_crud_model.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class RegisterUser extends StatefulWidget{
-  final String userId;
+class RegisterUser extends StatefulWidget {
+  final User user;
   final String phoneNumber;
   final VoidCallback onSignedIn;
-  RegisterUser(this.userId, this.phoneNumber, this.onSignedIn);
+  RegisterUser(this.user, this.phoneNumber, this.onSignedIn);
 
   @override
   _RegisterUser createState() => _RegisterUser();
-
 }
 
-class _RegisterUser extends State<RegisterUser>{
+class _RegisterUser extends State<RegisterUser> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
 
-  void _registerUser(BuildContext context, String name, String email){
+  void _registerUser(BuildContext context, String name, String email) {
+
+    User user = new User(widget.user.id, widget.phoneNumber, name, email);
+
+
     final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
-    User user = new User(widget.userId, widget.phoneNumber, name, email);
-    print('Phone number ' + widget.phoneNumber);
     Future userfuture = userProvider.addUserById(user);
-    if(userfuture !=null){
-      print('User registered successfully ' + userfuture.toString());
+
+    if (userfuture != null) {
+      StartupData.user=user;
       Navigator.pop(context);
       widget.onSignedIn();
     }
@@ -58,8 +61,7 @@ class _RegisterUser extends State<RegisterUser>{
                   validator: (String value) {
                     if (value.length == 0) {
                       return 'Name';
-                    }
-                    else{
+                    } else {
                       return null;
                     }
                   },
@@ -69,7 +71,7 @@ class _RegisterUser extends State<RegisterUser>{
                   decoration: const InputDecoration(labelText: 'Email Id'),
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.send,
-                  validator: (value){
+                  validator: (value) {
                     Pattern pattern =
                         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                     RegExp regex = new RegExp(pattern);
@@ -94,9 +96,7 @@ class _RegisterUser extends State<RegisterUser>{
                       color: Colors.blueGrey,
                       child: const Text(
                         'REGISTER',
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -108,5 +108,4 @@ class _RegisterUser extends State<RegisterUser>{
       ),
     );
   }
-
 }

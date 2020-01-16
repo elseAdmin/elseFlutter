@@ -72,7 +72,7 @@ class _SectionContainer extends State<SectionContainer>{
     setState(() {
       if(changeData){
         _sensorModelMap[sensorModel.name] = sensorModel;
-        if(sensorModel.userUid == StartupData.userid){
+        if(sensorModel.userUid == StartupData.user.id){
           _userMap[sensorModel.name] = true;
           widget.onParkedVehicle(true);
         } else{
