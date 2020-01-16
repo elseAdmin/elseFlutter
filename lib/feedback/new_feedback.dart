@@ -153,106 +153,99 @@ class _NewFeedBack extends State<NewFeedBack>{
           child: Form(
             key: _formKey,
             child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        labelText: 'Subject'
-                    ),
-                    controller: _subjectController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter Name';
-                      }
-                      return null;
-                    },
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                TextFormField(
+                  decoration: const InputDecoration(
+                      labelText: 'Subject'
                   ),
-                  paddingData(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("Type Of FeedBack"),
-                      Row(children: <Widget>[
-                        Radio(value: true, groupValue: _typeOfFeedBack,
+                  controller: _subjectController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter Name';
+                    }
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Type Of FeedBack"),
+                    Row(children: <Widget>[
+                      Radio(value: true, groupValue: _typeOfFeedBack,
+                        onChanged: (bool newValue) {
+                          setState(() {
+                            _typeOfFeedBack=newValue;
+                          });
+                        }),
+                      Text("Positive"),
+                    ]),
+                    Row(
+                      children: <Widget>[
+                        Radio(value: false, groupValue: _typeOfFeedBack,
                           onChanged: (bool newValue) {
                             setState(() {
                               _typeOfFeedBack=newValue;
                             });
                           }),
-                        Text("Positive"),
-                      ]),
-                      Row(
-                        children: <Widget>[
-                          Radio(value: false, groupValue: _typeOfFeedBack,
-                            onChanged: (bool newValue) {
-                              setState(() {
-                                _typeOfFeedBack=newValue;
-                              });
-                            }),
-                          Text("Negative")
-                        ],
-                      )
-                    ],
+                        Text("Negative")
+                      ],
+                    )
+                  ],
+                ),
+                Text("Rate your experience"),
+                SliderImpl(this.setUserRating),
+                TextFormField(
+                  maxLines: 8,
+                  decoration: const InputDecoration(
+                      labelText: 'Content'
                   ),
-                  paddingData(),
-                  Text("Rate your experience"),
-                  SliderImpl(this.setUserRating),
-                  paddingData(),
-                  TextFormField(
-                    maxLines: 8,
-                    decoration: const InputDecoration(
-                        labelText: 'Content'
-                    ),
-                    controller: _contentController,
-                    keyboardType: TextInputType.text,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
+                  controller: _contentController,
+                  keyboardType: TextInputType.text,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Upload Image (If any)"),
+                    CameraImpl(onImageSelectedFromCamera),
+                  ],
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height / 8,
+                  width: MediaQuery.of(context).size.height / 4,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imageUrls.length,
+                    itemBuilder: (context, index){
+                      return imageCard(index);
+                    }
                   ),
-                  paddingData(),
-                  paddingData(),
-                  paddingData(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("Upload Image (If any)"),
-                      CameraImpl(onImageSelectedFromCamera),
-                    ],
-                  ),
-                  paddingData(),
-                  Container(
-                    height: MediaQuery.of(context).size.height / 8,
-                    width: MediaQuery.of(context).size.height / 4,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: imageUrls.length,
-                      itemBuilder: (context, index){
-                        return imageCard(index);
-                      }
-                    ),
-                  ),
-                  paddingData(),
-                  paddingData(),
-                  FlatButton(
-                    color: Colors.white,
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        print("Inside Data");
-                        _addFeedBack(_subjectController.text, _typeOfFeedBack,
-                            _intensityValue, _contentController.text, imageUrls);
-                      }
-                    },
-                    child: const Text(
-                      'SUBMIT',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0
-                      ),
+                ),
+                FlatButton(
+                  color: Colors.white,
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      print("Inside Data");
+                      _addFeedBack(_subjectController.text, _typeOfFeedBack,
+                          _intensityValue, _contentController.text, imageUrls);
+                    }
+                  },
+                  child: const Text(
+                    'SUBMIT',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0
                     ),
                   ),
-                ]),
+                ),
+              ]
+            ),
           ),
         ),
       ),
@@ -295,10 +288,10 @@ class _NewFeedBack extends State<NewFeedBack>{
       ],
     );
   }
-
+/*
   Widget paddingData(){
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
     );
-  }
+  }*/
 }
