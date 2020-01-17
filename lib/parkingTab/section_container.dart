@@ -11,7 +11,6 @@ import 'package:else_app_two/parkingTab/section_c_parking.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 typedef BoolCallback = void Function(bool);
 
@@ -73,7 +72,7 @@ class _SectionContainer extends State<SectionContainer>{
     setState(() {
       if(changeData){
         _sensorModelMap[sensorModel.name] = sensorModel;
-        if(sensorModel.userUid == currentUser){
+        if(sensorModel.userUid == StartupData.user.id){
           _userMap[sensorModel.name] = true;
           widget.onParkedVehicle(true);
         } else{
@@ -113,17 +112,18 @@ class _SectionContainer extends State<SectionContainer>{
           ),
         ),
         child: FittedBox(
-          alignment: Alignment.topLeft,
+          alignment: Alignment.center,
           child: StreamBuilder(
             stream: _sensorStream.stream,
             builder: (context, asyncSnapshot){
               if(asyncSnapshot.hasData){
                 return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SectionAParking(_sensorModelMap,_userMap,factor),
                     SectionBParking(_sensorModelMap, _userMap, factor),
                     SectionCParking(_sensorModelMap, _userMap, factor),
+                    Container(height: 200.0)
                   ],
                 );
               } else {
@@ -134,46 +134,6 @@ class _SectionContainer extends State<SectionContainer>{
         ),
       ),
     );
-
-    /*return SlidingUpPanel(
-      controller: _panelController,
-      minHeight: 4.0,
-      panel: Center(child: Text('Sliding panel'),),
-      body: SizedBox.expand(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.blueGrey[100],
-            border: Border.all(
-              color: Colors.black,
-              width: 2.0,
-            ),
-            borderRadius: BorderRadius.all(
-                Radius.circular(5.0)
-            ),
-          ),
-          child: FittedBox(
-            alignment: Alignment.topLeft,
-            child: StreamBuilder(
-              stream: _sensorStream.stream,
-              builder: (context, asyncSnapshot){
-                if(asyncSnapshot.hasData){
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      SectionAParking(_sensorModelMap,_userMap,factor),
-                      SectionBParking(_sensorModelMap, _userMap, factor),
-                      SectionCParking(_sensorModelMap, _userMap, factor),
-                    ],
-                  );
-                } else {
-                  return Container(child: Center(child: Text('Loading data'),),);
-                }
-              },
-            ),
-          ),
-        ),
-      ),
-    );*/
   }
 
 }

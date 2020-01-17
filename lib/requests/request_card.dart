@@ -111,6 +111,7 @@ class _RequestCard extends State<RequestCard>{
           child: Form(
             key: _formKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 //              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
@@ -129,9 +130,6 @@ class _RequestCard extends State<RequestCard>{
                     return null;
                   },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                ),
                 TextFormField(
                   decoration: const InputDecoration(
                       labelText: 'Phone'
@@ -144,9 +142,6 @@ class _RequestCard extends State<RequestCard>{
                     }
                     return null;
                   },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
                 ),
                 TextFormField(
                   maxLines: 6,
@@ -161,9 +156,6 @@ class _RequestCard extends State<RequestCard>{
                     }
                     return null;
                   },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
                 ),
                 FlatButton(
                   color: Colors.white,
@@ -182,9 +174,6 @@ class _RequestCard extends State<RequestCard>{
                         fontSize: 20.0
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,

@@ -1,10 +1,16 @@
-import 'package:else_app_two/parkingTab/section_a_parking.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/parkingTab/section_container.dart';
 import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import 'models/user_parking_model.dart';
+
 class ParkingUIScreen extends StatefulWidget{
+  final ParkingModel parkingModel;
+  ParkingUIScreen(this.parkingModel);
+
   @override
   _ParkingUIScreen createState() => _ParkingUIScreen();
 }
@@ -12,13 +18,32 @@ class ParkingUIScreen extends StatefulWidget{
 class _ParkingUIScreen extends State<ParkingUIScreen>{
   List<String> _floorLevel = ['Level -1', 'Level 0', 'Level 1', 'Level 2']; // Option 2
   String _selectedLocation = 'Level 0';
-  PanelController _panelController = new PanelController();
   bool _isUserParked = false;
+  ParkingModel parking;
 
-  void _parkedVehicle(bool _isUserParked){
-    
+
+  @override
+  void initState() {
+    super.initState();
+    bool isUserParked;
+    if(widget.parkingModel != null){
+      isUserParked = true;
+    }
+    else{
+      isUserParked = false;
+    }
     setState(() {
-      _isUserParked = _isUserParked;
+      _isUserParked = isUserParked;
+      parking = widget.parkingModel;
+    });
+  }
+
+  void _parkedVehicle(bool isUserParked){
+    DatabaseManager().getActiveParking().then((model){
+      setState(() {
+        parking = model;
+        _isUserParked = isUserParked;
+      });
     });
   }
 
@@ -94,44 +119,73 @@ class _ParkingUIScreen extends State<ParkingUIScreen>{
         ),
       ),
       body: SlidingUpPanel(
-        controller: _panelController,
-        minHeight: 50.0,
-        panel: Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              richTextData('Vacant on this Floor','42'),
-              richTextData('Total on this Floor','204'),
-            ],
-          ),
-        ),
+        backdropEnabled: true,
+        minHeight: 80.0,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
+        collapsed: collapsedPanelData(),
+        panel: slidingPanelData(),
         body: Container(
           color: Colors.white,
           alignment: AlignmentDirectional(0.0, 0.0),
           child: Container(
             margin: new EdgeInsets.all(10.0),
-//            padding: EdgeInsets.only(bottom: 50.0),
             child: SectionContainer(_parkedVehicle),
           ),
         ),
       ),
-      /*bottomNavigationBar: BottomAppBar(
-        child: Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              richTextData('Vacant on this Floor','42'),
-              richTextData('Total on this Floor','204'),
-            ],
-          ),
-        ),
-      ),*/
     );
   }
 
+  Widget collapsedPanelData(){
+    if(_isUserParked && parking.sensorName != null){
+      return Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(Icons.keyboard_arrow_up),
+            richTextData('Vehicle is parked',parking.sensorName),
+          ],
+        ),
+      );
+    } else {
+      return Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(Icons.keyboard_arrow_up),
+            richTextData('Vacant on this Floor','49'),
+            richTextData('Total on this Floor','204'),
+          ],
+        ),
+      );
+    }
+  }
+
   Widget slidingPanelData(){
-    if(_isUserParked){
-      return null;
+    if(_isUserParked && parking.sensorName != null){
+      return Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(Icons.keyboard_arrow_down),
+            richTextData('Your vehicle is parked at',parking.parkingInTime.toIso8601String()),
+            richTextData('At level','1'),
+            richTextData('Row','B12'),
+          ],
+        ),
+      );
+    }
+    else{
+      return Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(Icons.keyboard_arrow_down),
+            richTextData('Vacant on this Floor','42'),
+            richTextData('Total on this Floor','204'),
+          ],
+        ),
+      );
     }
   }
 

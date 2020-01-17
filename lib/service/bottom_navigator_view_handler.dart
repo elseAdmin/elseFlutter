@@ -4,7 +4,6 @@ import 'package:else_app_two/navigationBarScreens/navigation_screen.dart';
 import 'package:else_app_two/navigationBarScreens/notification_screen.dart';
 import 'package:else_app_two/navigationBarScreens/parking_screen.dart';
 import 'package:else_app_two/navigationBarScreens/profile_screen.dart';
-import 'package:else_app_two/parkingTab/parking_ui_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -12,8 +11,7 @@ class BottomNavigatorViewHandler {
   final logger = Logger();
 
   Widget getViewForNavigationBarIndex(int index) {
-//    Parking parking = new Parking();
-    ParkingUIScreen parking = new ParkingUIScreen();
+    Parking parking = new Parking();
     Profile profile = new Profile();
     HomeScreen home = new HomeScreen();
     NavigationScreen navigation = new NavigationScreen();

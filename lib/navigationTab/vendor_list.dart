@@ -28,6 +28,9 @@ class _VendorList extends State<VendorList>{
       return shopModelSet.toList();
     }
     else{
+      if(widget._indexShopMap[key] == null){
+        return List();
+      }
       return widget._indexShopMap[key].toList();
     }
   }
