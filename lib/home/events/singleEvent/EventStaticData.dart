@@ -26,16 +26,6 @@ class EventStaticDataState extends State<EventStaticData> {
         children: <Widget>[
           Container(
               padding: EdgeInsets.only(
-                  left: SizeConfig.blockSizeHorizontal * 2,
-                  top: SizeConfig.blockSizeVertical * 2),
-              child: Text("About",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      color: Constants.textColor,
-                      fontSize: 18,
-                      decoration: TextDecoration.underline))),
-          Container(
-              padding: EdgeInsets.only(
                   left: SizeConfig.blockSizeVertical * 2,
                   top: SizeConfig.blockSizeVertical * 2,
                   right: SizeConfig.blockSizeVertical * 2),

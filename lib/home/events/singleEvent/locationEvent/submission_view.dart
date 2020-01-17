@@ -17,39 +17,10 @@ class SubmissionView extends StatefulWidget {
 }
 
 class SubmissionViewState extends State<SubmissionView> {
-  bool isLoggedIn;
   List result = List();
   LocationEventSubmissionModel submissionDetails;
   @override
   void initState() {
-    if (StartupData.user != null) {
-      isLoggedIn = true;
-      DatabaseManager()
-          .getUserParticipationForLocationEvent(widget.event)
-          .then((value) {
-        if (value == null) {
-          value = LocationEventSubmissionModel(null);
-        }
-        setState(() {
-          submissionDetails = value;
-        });
-      });
-    } else {
-      isLoggedIn = false;
-    }
-    super.initState();
-  }
-
-  redirectLogin() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OauthManager(onSignedIn: _signedIn),
-      ),
-    );
-  }
-
-  void _signedIn() {
     DatabaseManager()
         .getUserParticipationForLocationEvent(widget.event)
         .then((value) {
@@ -57,10 +28,10 @@ class SubmissionViewState extends State<SubmissionView> {
         value = LocationEventSubmissionModel(null);
       }
       setState(() {
-        isLoggedIn = true;
         submissionDetails = value;
       });
     });
+    super.initState();
   }
 
   onUserParticipated() {
@@ -78,22 +49,17 @@ class SubmissionViewState extends State<SubmissionView> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoggedIn) {
-      if (submissionDetails == null) {
-        //still fetching details
-        return Center(
-          child: Loading(
-              indicator: BallPulseIndicator(), size: 60.0, color: Colors.blue),
-        );
-      } else if (submissionDetails.participatedAt == null) {
-        //user never participated
-        return NotParticipatedView(widget.event, onUserParticipated);
-      } else {
-        return ParticipatedView(widget.event, submissionDetails);
-      }
-    } else {
+    if (submissionDetails == null) {
+      //still fetching details
       return Center(
-          child: GestureDetector(onTap: redirectLogin, child: Text("Login")));
+        child: Loading(
+            indicator: BallPulseIndicator(), size: 60.0, color: Colors.blue),
+      );
+    } else if (submissionDetails.participatedAt == null) {
+      //user never participated
+      return NotParticipatedView(widget.event, onUserParticipated);
+    } else {
+      return ParticipatedView(widget.event, submissionDetails);
     }
   }
 }
