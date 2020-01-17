@@ -34,11 +34,6 @@ class _UserProfileInfo extends State<UserProfileInfo> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    if (StartupData.user != null) {
-      _nameController.text = StartupData.user.name;
-      _emailController.text = StartupData.user.email;
-      _phoneController.text = StartupData.user.phoneNumber;
-    }
   }
 
   setValues() {
