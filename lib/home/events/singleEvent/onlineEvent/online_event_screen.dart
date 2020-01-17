@@ -64,18 +64,6 @@ class OnlineEventScreenState extends State<OnlineEventScreen> {
                   [
                     EventStaticData(
                         widget.event.description, widget.event.rules),
-                    Container(
-                        padding: EdgeInsets.only(
-                            left: SizeConfig.blockSizeHorizontal * 2,
-                            top: SizeConfig.blockSizeVertical),
-                        child: Text(
-                          "Submissions",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              color: Constants.textColor,
-                              fontSize: 18,
-                              decoration: TextDecoration.underline),
-                        )),
                     SubmissionSection(widget.event),
                     DividerAboveSubmissionGrid(widget.event),
                   ],

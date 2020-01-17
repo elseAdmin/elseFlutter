@@ -17,13 +17,10 @@ class SubmissionView extends StatefulWidget {
 }
 
 class SubmissionViewState extends State<SubmissionView> {
-  bool isLoggedIn;
   List result = List();
   OfflineEventSubmissionModel submissionDetails;
   @override
   void initState() {
-    if (StartupData.user != null) {
-      isLoggedIn = true;
       DatabaseManager()
           .getUserParticipationForOfflineEvent(widget.event)
           .then((value) {
@@ -34,9 +31,6 @@ class SubmissionViewState extends State<SubmissionView> {
           submissionDetails = value;
         });
       });
-    } else {
-      isLoggedIn = false;
-    }
     super.initState();
   }
 
@@ -53,32 +47,8 @@ class SubmissionViewState extends State<SubmissionView> {
     });
   }
 
-  redirectLogin() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OauthManager(onSignedIn: _signedIn),
-      ),
-    );
-  }
-
-  void _signedIn() {
-    DatabaseManager()
-        .getUserParticipationForOfflineEvent(widget.event)
-        .then((value) {
-      if (value == null) {
-        value = OfflineEventSubmissionModel(null);
-      }
-      setState(() {
-        isLoggedIn = true;
-        submissionDetails = value;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (isLoggedIn) {
       if (submissionDetails == null) {
         //still fetching details
         return Center(
@@ -91,9 +61,5 @@ class SubmissionViewState extends State<SubmissionView> {
       } else {
         return ParticipatedView(widget.event, submissionDetails);
       }
-    } else {
-      return Center(
-          child: GestureDetector(onTap: redirectLogin, child: Text("Login")));
-    }
   }
 }

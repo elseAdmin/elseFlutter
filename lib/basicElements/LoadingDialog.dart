@@ -8,10 +8,6 @@ class LoadingDialog extends StatelessWidget {
     // TODO: implement build
 
     return SimpleDialog(
-        title: Text(
-          "Loading",
-          textAlign: TextAlign.center,
-        ),
         elevation: 20,
         children: <Widget>[
           Container(

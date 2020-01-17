@@ -337,6 +337,9 @@ class DatabaseManager {
 
   getUserParticipationForOfflineEvent(EventModel event) async {
     OfflineEventSubmissionModel model;
+    if(StartupData.user==null){
+      return null;
+    }
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -401,6 +404,9 @@ class DatabaseManager {
 
   getUserParticipationForLocationEvent(EventModel event) async {
     LocationEventSubmissionModel model;
+    if(StartupData.user==null){
+      return null;
+    }
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -523,6 +529,9 @@ class DatabaseManager {
 
   Future getUserSubmissionForOnlineEvent(EventModel event) async {
     OnlineEventSubmissionModel submission;
+    if(StartupData.user==null){
+      return null;
+    }
     await store
         .collection(StartupData.dbreference)
         .document("events")

@@ -82,7 +82,9 @@ class _OauthManager extends State<OauthManager> {
   }
 
   void _signedIn() {
+    //pops the dialog box
     Navigator.of(context, rootNavigator: true).pop();
+    //pops the login page
     Navigator.pop(context);
     widget.onSignedIn();
   }
