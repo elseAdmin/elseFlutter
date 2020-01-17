@@ -6,17 +6,15 @@ import 'package:else_app_two/auth/models/user_crud_model.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 
-class UserProfileInfo extends StatefulWidget{
+class UserProfileInfo extends StatefulWidget {
   final bool isUserLogged;
   UserProfileInfo(this.isUserLogged);
 
   @override
   _UserProfileInfo createState() => _UserProfileInfo();
-
 }
 
-class _UserProfileInfo extends State<UserProfileInfo>{
-
+class _UserProfileInfo extends State<UserProfileInfo> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -26,20 +24,34 @@ class _UserProfileInfo extends State<UserProfileInfo>{
   void initState() {
     // TODO: implement initState
     super.initState();
-    if(StartupData.user!=null) {
+    if (StartupData.user != null) {
       _nameController.text = StartupData.user.name;
       _emailController.text = StartupData.user.email;
-      _phoneController.text = '+91-' + StartupData.user.phoneNumber;
+      _phoneController.text = StartupData.user.phoneNumber;
     }
   }
 
   @override
   void didChangeDependencies() async {
-   super.didChangeDependencies();
+    super.didChangeDependencies();
+    if (StartupData.user != null) {
+      _nameController.text = StartupData.user.name;
+      _emailController.text = StartupData.user.email;
+      _phoneController.text = StartupData.user.phoneNumber;
+    }
+  }
+
+  setValues() {
+    if (StartupData.user != null) {
+      _nameController.text = StartupData.user.name;
+      _emailController.text = StartupData.user.email;
+      _phoneController.text = StartupData.user.phoneNumber;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    setValues();
     return Visibility(
       child: Container(
         decoration: BoxDecoration(
@@ -50,13 +62,11 @@ class _UserProfileInfo extends State<UserProfileInfo>{
           ),
         ),
         child: ListTile(
-          contentPadding: const EdgeInsets.only(left: 10, right: 10,top: 10,bottom: 10),
+          contentPadding:
+              const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
           title: Text(
             _nameController.text,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           subtitle: Container(
             child: Column(
@@ -77,8 +87,5 @@ class _UserProfileInfo extends State<UserProfileInfo>{
     );
   }
 
-  Widget userInfoChild(){
-
-  }
-
+  Widget userInfoChild() {}
 }

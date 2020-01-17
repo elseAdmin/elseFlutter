@@ -75,7 +75,10 @@ class BeaconServiceImpl {
 
   postHandlingForParkingBeacons(String major, String minor, String distance) async {
     if(Constants.parkingEligibleUser){
+
       Constants.parkingLevel = int.parse(major[0]);
+      Constants.section = int.parse(major[1]+major[2]);
+      
       db.markUserVisitForParkingBeacon(major, minor,distance);
     }
   }
