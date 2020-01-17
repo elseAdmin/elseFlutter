@@ -30,7 +30,6 @@ class _SectionContainer extends State<SectionContainer>{
   HashMap<String, bool> _userMap = new HashMap();
   FireBaseApi _fireBaseApi = FireBaseApi("parking");
   var _sensorStream = StreamController<String>();
-//  PanelController _panelController = new PanelController();
 
   @override
   Future didChangeDependencies() async{
@@ -95,12 +94,61 @@ class _SectionContainer extends State<SectionContainer>{
     return true;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _sensorStream.close();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
+    return tryKr();
+  }
+
+  Widget tryKr(){
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Container(
-//        height: MediaQuery.of(context).size.height / 10 * 4,
+        decoration: BoxDecoration(
+          color: Colors.blueGrey[100],
+          border: Border.all(
+            color: Colors.black,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.all(
+              Radius.circular(5.0)
+          ),
+        ),
+        child: StreamBuilder(
+          stream: _sensorStream.stream,
+          builder: (context, asyncSnapshot){
+            if(asyncSnapshot.hasData){
+              return SizedBox(
+                width: (MediaQuery.of(context).size.width - 30) * factor,
+                child: ListView(
+//                mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SectionAParking(_sensorModelMap,_userMap,factor),
+                    SectionBParking(_sensorModelMap, _userMap, factor),
+                    SectionCParking(_sensorModelMap, _userMap, factor),
+                    Container(height: 350.0)
+                  ],
+                ),
+              );
+            } else {
+              return Container(child: Center(child: Text('Loading data'),),);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  /*Widget existingOne(){
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        height: MediaQuery.of(context).size.height / 10 * 4,
         decoration: BoxDecoration(
           color: Colors.blueGrey[100],
           border: Border.all(
@@ -117,14 +165,17 @@ class _SectionContainer extends State<SectionContainer>{
             stream: _sensorStream.stream,
             builder: (context, asyncSnapshot){
               if(asyncSnapshot.hasData){
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SectionAParking(_sensorModelMap,_userMap,factor),
-                    SectionBParking(_sensorModelMap, _userMap, factor),
-                    SectionCParking(_sensorModelMap, _userMap, factor),
-                    Container(height: 200.0)
-                  ],
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView(
+                    children: <Widget>[
+                      SectionAParking(_sensorModelMap,_userMap,factor),
+                      SectionBParking(_sensorModelMap, _userMap, factor),
+                      SectionCParking(_sensorModelMap, _userMap, factor),
+                      Container(height: 200.0)
+                    ],
+                  ),
                 );
               } else {
                 return Container(child: Center(child: Text('Loading data'),),);
@@ -134,6 +185,7 @@ class _SectionContainer extends State<SectionContainer>{
         ),
       ),
     );
-  }
+  }*/
 
 }
+

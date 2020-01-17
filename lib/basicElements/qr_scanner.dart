@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:else_app_two/parkingTab/parking_ui_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
@@ -31,16 +32,7 @@ class QrScannerState extends State<QrScanner>{
       );
     }else{
       //barcode is now scanned
-      return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('you parking location will now be automatically traced.'),
-            ],
-          ),
-        ),
-      );
+      return ParkingUIScreen(null);
     }
   }
   Future _scan() async {
@@ -60,3 +52,16 @@ class QrScannerState extends State<QrScanner>{
     }
   }
 }
+
+/*
+Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('you parking location will now be automatically traced.'),
+            ],
+          ),
+        ),
+      )
+ */

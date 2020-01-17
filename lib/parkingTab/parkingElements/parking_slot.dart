@@ -18,6 +18,7 @@ class _ParkingSlot extends State<ParkingSlot>{
   double _width = 24.0;
   String _text = '';
   int _turns = 0;
+  double _fontSize = 8.0;
 
   getColor(int colorValue, bool isUser){
     if(isUser){
@@ -29,15 +30,17 @@ class _ParkingSlot extends State<ParkingSlot>{
     return Colors.deepOrange[200];
   }
 
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     setState(() {
       _color = widget.colorValue;
       _height = widget.factor * _height;
       _width = widget.factor * _width;
       _text = widget.text;
       _turns = widget.angleStruct;
+      _fontSize = widget.factor * _fontSize;
     });
   }
 
@@ -53,7 +56,7 @@ class _ParkingSlot extends State<ParkingSlot>{
           child: Text(
             _text,
             style: TextStyle(
-              fontSize: 8.0,
+              fontSize: _fontSize,
             ),
           ),
         ),
