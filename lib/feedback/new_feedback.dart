@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:else_app_two/auth/auth.dart';
 import 'package:else_app_two/auth/auth_provider.dart';
+import 'package:else_app_two/basicElements/LoginDialog.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/feedback/FeedbackStatus.dart';
@@ -24,7 +25,7 @@ class NewFeedBack extends StatefulWidget{
 
 class _NewFeedBack extends State<NewFeedBack>{
   final _formKey = GlobalKey<FormState>();
-  bool isUserLogged = false;
+  bool isLoggedIn = false;
   TextEditingController _subjectController = TextEditingController();
   TextEditingController _contentController = TextEditingController();
   bool _typeOfFeedBack = true;
@@ -37,6 +38,13 @@ class _NewFeedBack extends State<NewFeedBack>{
   final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
   final StorageManager _storageManager = StorageManager(StartupData.dbreference+'/feedback/');
 
+  @override
+  initState(){
+    if(StartupData.user!=null){
+      isLoggedIn=true;
+    }
+    super.initState();
+  }
   setUserRating(double rating) {
     _intensityValue = rating;
   }
@@ -62,22 +70,12 @@ class _NewFeedBack extends State<NewFeedBack>{
     });
   }
 
-  void _signIn(){
-    setState(() {
-      isUserLogged = true;
-    });
-  }
-
   @override
   void didChangeDependencies() async{
     super.didChangeDependencies();
-    final BaseAuth _auth = AuthProvider.of(context).auth;
-    final String userId = await _auth.currentUser();
-    String path = 'users/$userId/feedbacks';
-    userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
   }
 
-  void _addFeedBack(String subject, bool typeOfFeedBack,
+  _addFeedBack(String subject, bool typeOfFeedBack,
       double feedbackIntensity, String content, List images) async{
     List<String> imageUrls = images.cast<String>();
     FeedBack feedBack = new FeedBack(subject, typeOfFeedBack, feedbackIntensity,
@@ -229,13 +227,7 @@ class _NewFeedBack extends State<NewFeedBack>{
                 ),
                 FlatButton(
                   color: Colors.white,
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      print("Inside Data");
-                      _addFeedBack(_subjectController.text, _typeOfFeedBack,
-                          _intensityValue, _contentController.text, imageUrls);
-                    }
-                  },
+                  onPressed: _submit,
                   child: const Text(
                     'SUBMIT',
                     style: TextStyle(
@@ -248,6 +240,34 @@ class _NewFeedBack extends State<NewFeedBack>{
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  _submit() async{
+    if(isLoggedIn) {
+      String userId = StartupData.user.id;
+      String path = 'users/$userId/feedbacks';
+      userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
+      if (_formKey.currentState.validate()) {
+        print("Inside Data");
+        await _addFeedBack(_subjectController.text, _typeOfFeedBack,
+            _intensityValue, _contentController.text, imageUrls);
+      }
+    }else{
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => LoginDialog(onSignIn));
+    }
+  }
+
+  onSignIn(){
+    isLoggedIn=true;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OauthManager(onSignedIn: _submit),
       ),
     );
   }

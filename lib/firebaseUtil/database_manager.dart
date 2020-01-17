@@ -55,7 +55,7 @@ class DatabaseManager {
 
   /// startup data methods  - start
 
-  initialiseCurrentUser() async {
+  Future initialiseCurrentUser() async {
     final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
@@ -337,6 +337,9 @@ class DatabaseManager {
 
   getUserParticipationForOfflineEvent(EventModel event) async {
     OfflineEventSubmissionModel model;
+    if(StartupData.user==null){
+      return null;
+    }
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -401,6 +404,9 @@ class DatabaseManager {
 
   getUserParticipationForLocationEvent(EventModel event) async {
     LocationEventSubmissionModel model;
+    if(StartupData.user==null){
+      return null;
+    }
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -523,6 +529,9 @@ class DatabaseManager {
 
   Future getUserSubmissionForOnlineEvent(EventModel event) async {
     OnlineEventSubmissionModel submission;
+    if(StartupData.user==null){
+      return null;
+    }
     await store
         .collection(StartupData.dbreference)
         .document("events")
