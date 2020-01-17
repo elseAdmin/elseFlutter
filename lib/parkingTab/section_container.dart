@@ -30,7 +30,7 @@ class _SectionContainer extends State<SectionContainer>{
   HashMap<String, bool> _userMap = new HashMap();
   FireBaseApi _fireBaseApi = FireBaseApi("parking");
   var _sensorStream = StreamController<String>();
-//  PanelController _panelController = new PanelController();
+  //PanelController _panelController = new PanelController();
 
   @override
   Future didChangeDependencies() async{
