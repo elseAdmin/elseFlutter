@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:else_app_two/basicElements/LoadingDialog.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/pick_gallery_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
@@ -77,27 +78,26 @@ class SubmissionSectionState extends State<SubmissionSection> {
     });
   }
 
-  onSubmissionConfirmedByUser(file) {
+  onSubmissionConfirmedByUser(file) async {
     setState(() {
       imageFile = file;
       status = "pending";
       likes = 0;
     });
 
-    DatabaseManager()
+    String sstatus = await DatabaseManager()
         .markUserParticipationForOnlineEvent(
-            widget.event, StartupData.user.id, imageFile)
-        .then((status) {
-      if (status.compareTo("Submission upload sucess") == 0) {
-        setState(() {
-          status = "uploaded";
-        });
-      }
-    });
+            widget.event, StartupData.user.id, imageFile);
+
+    logger.i(sstatus);
+    if (sstatus.compareTo("Submission upload sucess") == 0) {
+      setState(() {
+        status = "uploaded";
+      });
+    }
   }
 
   onImageSelectedFromCameraOrGallery(file) {
-    logger.i(file);
     showDialog(
         context: context,
         builder: (BuildContext context) =>

@@ -438,8 +438,6 @@ class DatabaseManager {
 
   markUserVisitForParkingBeacon(
       String major, String minor, String distance) async {
-    logger.i(distance);
-    logger.i(double.parse(distance));
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
