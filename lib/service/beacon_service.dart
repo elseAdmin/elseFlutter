@@ -16,6 +16,13 @@ class BeaconServiceImpl {
     this.adScreenCallback = callback;
     if (db == null) db = DatabaseManager();
   }
+
+  // TODO @Suhail Check calls of this call and initialization
+  Function(int) sectionCallback;
+  BeaconServiceImpl.parkingConstructor(Function(int) callback){
+    this.sectionCallback = callback;
+  }
+
   var lock = new Lock();
   int timeBeforeMarkingNextVisit = 120000; //time is in milisecs;
   DatabaseManager db;
@@ -80,6 +87,9 @@ class BeaconServiceImpl {
       Constants.section = int.parse(major[1]+major[2]);
       
       db.markUserVisitForParkingBeacon(major, minor,distance);
+
+      // TODO @Suhail add callback here on the basis of logic
+      sectionCallback(Constants.section);
     }
   }
 

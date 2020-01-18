@@ -8,6 +8,7 @@ import 'package:else_app_two/models/sensor_model.dart';
 import 'package:else_app_two/parkingTab/section_a_parking.dart';
 import 'package:else_app_two/parkingTab/section_b_parking.dart';
 import 'package:else_app_two/parkingTab/section_c_parking.dart';
+import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +24,12 @@ class SectionContainer extends StatefulWidget{
 }
 
 class _SectionContainer extends State<SectionContainer>{
-  int factor = 1;
+  int zoomFactor = 1;
   String currentUser;
+
+  ScrollController _horizontalController, _verticalController;
+  double _windowWidth, _windowHeight;
+  BeaconServiceImpl _beaconServiceImpl;
 
   HashMap<String, SensorModel> _sensorModelMap = new HashMap();
   HashMap<String, bool> _userMap = new HashMap();
@@ -81,10 +86,42 @@ class _SectionContainer extends State<SectionContainer>{
     });
   }
 
+  jumpSection(int sectionValue){
+    if(sectionValue == -1){
+      _verticalController.animateTo(0, duration: Duration(milliseconds: 500),
+          curve: Curves.linear);
+      _horizontalController.animateTo(0, duration: Duration(milliseconds: 500),
+          curve: Curves.linear);
+      zoomFactor = 1;
+    }
+    else if((sectionValue % 2) == 0){
+      _verticalController.animateTo(_windowHeight * ((sectionValue/2) - 1), duration: Duration(milliseconds: 500),
+          curve: Curves.linear);
+      _horizontalController.animateTo(_windowWidth * 1, duration: Duration(milliseconds: 500),
+          curve: Curves.linear);
+      zoomFactor = 2;
+    }
+    else {
+      _verticalController.animateTo(_windowHeight * (sectionValue/2), duration: Duration(milliseconds: 500),
+          curve: Curves.linear);
+      _horizontalController.animateTo(_windowWidth * 0, duration: Duration(milliseconds: 500),
+          curve: Curves.linear);
+      zoomFactor = 2;
+    }
+    setState(() {
+
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     getDataUpdate();
+    _verticalController = ScrollController();
+    _horizontalController = ScrollController();
+    _windowWidth = (MediaQuery.of(context).size.width - 30)/2;
+    _windowHeight = MediaQuery.of(context).size.height/4;
+    _beaconServiceImpl = BeaconServiceImpl.parkingConstructor(jumpSection);
   }
 
   compareData(SensorModel oldData, SensorModel newData){
@@ -102,12 +139,9 @@ class _SectionContainer extends State<SectionContainer>{
 
   @override
   Widget build(BuildContext context) {
-    return tryKr();
-  }
-
-  Widget tryKr(){
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      controller: _horizontalController,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.blueGrey[100],
@@ -124,14 +158,14 @@ class _SectionContainer extends State<SectionContainer>{
           builder: (context, asyncSnapshot){
             if(asyncSnapshot.hasData){
               return SizedBox(
-                width: (MediaQuery.of(context).size.width - 30) * factor,
+                width: (MediaQuery.of(context).size.width - 30) * zoomFactor,
                 child: ListView(
-//                mainAxisAlignment: MainAxisAlignment.center,
+                  controller: _verticalController,
                   children: <Widget>[
-                    SectionAParking(_sensorModelMap,_userMap,factor),
-                    SectionBParking(_sensorModelMap, _userMap, factor),
-                    SectionCParking(_sensorModelMap, _userMap, factor),
-                    Container(height: 350.0)
+                    SectionAParking(_sensorModelMap,_userMap, zoomFactor),
+                    SectionBParking(_sensorModelMap, _userMap, zoomFactor),
+                    SectionCParking(_sensorModelMap, _userMap, zoomFactor),
+                    Container(height: 300.0 * zoomFactor),
                   ],
                 ),
               );
@@ -143,49 +177,6 @@ class _SectionContainer extends State<SectionContainer>{
       ),
     );
   }
-
-  /*Widget existingOne(){
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Container(
-        height: MediaQuery.of(context).size.height / 10 * 4,
-        decoration: BoxDecoration(
-          color: Colors.blueGrey[100],
-          border: Border.all(
-            color: Colors.black,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.all(
-              Radius.circular(5.0)
-          ),
-        ),
-        child: FittedBox(
-          alignment: Alignment.center,
-          child: StreamBuilder(
-            stream: _sensorStream.stream,
-            builder: (context, asyncSnapshot){
-              if(asyncSnapshot.hasData){
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView(
-                    children: <Widget>[
-                      SectionAParking(_sensorModelMap,_userMap,factor),
-                      SectionBParking(_sensorModelMap, _userMap, factor),
-                      SectionCParking(_sensorModelMap, _userMap, factor),
-                      Container(height: 200.0)
-                    ],
-                  ),
-                );
-              } else {
-                return Container(child: Center(child: Text('Loading data'),),);
-              }
-            },
-          ),
-        ),
-      ),
-    );
-  }*/
 
 }
 
