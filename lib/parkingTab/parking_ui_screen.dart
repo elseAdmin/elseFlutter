@@ -59,13 +59,14 @@ class _ParkingUIScreen extends State<ParkingUIScreen>{
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               DropdownButton(
-                hint: Text('Floor Level'), // Not necessary for Option 1
+                hint: Text('Level 0'), // Not necessary for Option 1
                 value: _selectedLocation,
-                onChanged: (newValue) {
+                //TODO floor has been fixed as we don't have many floor map
+                /*onChanged: (newValue) {
                   setState(() {
                     _selectedLocation = newValue;
                   });
-                },
+                },*/
                 items: _floorLevel.map((location) {
                   return DropdownMenuItem(
                     child: new Text(location),

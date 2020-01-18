@@ -66,8 +66,6 @@ class _SectionAParking extends State<SectionAParking>{
   Widget paddingBottomData(){
     return Container(
       height: 40.0 * widget.factor,
-      alignment: AlignmentDirectional.center,
-      child: Icon(Icons.arrow_forward),
     );
   }
 
