@@ -49,7 +49,6 @@ class EventModel extends BaseModel {
     this.rules = snapshot.value['rules'];
     this.type = snapshot.value['type'];
     this.observedDays = snapshot.value['observedDays'];
-
     List list = snapshot.value['beaconMeta'];
     beaconDataList = List();
     for (int i = 1; i < list.length; i++) {

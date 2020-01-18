@@ -83,27 +83,27 @@ class _OauthManager extends State<OauthManager> {
 
   void _signedIn() {
     //pops the dialog box
-    Navigator.of(context, rootNavigator: true).pop();
     //pops the login page
     Navigator.pop(context);
     widget.onSignedIn();
   }
 
   Future _checkForNewUser(
-      BuildContext context, User user, String phoneNumber) async {
-    user = await userProvider.getUserById(user.id);
-
-    if (user == null) {
+      BuildContext context, User firebaseAuthUser) async {
+      User firestoreUser = await userProvider.getUserById(firebaseAuthUser.id);
+    if (firestoreUser == null) {
       //StartupData.user = user;
+      Navigator.of(context, rootNavigator: true).pop();
       await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) =>
-              RegisterUser(user, _phoneNumberController.text, _signedIn),
+              RegisterUser(firebaseAuthUser, _phoneNumberController.text, _signedIn),
         ),
       );
     } else {
-      StartupData.user = user;
+      StartupData.user = firestoreUser;
+      Navigator.of(context, rootNavigator: true).pop();
       _signedIn();
     }
   }
@@ -121,12 +121,12 @@ class _OauthManager extends State<OauthManager> {
       smsCode: smsCode,
     );
     final String userId = (await _auth.signInwithPhoneNumber(credential));
-    //final String currentUserId = await _auth.currentUser();
+    final User currentFirebaseUser = await _auth.currentUser();
     //assert(userId == currentUserId);
     if (userId.isNotEmpty) {
-      User user =
-          await UserCrudModel('users', new Api('users')).getUserById(userId);
-      await _checkForNewUser(context, user, _phoneNumberController.text);
+      //User user =
+        //  await UserCrudModel('users', new Api('users')).getUserById(userId);
+      await _checkForNewUser(context, currentFirebaseUser);
       setState(() {
         if (userId != null) {
           print('Successfully signed in, uid: ' + userId);

@@ -1,3 +1,4 @@
+import 'package:else_app_two/basicElements/LoadingDialog.dart';
 import 'package:else_app_two/basicElements/LoginDialog.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
@@ -5,8 +6,6 @@ import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
-
-import 'package:fluttertoast/fluttertoast.dart';
 
 class NotParticipatedView extends StatefulWidget {
   final EventModel event;
@@ -29,19 +28,15 @@ class NotParticipatedViewState extends State<NotParticipatedView> {
 
   _onUserParticipated() {
     if (isLoggedIn) {
-      Fluttertoast.showToast(
-          msg: "Hope to see you",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black12,
-          textColor: Colors.white,
-          fontSize: 13.0);
-
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => LoadingDialog());
       DatabaseManager()
           .markUserParticipationForOfflineEvent(widget.event)
           .then((value) {
         //call setState for submissionView
+        Navigator.of(context, rootNavigator: true).pop();
         widget.callback();
       });
     } else {
@@ -53,13 +48,14 @@ class NotParticipatedViewState extends State<NotParticipatedView> {
   }
 
   onSignIn() {
-    isLoggedIn = true;
+    Navigator.of(context, rootNavigator: true).pop();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => OauthManager(onSignedIn: _onUserParticipated),
       ),
     );
+    isLoggedIn = true;
   }
 
   @override

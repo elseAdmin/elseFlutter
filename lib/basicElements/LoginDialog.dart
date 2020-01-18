@@ -37,7 +37,6 @@ class LoginDialogState extends State<LoginDialog> {
                 child: Text("login", style: TextStyle(fontSize: 20)),
                 onTap: () {
                   widget.onSignIn();
-                  Navigator.of(context, rootNavigator: true).pop();
                 },
               )
             ],

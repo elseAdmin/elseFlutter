@@ -35,7 +35,7 @@ class _SectionContainer extends State<SectionContainer>{
   Future didChangeDependencies() async{
     super.didChangeDependencies();
     final BaseAuth _auth = AuthProvider.of(context).auth;
-    currentUser = await _auth.currentUser();
+    currentUser = (await _auth.currentUser()).id;
     HashMap<String, SensorModel> sensorModelMap = new HashMap();
     HashMap<String, bool> userMap = new HashMap();
     var sensorStream = StreamController<String>();
