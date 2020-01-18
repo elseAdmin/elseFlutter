@@ -18,10 +18,11 @@ class BeaconServiceImpl {
   }
 
   // TODO @Suhail Check calls of this call and initialization
-  Function(int) sectionCallback;
+  static Function(int) sectionCallback;
   BeaconServiceImpl.parkingConstructor(Function(int) callback){
-    this.sectionCallback = callback;
+    sectionCallback = callback;
   }
+  int previousSection = -100;
 
   var lock = new Lock();
   int timeBeforeMarkingNextVisit = 120000; //time is in milisecs;
@@ -82,14 +83,29 @@ class BeaconServiceImpl {
 
   postHandlingForParkingBeacons(String major, String minor, String distance) async {
     if(Constants.parkingEligibleUser){
-
-      Constants.parkingLevel = int.parse(major[0]);
-      Constants.section = int.parse(major[1]+major[2]);
-      
       db.markUserVisitForParkingBeacon(major, minor,distance);
 
+      Constants.parkingLevel = int.parse(major[0]);
       // TODO @Suhail add callback here on the basis of logic
-      sectionCallback(Constants.section);
+      if(sectionCallback!=null && hasSectionChanged(int.parse(major[1]+major[2]))) {
+        sectionCallback(Constants.section);
+      }
+    }
+  }
+
+  hasSectionChanged(int newSectionValue){
+    if(previousSection==-100){
+      previousSection = newSectionValue;
+      Constants.section = newSectionValue;
+      return true;
+    }
+    if(previousSection != newSectionValue){
+      previousSection = newSectionValue;
+      return false;
+    }else{
+      previousSection = newSectionValue;
+      Constants.section = newSectionValue;
+      return true;
     }
   }
 
@@ -129,6 +145,8 @@ class BeaconServiceImpl {
     }
     return "none";
   }
+
+
 
 /*
   Future<bool> wasBeaconSeenRecentlySQLiteVersion(String major, String minor) async {

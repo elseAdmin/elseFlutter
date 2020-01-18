@@ -3,37 +3,31 @@ import 'dart:io';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class JustSubmittedView extends StatelessWidget{
-  File imageFile;
-  String status;
-  int likes;
-  JustSubmittedView( File imageFile,
-  String status,
-  int likes){
-    this.imageFile=imageFile;
-    this.status=status;
-    this.likes=likes;
-  }
+class JustSubmittedView extends StatefulWidget {
+  final File imageFile;
+  final String status;
+  final int likes;
+  JustSubmittedView(this.imageFile, this.status, this.likes);
+  @override
+  createState() => JustSubmittedViewState();
+}
+
+class JustSubmittedViewState extends State<JustSubmittedView> {
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init;
-    // TODO: implement build
     return Container(
-        padding: EdgeInsets.only(
-            top: SizeConfig.blockSizeVertical * 2),
+        padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
         child: (Column(
           children: <Widget>[
             Container(
                 width: SizeConfig.blockSizeHorizontal * 80,
                 height: SizeConfig.blockSizeVertical * 28,
-                child:
-                Image(fit: BoxFit.cover, image: FileImage(imageFile))),
+                child: Image(
+                    fit: BoxFit.cover, image: FileImage(widget.imageFile))),
             Column(
-              children: <Widget>[Text("uploading ..")],
-
+              children: <Widget>[Text(widget.status)],
             )
           ],
         )));
   }
-
 }

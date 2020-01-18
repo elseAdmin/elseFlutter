@@ -32,7 +32,7 @@ class _RequestCard extends State<RequestCard>{
   void didChangeDependencies() async{
     super.didChangeDependencies();
     final BaseAuth _auth = AuthProvider.of(context).auth;
-    final String userId = await _auth.currentUser();
+    final String userId = (await _auth.currentUser()).id;
     User user = await userProvider.getUserById(userId);
     if(user != null && userId.isNotEmpty){
       setState(() {

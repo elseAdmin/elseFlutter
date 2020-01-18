@@ -17,7 +17,7 @@ class SensorModel{
     minor = snapshot.value['minor'] ?? '';
     name = snapshot.value['name'] ?? '';
     slot = snapshot.value['slot'] ?? '';
-    updatedAt = DateTime.parse(snapshot.value['updatedAt'].toString());
+    updatedAt = DateTime.fromMillisecondsSinceEpoch(snapshot.value['updatedAt']);
     userUid = snapshot.value['userUid'] ?? '';
     value = snapshot.value['value'] ?? 0;
   }
@@ -27,7 +27,7 @@ class SensorModel{
     minor = snapshot['minor'] ?? '';
     name = snapshot['name'] ?? '';
     slot = snapshot['slot'] ?? '';
-    updatedAt = DateTime.parse(snapshot['updatedAt'].toString());
+    updatedAt = DateTime.fromMillisecondsSinceEpoch(snapshot['updatedAt']);
     userUid = snapshot['userUid'] ?? '';
     value = snapshot['value'] ?? 0;
   }

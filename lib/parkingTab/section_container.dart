@@ -9,6 +9,8 @@ import 'package:else_app_two/parkingTab/section_a_parking.dart';
 import 'package:else_app_two/parkingTab/section_b_parking.dart';
 import 'package:else_app_two/parkingTab/section_c_parking.dart';
 import 'package:else_app_two/service/beacon_service.dart';
+import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +41,10 @@ class _SectionContainer extends State<SectionContainer>{
   @override
   Future didChangeDependencies() async{
     super.didChangeDependencies();
-    final BaseAuth _auth = AuthProvider.of(context).auth;
-    currentUser = await _auth.currentUser();
+
+    _windowWidth = SizeConfig.blockSizeHorizontal*90 /2;
+    _windowHeight = SizeConfig.blockSizeVertical/4;
+
     HashMap<String, SensorModel> sensorModelMap = new HashMap();
     HashMap<String, bool> userMap = new HashMap();
     var sensorStream = StreamController<String>();
@@ -52,7 +56,7 @@ class _SectionContainer extends State<SectionContainer>{
       SensorModel sensorModel = SensorModel.fromMap(values[sensor]);
       sensorModelMap[sensor] = sensorModel;
       userMap[sensor] = false;
-      if(sensorModelMap[sensor].userUid == currentUser){
+      if(sensorModelMap[sensor].userUid == StartupData.user.id){
         userMap[sensor] = true;
         widget.onParkedVehicle(true);
       }
@@ -77,6 +81,8 @@ class _SectionContainer extends State<SectionContainer>{
       if(changeData){
         _sensorModelMap[sensorModel.name] = sensorModel;
         if(sensorModel.userUid == StartupData.user.id){
+          //when parking is stamped for user, do not mark more parking visit.
+          Constants.parkingEligibleUser=false;
           _userMap[sensorModel.name] = true;
           widget.onParkedVehicle(true);
         } else{
@@ -87,6 +93,7 @@ class _SectionContainer extends State<SectionContainer>{
   }
 
   jumpSection(int sectionValue){
+    print("jump to section "+sectionValue.toString());
     if(sectionValue == -1){
       _verticalController.animateTo(0, duration: Duration(milliseconds: 500),
           curve: Curves.linear);
@@ -102,7 +109,9 @@ class _SectionContainer extends State<SectionContainer>{
       zoomFactor = 2;
     }
     else {
-      _verticalController.animateTo(_windowHeight * (sectionValue/2), duration: Duration(milliseconds: 500),
+      double height = _windowHeight * (sectionValue/2);
+      print('height aayi h $height');
+      _verticalController.animateTo(height, duration: Duration(milliseconds: 500),
           curve: Curves.linear);
       _horizontalController.animateTo(_windowWidth * 0, duration: Duration(milliseconds: 500),
           curve: Curves.linear);
@@ -119,8 +128,6 @@ class _SectionContainer extends State<SectionContainer>{
     getDataUpdate();
     _verticalController = ScrollController();
     _horizontalController = ScrollController();
-    _windowWidth = (MediaQuery.of(context).size.width - 30)/2;
-    _windowHeight = MediaQuery.of(context).size.height/4;
     _beaconServiceImpl = BeaconServiceImpl.parkingConstructor(jumpSection);
   }
 
@@ -158,7 +165,7 @@ class _SectionContainer extends State<SectionContainer>{
           builder: (context, asyncSnapshot){
             if(asyncSnapshot.hasData){
               return SizedBox(
-                width: (MediaQuery.of(context).size.width - 30) * zoomFactor,
+                width: (SizeConfig.blockSizeHorizontal*90) * zoomFactor,
                 child: ListView(
                   controller: _verticalController,
                   children: <Widget>[

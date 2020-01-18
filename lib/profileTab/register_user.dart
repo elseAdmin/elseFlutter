@@ -21,18 +21,14 @@ class _RegisterUser extends State<RegisterUser> {
   TextEditingController _emailController = TextEditingController();
 
   void _registerUser(BuildContext context, String name, String email) {
-
     User user = new User(widget.user.id, widget.phoneNumber, name, email);
 
-
     final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
-    Future userfuture = userProvider.addUserById(user);
-
-    if (userfuture != null) {
-      StartupData.user=user;
+    userProvider.addUserById(user).then((value){
+      StartupData.user = user;
       Navigator.pop(context);
       widget.onSignedIn();
-    }
+    });
   }
 
   @override

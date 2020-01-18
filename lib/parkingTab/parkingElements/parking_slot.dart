@@ -36,11 +36,11 @@ class _ParkingSlot extends State<ParkingSlot>{
     super.didChangeDependencies();
     setState(() {
       _color = widget.colorValue;
-      _height = widget.factor * _height;
-      _width = widget.factor * _width;
+      _height = _height;
+      _width = _width;
       _text = widget.text;
       _turns = widget.angleStruct;
-      _fontSize = widget.factor * _fontSize;
+      _fontSize = _fontSize;
     });
   }
 
@@ -50,13 +50,13 @@ class _ParkingSlot extends State<ParkingSlot>{
       quarterTurns: _turns,
       child: AnimatedContainer(
         duration: Duration(seconds: 1),
-        height: _height,
-        width: _width,
+        height: _height * widget.factor,
+        width: _width * widget.factor,
         child: Center(
           child: Text(
             _text,
             style: TextStyle(
-              fontSize: _fontSize,
+              fontSize: _fontSize * widget.factor,
             ),
           ),
         ),

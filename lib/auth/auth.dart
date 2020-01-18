@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class BaseAuth {
   Future<String> signInwithPhoneNumber(AuthCredential credential);
-  Future<String> currentUser();
+  Future<User> currentUser();
   Future<void> signOut();
 
   verifyPhoneNumber(
@@ -29,7 +29,7 @@ class Auth implements BaseAuth {
   }
 
   @override
-  Future<String> currentUser() async {
+  Future<User> currentUser() async {
     final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
     User user;
     if(firebaseUser!=null && firebaseUser.uid!=null) {
@@ -38,7 +38,7 @@ class Auth implements BaseAuth {
           firebaseUser.email);
     }
     StartupData.user=user;
-    return user.id;
+    return user;
   }
 
   @override

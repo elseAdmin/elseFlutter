@@ -25,7 +25,12 @@ class PastSubmissionView extends StatelessWidget {
                   fit: BoxFit.cover,
                   imageUrl: imageUrl,
                 )),
-            Container(padding:EdgeInsets.only(top:SizeConfig.blockSizeVertical) ,child: Text(status,style: TextStyle(fontSize: 12),))
+            Container(
+                padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
+                child: Text(
+                  status,
+                  style: TextStyle(fontSize: 12),
+                ))
           ],
         )));
   }

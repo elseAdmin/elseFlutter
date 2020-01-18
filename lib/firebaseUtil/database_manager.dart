@@ -146,15 +146,15 @@ class DatabaseManager {
     if (activityTimelineMap == null || refresh) {
       activityTimelineMap = HashMap();
       List<ParkingModel> parkingActivityList =
-      await DatabaseManager().getAllParkings();
+          await DatabaseManager().getAllParkings();
       List<UserDealModel> userDealsActivityList =
-      await DatabaseManager().getGrabbedDeals();
+          await DatabaseManager().getGrabbedDeals();
       List<UserEventSubmissionModel> allEventAndSubmissionList =
-      await DatabaseManager().getAllEventActivityForUser();
+          await DatabaseManager().getAllEventActivityForUser();
       List<UserRequestModal> requestList =
-      await DatabaseManager().getRequestsForUser();
+          await DatabaseManager().getRequestsForUser();
       List<UserFeedBack> feedbackList =
-      await DatabaseManager().getAllFeedbacksForUser();
+          await DatabaseManager().getAllFeedbacksForUser();
 
       Map map = HashMap();
       List timestamps = List();
@@ -337,7 +337,7 @@ class DatabaseManager {
 
   getUserParticipationForOfflineEvent(EventModel event) async {
     OfflineEventSubmissionModel model;
-    if(StartupData.user==null){
+    if (StartupData.user == null) {
       return null;
     }
     await store
@@ -404,7 +404,7 @@ class DatabaseManager {
 
   getUserParticipationForLocationEvent(EventModel event) async {
     LocationEventSubmissionModel model;
-    if(StartupData.user==null){
+    if (StartupData.user == null) {
       return null;
     }
     await store
@@ -438,8 +438,6 @@ class DatabaseManager {
 
   markUserVisitForParkingBeacon(
       String major, String minor, String distance) async {
-    logger.i(distance);
-    logger.i(double.parse(distance));
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
@@ -529,7 +527,7 @@ class DatabaseManager {
 
   Future getUserSubmissionForOnlineEvent(EventModel event) async {
     OnlineEventSubmissionModel submission;
-    if(StartupData.user==null){
+    if (StartupData.user == null) {
       return null;
     }
     await store
@@ -550,6 +548,21 @@ class DatabaseManager {
   }
 
   markUserParticipationForOfflineEvent(EventModel event) async {
+    bool alreadySubmitted = false;
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.user.id).get().then((snapshot){
+      if(snapshot != null && snapshot.data!=null){
+        alreadySubmitted=true;
+      }
+    });
+    if(alreadySubmitted)
+      return;
+
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -573,6 +586,15 @@ class DatabaseManager {
         .path;
 
     await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .setData(<String, dynamic>{
+      'count': FieldValue.increment(1),
+    }, merge: true);
+
+    await store
         .collection(StartupData.userReference)
         .document(StartupData.user.id)
         .collection("events")
@@ -589,6 +611,22 @@ class DatabaseManager {
   Future markUserParticipationForOnlineEvent(
       EventModel event, String userId, File image) async {
     //upload image to firebase storage
+
+    bool alreadySubmitted = false;
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.user.id).get().then((snapshot){
+      if(snapshot != null && snapshot.data!=null){
+        alreadySubmitted=true;
+      }
+    });
+    if(alreadySubmitted)
+      return;
+
     StorageReference ref = storageRef
         .ref()
         .child(StartupData.dbreference)
@@ -633,6 +671,16 @@ class DatabaseManager {
         .document(userId)
         .path;
 
+
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .setData(<String, dynamic>{
+      'count': FieldValue.increment(1),
+    }, merge: true);
+
     await store
         .collection(StartupData.userReference)
         .document(userId)
@@ -650,6 +698,22 @@ class DatabaseManager {
   }
 
   Future markUserParticipationForLocationEvent(EventModel event) async {
+
+    bool alreadySubmitted = false;
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .collection("allSubmissions")
+        .document(StartupData.user.id).get().then((snapshot){
+      if(snapshot != null && snapshot.data!=null){
+        alreadySubmitted=true;
+      }
+    });
+    if(alreadySubmitted)
+      return;
+
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -663,6 +727,15 @@ class DatabaseManager {
       "status": "incomplete",
       "type": "location"
     });
+
+    await store
+        .collection(StartupData.dbreference)
+        .document("events")
+        .collection(event.uid)
+        .document("submissions")
+        .setData(<String, dynamic>{
+      'count': FieldValue.increment(1),
+    }, merge: true);
 
     String submissionPath = store
         .collection(StartupData.dbreference)

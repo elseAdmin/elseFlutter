@@ -29,7 +29,7 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     final BaseAuth _auth = AuthProvider.of(context).auth;
-    final String userId = await _auth.currentUser();
+    final String userId = (await _auth.currentUser()).id;
     String path = 'users/$userId/feedbacks';
     userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
     List<UserFeedBack> userFeedBackList =
