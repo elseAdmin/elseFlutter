@@ -942,7 +942,7 @@ class DatabaseManager {
         .collection("advertisement")
         .document(major)
         .collection(minor)
-        .document("user")
+        .document("seenUser")
         .collection(StartupData.user.id)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
