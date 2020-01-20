@@ -38,8 +38,8 @@ class FeedBack {
       "content": content,
       "imageUrls": imageUrls,
       "feedbackStatus": feedbackStatus,
-      "createdDate": createdDate,
-      "updatedDate": updatedDate
+      "createdDate": createdDate.millisecondsSinceEpoch,
+      "updatedDate": updatedDate.millisecondsSinceEpoch
     };
   }
 }

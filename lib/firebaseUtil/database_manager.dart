@@ -823,7 +823,6 @@ class DatabaseManager {
         Map event = allEventAndSubmissionUrls[i];
         String eUrl = event["eventUrl"];
         String sUrl = event["submissionUrl"];
-        logger.i("start " + DateTime.now().millisecondsSinceEpoch.toString());
         await FirebaseDatabase.instance
             .reference()
             .child(eUrl)

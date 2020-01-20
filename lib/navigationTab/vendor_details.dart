@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
-import 'package:else_app_two/navigationTab/models/UserDealSection.dart';
+import 'package:else_app_two/navigationTab/UserDealSection.dart';
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/vendor_deals.dart';
 import 'package:else_app_two/utils/Contants.dart';
