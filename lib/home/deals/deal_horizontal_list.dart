@@ -19,7 +19,13 @@ class _DealSectionState extends State<DealSection> {
   @override
   void initState() {
     super.initState();
+    DatabaseManager.dealsFound=dealsFound;
     deals = DatabaseManager.deals;
+  }
+  dealsFound(List<DealModel> foundDeals){
+    setState(() {
+      deals=foundDeals;
+    });
   }
 
   @override

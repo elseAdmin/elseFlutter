@@ -39,7 +39,8 @@ class DatabaseManager {
   static List<EventModel> events;
   static List<DealModel> deals;
   static HashMap<String, Set<ShopModel>> indexShopMap;
-
+  static Function(List<EventModel>) eventsFound;
+  static Function(List<DealModel>) dealsFound;
   DatabaseManager() {
     if (storageRef == null) {
       storageRef = FirebaseStorage.instance;
@@ -110,6 +111,9 @@ class DatabaseManager {
           }
         }
       });
+      if(dealsFound!=null){
+        dealsFound(deals);
+      }
       return deals;
     } else {
       return deals;
@@ -134,6 +138,9 @@ class DatabaseManager {
       }).catchError((error) {
         logger.i(error);
       });
+      if(eventsFound!=null){
+        eventsFound(events);
+      }
       return events;
     } else {
       return events;

@@ -23,7 +23,7 @@ class BootstrapState extends State<Bootstrap> {
       DatabaseManager().getAllActiveDeals(true);
       DatabaseManager().getAllShops(true, _fireBaseApi);
     });
-    var _duration = new Duration(seconds: 4);
+    var _duration = new Duration(seconds: 2);
     Timer(_duration, navigationPage);
   }
 
