@@ -227,6 +227,22 @@ class DatabaseManager {
 
   /// startup data methods  - end
 
+  getUserSpecificDealsForShop(String shopUid, Function(List<AdBeacon>) dealsFound) async {
+    List<AdBeacon> adDeals = List();
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.user.id)
+        .collection("deals")
+        .where('shopUid', isEqualTo: shopUid)
+        .getDocuments()
+        .then((snapshot) => {
+          snapshot.documents.forEach((doc) => {
+            adDeals.add(AdBeacon(doc))
+          })
+    });
+    return dealsFound(adDeals);
+  }
+
   saveUserRatingForStore(String storeName, double rating) async {
     await store
         .collection(Constants.universe)
@@ -287,7 +303,8 @@ class DatabaseManager {
           .add({
         "imageUrl": beacon.imageUrl,
         "timestamp": DateTime.now().millisecondsSinceEpoch,
-        "universe": Constants.universe
+        "universe": Constants.universe,
+        "shopUid": beacon.shopUid
       });
 
       await store
@@ -296,7 +313,7 @@ class DatabaseManager {
           .collection("advertisement")
           .document(beacon.major)
           .collection(beacon.minor)
-          .document("user")
+          .document("seenUser")
           .collection(StartupData.user.id)
           .add({
         "status": "grab",
@@ -555,13 +572,14 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.user.id).get().then((snapshot){
-      if(snapshot != null && snapshot.data!=null){
-        alreadySubmitted=true;
+        .document(StartupData.user.id)
+        .get()
+        .then((snapshot) {
+      if (snapshot != null && snapshot.data != null) {
+        alreadySubmitted = true;
       }
     });
-    if(alreadySubmitted)
-      return;
+    if (alreadySubmitted) return;
 
     await store
         .collection(StartupData.dbreference)
@@ -619,13 +637,14 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.user.id).get().then((snapshot){
-      if(snapshot != null && snapshot.data!=null){
-        alreadySubmitted=true;
+        .document(StartupData.user.id)
+        .get()
+        .then((snapshot) {
+      if (snapshot != null && snapshot.data != null) {
+        alreadySubmitted = true;
       }
     });
-    if(alreadySubmitted)
-      return;
+    if (alreadySubmitted) return;
 
     StorageReference ref = storageRef
         .ref()
@@ -671,7 +690,6 @@ class DatabaseManager {
         .document(userId)
         .path;
 
-
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -698,7 +716,6 @@ class DatabaseManager {
   }
 
   Future markUserParticipationForLocationEvent(EventModel event) async {
-
     bool alreadySubmitted = false;
     await store
         .collection(StartupData.dbreference)
@@ -706,13 +723,14 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.user.id).get().then((snapshot){
-      if(snapshot != null && snapshot.data!=null){
-        alreadySubmitted=true;
+        .document(StartupData.user.id)
+        .get()
+        .then((snapshot) {
+      if (snapshot != null && snapshot.data != null) {
+        alreadySubmitted = true;
       }
     });
-    if(alreadySubmitted)
-      return;
+    if (alreadySubmitted) return;
 
     await store
         .collection(StartupData.dbreference)
@@ -1012,5 +1030,17 @@ class DatabaseManager {
 
   FirebaseStorage getStorageReference() {
     return storageRef;
+  }
+
+  getDealsForShop(String shopName, Function(List<DealModel>) dealsFound) {
+    List<DealModel> result = List();
+    if (deals != null) {
+      for (DealModel deal in deals) {
+        if (deal.shopName.compareTo(shopName) == 0) {
+          result.add(deal);
+        }
+      }
+    }
+    return dealsFound(result);
   }
 }

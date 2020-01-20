@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/navigationTab/models/UserDealSection.dart';
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
+import 'package:else_app_two/navigationTab/vendor_deals.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
@@ -129,6 +131,8 @@ class VendorDetails extends StatelessWidget {
                               fontWeight: FontWeight.w400)),
                     ),
                   ),
+                  UserDealSection(_shopModel.uid),
+                  VendorDealSection(_shopModel.uid),
                   Card(
                     child: ListTile(
                       title: Text('Rate this store',
