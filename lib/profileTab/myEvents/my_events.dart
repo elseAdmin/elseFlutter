@@ -18,12 +18,8 @@ class MyEventState extends State<MyEvents> {
   @override
   void initState() {
     // TODO: implement initState
-    DatabaseManager().getAllEventsForUser().then((list) {
-      setState(() {
-        details = list;
-      });
-    });
     super.initState();
+    details = DatabaseManager.myEvents;
   }
 
   @override
