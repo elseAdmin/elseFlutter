@@ -37,9 +37,12 @@ class DatabaseManager {
   Map<String, List> universeVsParticipatedEvents = HashMap();
   static Map activityTimelineMap;
   static List<EventModel> events;
+  static List<Map<String, BaseModel>> myEvents;
+
   static List<DealModel> deals;
   static HashMap<String, Set<ShopModel>> indexShopMap;
-
+  static Function(List<EventModel>) eventsFound;
+  static Function(List<DealModel>) dealsFound;
   DatabaseManager() {
     if (storageRef == null) {
       storageRef = FirebaseStorage.instance;
@@ -64,6 +67,7 @@ class DatabaseManager {
       user = await userProvider.getUserById(firebaseUser.uid);
     }
     StartupData.user = user;
+    return user;
   }
 
   getAllShops(bool refresh, FireBaseApi fireBaseApi) async {
@@ -110,6 +114,9 @@ class DatabaseManager {
           }
         }
       });
+      if (dealsFound != null) {
+        dealsFound(deals);
+      }
       return deals;
     } else {
       return deals;
@@ -134,11 +141,22 @@ class DatabaseManager {
       }).catchError((error) {
         logger.i(error);
       });
+      if (eventsFound != null) {
+        eventsFound(events);
+      }
       return events;
     } else {
       return events;
     }
   }
+
+  getMyEvents(bool refresh) async {
+    if (myEvents == null || refresh) {
+      myEvents = List();
+    }
+  }
+
+  getMyFeedbacks(bool refresh) async {}
 
   getAllActivityOfUser(bool refresh) async {
     ///IMP
@@ -227,6 +245,21 @@ class DatabaseManager {
 
   /// startup data methods  - end
 
+  getUserSpecificDealsForShop(
+      String shopUid, Function(List<AdBeacon>) dealsFound) async {
+    List<AdBeacon> adDeals = List();
+    await store
+        .collection(StartupData.userReference)
+        .document(StartupData.user.id)
+        .collection("deals")
+        .where('shopUid', isEqualTo: shopUid)
+        .getDocuments()
+        .then((snapshot) => {
+              snapshot.documents.forEach((doc) => {adDeals.add(AdBeacon(doc))})
+            });
+    return dealsFound(adDeals);
+  }
+
   saveUserRatingForStore(String storeName, double rating) async {
     await store
         .collection(Constants.universe)
@@ -287,7 +320,8 @@ class DatabaseManager {
           .add({
         "imageUrl": beacon.imageUrl,
         "timestamp": DateTime.now().millisecondsSinceEpoch,
-        "universe": Constants.universe
+        "universe": Constants.universe,
+        "shopUid": beacon.shopUid
       });
 
       await store
@@ -296,7 +330,7 @@ class DatabaseManager {
           .collection("advertisement")
           .document(beacon.major)
           .collection(beacon.minor)
-          .document("user")
+          .document("seenUser")
           .collection(StartupData.user.id)
           .add({
         "status": "grab",
@@ -555,13 +589,14 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.user.id).get().then((snapshot){
-      if(snapshot != null && snapshot.data!=null){
-        alreadySubmitted=true;
+        .document(StartupData.user.id)
+        .get()
+        .then((snapshot) {
+      if (snapshot != null && snapshot.data != null) {
+        alreadySubmitted = true;
       }
     });
-    if(alreadySubmitted)
-      return;
+    if (alreadySubmitted) return;
 
     await store
         .collection(StartupData.dbreference)
@@ -619,13 +654,14 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.user.id).get().then((snapshot){
-      if(snapshot != null && snapshot.data!=null){
-        alreadySubmitted=true;
+        .document(StartupData.user.id)
+        .get()
+        .then((snapshot) {
+      if (snapshot != null && snapshot.data != null) {
+        alreadySubmitted = true;
       }
     });
-    if(alreadySubmitted)
-      return;
+    if (alreadySubmitted) return;
 
     StorageReference ref = storageRef
         .ref()
@@ -671,7 +707,6 @@ class DatabaseManager {
         .document(userId)
         .path;
 
-
     await store
         .collection(StartupData.dbreference)
         .document("events")
@@ -698,7 +733,6 @@ class DatabaseManager {
   }
 
   Future markUserParticipationForLocationEvent(EventModel event) async {
-
     bool alreadySubmitted = false;
     await store
         .collection(StartupData.dbreference)
@@ -706,13 +740,14 @@ class DatabaseManager {
         .collection(event.uid)
         .document("submissions")
         .collection("allSubmissions")
-        .document(StartupData.user.id).get().then((snapshot){
-      if(snapshot != null && snapshot.data!=null){
-        alreadySubmitted=true;
+        .document(StartupData.user.id)
+        .get()
+        .then((snapshot) {
+      if (snapshot != null && snapshot.data != null) {
+        alreadySubmitted = true;
       }
     });
-    if(alreadySubmitted)
-      return;
+    if (alreadySubmitted) return;
 
     await store
         .collection(StartupData.dbreference)
@@ -761,66 +796,68 @@ class DatabaseManager {
     return;
   }
 
-  Future getAllEventsForUser() async {
-    List<Map<String, String>> allEventAndSubmissionUrls = List();
+  Future getAllEventsForUser(bool refresh) async {
+    if (myEvents == null || refresh) {
+      List<Map<String, String>> allEventAndSubmissionUrls = List();
 
-    await store
-        .collection(StartupData.userReference)
-        .document(StartupData.user.id)
-        .collection("events")
-        .getDocuments()
-        .then((snapshot) {
-      List<DocumentSnapshot> allEventsOfUser = snapshot.documents;
-      for (var event in allEventsOfUser) {
-        Map<String, String> eventDetails = HashMap();
-        eventDetails.putIfAbsent(
-            "submissionUrl", () => event.data['submissionUrl']);
-        eventDetails.putIfAbsent("eventUrl", () => event.data['eventUrl']);
-        allEventAndSubmissionUrls.add(eventDetails);
+      await store
+          .collection(StartupData.userReference)
+          .document(StartupData.user.id)
+          .collection("events")
+          .getDocuments()
+          .then((snapshot) {
+        List<DocumentSnapshot> allEventsOfUser = snapshot.documents;
+        for (var event in allEventsOfUser) {
+          Map<String, String> eventDetails = HashMap();
+          eventDetails.putIfAbsent(
+              "submissionUrl", () => event.data['submissionUrl']);
+          eventDetails.putIfAbsent("eventUrl", () => event.data['eventUrl']);
+          allEventAndSubmissionUrls.add(eventDetails);
+        }
+      });
+
+      myEvents = List();
+
+      for (int i = 0; i < allEventAndSubmissionUrls.length; i++) {
+        Map<String, BaseModel> returnData = HashMap();
+        Map event = allEventAndSubmissionUrls[i];
+        String eUrl = event["eventUrl"];
+        String sUrl = event["submissionUrl"];
+        logger.i("start " + DateTime.now().millisecondsSinceEpoch.toString());
+        await FirebaseDatabase.instance
+            .reference()
+            .child(eUrl)
+            .once()
+            .then((receivedEvents) {
+          EventModel event = EventModel(receivedEvents);
+          returnData.putIfAbsent("eventDetails", () => event);
+        }).catchError((error) {
+          logger.e(error);
+        });
+
+        await store.document(sUrl).get().then((snap) {
+          if (snap.data['type'] == 'online') {
+            OnlineEventSubmissionModel submission =
+                OnlineEventSubmissionModel(snap);
+            returnData.putIfAbsent("submissionDetails", () => submission);
+          }
+          if (snap.data['type'] == 'offline') {
+            OfflineEventSubmissionModel submission =
+                OfflineEventSubmissionModel(snap);
+            returnData.putIfAbsent("submissionDetails", () => submission);
+          }
+          if (snap.data['type'] == 'location') {
+            LocationEventSubmissionModel submission =
+                LocationEventSubmissionModel(snap);
+            returnData.putIfAbsent("submissionDetails", () => submission);
+          }
+        });
+        myEvents.add(returnData);
       }
-    });
-
-    List<Map<String, BaseModel>> listParticipatedEvents = List();
-
-    for (int i = 0; i < allEventAndSubmissionUrls.length; i++) {
-      Map<String, BaseModel> returnData = HashMap();
-      Map event = allEventAndSubmissionUrls[i];
-      String eUrl = event["eventUrl"];
-      String sUrl = event["submissionUrl"];
-      logger.i("start " + DateTime.now().millisecondsSinceEpoch.toString());
-      await FirebaseDatabase.instance
-          .reference()
-          .child(eUrl)
-          .once()
-          .then((receivedEvents) {
-        EventModel event = EventModel(receivedEvents);
-        returnData.putIfAbsent("eventDetails", () => event);
-      }).catchError((error) {
-        logger.e(error);
-      });
-
-      await store.document(sUrl).get().then((snap) {
-        if (snap.data['type'] == 'online') {
-          OnlineEventSubmissionModel submission =
-              OnlineEventSubmissionModel(snap);
-          returnData.putIfAbsent("submissionDetails", () => submission);
-        }
-        if (snap.data['type'] == 'offline') {
-          OfflineEventSubmissionModel submission =
-              OfflineEventSubmissionModel(snap);
-          returnData.putIfAbsent("submissionDetails", () => submission);
-        }
-        if (snap.data['type'] == 'location') {
-          LocationEventSubmissionModel submission =
-              LocationEventSubmissionModel(snap);
-          returnData.putIfAbsent("submissionDetails", () => submission);
-        }
-      });
-
-      listParticipatedEvents.add(returnData);
+      return myEvents;
+    } else {
+      return myEvents;
     }
-    logger.i("end " + DateTime.now().millisecondsSinceEpoch.toString());
-    return listParticipatedEvents;
   }
 
   Future getActiveParking() async {
@@ -917,7 +954,7 @@ class DatabaseManager {
         .collection("advertisement")
         .document(major)
         .collection(minor)
-        .document("user")
+        .document("seenUser")
         .collection(StartupData.user.id)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
@@ -1012,5 +1049,17 @@ class DatabaseManager {
 
   FirebaseStorage getStorageReference() {
     return storageRef;
+  }
+
+  getDealsForShop(String shopName, Function(List<DealModel>) dealsFound) {
+    List<DealModel> result = List();
+    if (deals != null) {
+      for (DealModel deal in deals) {
+        if (deal.shopName.compareTo(shopName) == 0) {
+          result.add(deal);
+        }
+      }
+    }
+    return dealsFound(result);
   }
 }

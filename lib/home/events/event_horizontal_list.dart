@@ -23,7 +23,14 @@ class EventSectionState extends State<EventSection> {
   @override
   void initState() {
     super.initState();
+    DatabaseManager.eventsFound = eventsFound;
     events = DatabaseManager.events;
+  }
+
+  eventsFound(List<EventModel> foundEvents){
+    setState(() {
+      events=foundEvents;
+    });
   }
 
   @override

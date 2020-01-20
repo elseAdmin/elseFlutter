@@ -11,6 +11,7 @@ import 'package:else_app_two/feedback/models/feedback_model.dart';
 import 'package:else_app_two/feedback/models/user_feedback_crud_model.dart';
 import 'package:else_app_two/feedback/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -28,8 +29,7 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    final BaseAuth _auth = AuthProvider.of(context).auth;
-    final String userId = (await _auth.currentUser()).id;
+    String userId = StartupData.user.id;
     String path = 'users/$userId/feedbacks';
     userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
     List<UserFeedBack> userFeedBackList =
@@ -47,7 +47,6 @@ class _MyFeedbackPage extends State<MyFeedbackPage> {
           });
         }
       }
-      print(userFeedBackList.toString());
     }
   }
 

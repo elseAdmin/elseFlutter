@@ -1,6 +1,3 @@
-import 'package:else_app_two/auth/auth.dart';
-import 'package:else_app_two/auth/auth_provider.dart';
-import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/auth/models/user_crud_model.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -11,10 +8,10 @@ class UserProfileInfo extends StatefulWidget {
   UserProfileInfo(this.isUserLogged);
 
   @override
-  _UserProfileInfo createState() => _UserProfileInfo();
+  createState() => UserProfileInfoState();
 }
 
-class _UserProfileInfo extends State<UserProfileInfo> {
+class UserProfileInfoState extends State<UserProfileInfo> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
@@ -29,11 +26,6 @@ class _UserProfileInfo extends State<UserProfileInfo> {
       _emailController.text = StartupData.user.email;
       _phoneController.text = StartupData.user.phoneNumber;
     }
-  }
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
   }
 
   setValues() {
@@ -81,6 +73,4 @@ class _UserProfileInfo extends State<UserProfileInfo> {
       visible: widget.isUserLogged,
     );
   }
-
-  Widget userInfoChild() {}
 }

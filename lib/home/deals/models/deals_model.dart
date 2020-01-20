@@ -1,4 +1,3 @@
-import 'package:else_app_two/Models/base_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class DealModel {
@@ -14,6 +13,7 @@ class DealModel {
   String status;
   String uid;
   String couponCode;
+  String shopName;
 
   DealModel.fromMap(Map snapshot)
       : this.tnc = snapshot['tnc'],
@@ -25,7 +25,8 @@ class DealModel {
         this.status = snapshot['status'],
         this.blurUrl = snapshot['blurUrl'],
         this.uid = snapshot['uid'],
-        this.couponCode = snapshot['couponCode'];
+        this.couponCode = snapshot['couponCode'],
+        this.shopName = snapshot['shopName'];
 
   DealModel(DataSnapshot snapshot) {
     this.tnc = snapshot.value['tnc'];
@@ -39,5 +40,6 @@ class DealModel {
     this.blurUrl = snapshot.value['blurUrl'];
     this.uid = snapshot.value['uid'];
     this.couponCode = snapshot.value['couponCode'];
+    this.shopName = snapshot.value['shopName'];
   }
 }

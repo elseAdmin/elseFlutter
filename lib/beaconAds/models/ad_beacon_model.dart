@@ -6,11 +6,13 @@ class AdBeacon{
   String status;
   List allowedUsers;
   String major,minor;
+  String shopUid;
 
   AdBeacon(DocumentSnapshot snapshot){
     this.imageUrl = snapshot.data['imageUrl'];
     this.status = snapshot.data['status'];
     this.allowedUsers = snapshot.data['allowedUsers'];
+    this.shopUid = snapshot.data['shopUid'];
   }
 
   bool isUserAllowed(){

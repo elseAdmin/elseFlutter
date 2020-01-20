@@ -15,15 +15,16 @@ class BootstrapState extends State<Bootstrap> {
   void initState() {
     super.initState();
     FireBaseApi _fireBaseApi = FireBaseApi("shopStaticData");
-    _userRelatedStuff().then((user){
-      if(user!=null) {
+    _userRelatedStuff().then((user) {
+      if (user != null) {
         DatabaseManager().getAllActivityOfUser(true);
+        DatabaseManager().getAllEventsForUser(true);
       }
       DatabaseManager().getAllActiveEvents(true);
       DatabaseManager().getAllActiveDeals(true);
       DatabaseManager().getAllShops(true, _fireBaseApi);
     });
-    var _duration = new Duration(seconds: 4);
+    var _duration = new Duration(milliseconds: 2200);
     Timer(_duration, navigationPage);
   }
 

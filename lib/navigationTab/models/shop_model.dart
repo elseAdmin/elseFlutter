@@ -11,6 +11,7 @@ class ShopModel{
   String closeTime;
   String contactInfo;
   String imageUrl;
+  String uid;
 
   ShopModel(DataSnapshot snapshot){
     name = snapshot.value['name'] ?? '';
@@ -22,6 +23,7 @@ class ShopModel{
     closeTime = snapshot.value['closeTime'] ?? '';
     contactInfo = snapshot.value['contactInfo'] ?? '';
     imageUrl = snapshot.value['imageUrl'] ?? '';
+    uid = snapshot.value['uid'] ?? '';
   }
 
   ShopModel.fromMap(Map snapshot){
@@ -34,6 +36,7 @@ class ShopModel{
     closeTime = snapshot['closeTime'] ?? '';
     contactInfo = snapshot['contactInfo'] ?? '';
     imageUrl = snapshot['imageUrl'] ?? '';
+    uid = snapshot['uid'] ?? '';
   }
 
 }
