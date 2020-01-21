@@ -106,9 +106,10 @@ class DatabaseManager {
           .then((snapshot) {
         if (snapshot.value.length != 0) {
           deals = List();
-          for (int i = 1; i < snapshot.value.length; i++) {
-            if (snapshot.value[i] != null) {
-              DealModel deal = DealModel.fromMap(snapshot.value[i]);
+          List dealsKey = snapshot.value.keys.toList();
+          for (int i = 0; i < snapshot.value.length; i++) {
+            if (snapshot.value[dealsKey[i]] != null) {
+              DealModel deal = DealModel.fromMap(snapshot.value[dealsKey[i]]);
               deals.add(deal);
             }
           }
