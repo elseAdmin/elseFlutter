@@ -6,8 +6,8 @@ class FeedBack {
   String content;
   List imageUrls;
   int feedbackStatus;
-  DateTime createdDate;
-  DateTime updatedDate;
+  int createdDate;
+  int updatedDate;
 
   FeedBack(
       this.subject,
@@ -27,8 +27,8 @@ class FeedBack {
         this.content = snapshot['content'] ?? '',
         this.imageUrls = snapshot['imageUrls'] ?? '',
         this.feedbackStatus = snapshot['feedbackStatus'] ?? '',
-        this.createdDate = snapshot['createdDate'].toDate(),
-        this.updatedDate = snapshot['updatedDate'].toDate();
+        this.createdDate = snapshot['createdDate'],
+        this.updatedDate = snapshot['updatedDate'];
 
   toJson() {
     return {
