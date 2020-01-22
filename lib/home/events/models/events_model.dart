@@ -8,7 +8,7 @@ class EventModel extends BaseModel {
   String type;
   DateTime startDate;
   DateTime endDate;
-  String rules;
+  List rules;
   int totalRules;
   String url;
   String blurUrl;
@@ -35,7 +35,7 @@ class EventModel extends BaseModel {
   static getListB(snapshot) {
     List list = snapshot;
     List<BeaconData> beaconList = List();
-    for (int i = 1; i < list.length; i++) {
+    for (int i = 0; i < list.length; i++) {
       BeaconData data = new BeaconData(list[i]['major'], list[i]['minor']);
       beaconList.add(data);
     }
