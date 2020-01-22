@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:else_app_two/auth/auth.dart';
-import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/basicElements/LoginDialog.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/slider_impl.dart';
@@ -79,7 +76,7 @@ class _NewFeedBack extends State<NewFeedBack>{
       double feedbackIntensity, String content, List images) async{
     List<String> imageUrls = images.cast<String>();
     FeedBack feedBack = new FeedBack(subject, typeOfFeedBack, feedbackIntensity,
-        content, imageUrls, Status.PENDING.index, DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch);
+        content, imageUrls, StatusString.getString(Status.PENDING), DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch);
 
     String feedBackUrl = await feedbackCrudModel.addFeedBack(feedBack);
     if(feedBackUrl != null){

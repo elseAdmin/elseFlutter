@@ -5,7 +5,7 @@ class FeedBack {
   double feedbackIntensity;
   String content;
   List imageUrls;
-  int feedbackStatus;
+  String feedbackStatus;
   int createdDate;
   int updatedDate;
 

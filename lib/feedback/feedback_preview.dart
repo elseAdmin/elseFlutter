@@ -1,12 +1,8 @@
-import 'package:else_app_two/firebaseUtil/api.dart';
-import 'package:else_app_two/feedback/models/feedback_crud_model.dart';
 import 'package:else_app_two/feedback/models/feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/helper_methods.dart';
 import 'package:flutter/material.dart';
-
-import 'FeedbackStatus.dart';
 
 class FeedBackPreview {
   final String feedbackId;
@@ -25,22 +21,6 @@ class FeedBackPreview {
   String getFeedBackType(bool feedbackType) {
     if (feedbackType) return "POSITIVE";
     return "NEGATIVE";
-  }
-
-  String getStatusString(int status) {
-    switch (Status.values[status]) {
-      case Status.IN_PROCESS:
-        return 'INPROCESS';
-      case Status.PENDING:
-        return 'PENDING';
-      case Status.INVALID:
-        return 'INVALID';
-      case Status.VALID:
-        return 'VALID';
-      case Status.COMPLETED:
-        return 'COMPLETED';
-    }
-    return '';
   }
 
   bool getIsActive(int currentIndex, int index) {
@@ -72,7 +52,7 @@ class FeedBackPreview {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 richTextData(
-                    'Status', getStatusString(feedBack.feedbackStatus)),
+                    'Status', feedBack.feedbackStatus),
                 richTextData('Updated On', DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).day.toString()+" "+HelperMethods().getMonthNameForMonth(DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).month.toString())),
                 richTextData('Place', universe),
               ],
@@ -121,7 +101,7 @@ class FeedBackPreview {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   richTextData(
-                      'Status', getStatusString(feedBack.feedbackStatus)),
+                      'Status', feedBack.feedbackStatus),
                   richTextData('Updated On', DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).day.toString()+" "+HelperMethods().getMonthNameForMonth(DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).month.toString())),
                   richTextData('Place', universe),
                 ],
