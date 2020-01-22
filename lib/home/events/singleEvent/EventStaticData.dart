@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'EventRulesDialog.dart';
 
 class EventStaticData extends StatefulWidget {
-  final String rules, description;
+  final String description;
+  final List rules;
   EventStaticData(this.description, this.rules);
   @override
   State<StatefulWidget> createState() => EventStaticDataState();
