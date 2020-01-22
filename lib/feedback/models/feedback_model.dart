@@ -6,8 +6,8 @@ class FeedBack {
   String content;
   List imageUrls;
   int feedbackStatus;
-  DateTime createdDate;
-  DateTime updatedDate;
+  int createdDate;
+  int updatedDate;
 
   FeedBack(
       this.subject,
