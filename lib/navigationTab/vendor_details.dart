@@ -1,55 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:else_app_two/basicElements/slider_impl.dart';
-import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/navigationTab/ReviewRatingSection.dart';
 import 'package:else_app_two/navigationTab/UserDealSection.dart';
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/vendor_deals.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class VendorDetails extends StatelessWidget {
   final ShopModel _shopModel;
   VendorDetails(this._shopModel);
-  double userRating = -1;
-  String userReview;
-
-  _submitUserRating() {
-    if (userRating != -1) {
-      DatabaseManager().saveUserRatingForStore(_shopModel.name, userRating);
-      Fluttertoast.showToast(
-          msg: "Thanks for the effort",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0);
-    }
-  }
-
-  _submitUserReview() {
-    if (userReview != null) {
-      DatabaseManager().saveUserReviewForStore(_shopModel.name, userReview);
-      Fluttertoast.showToast(
-          msg: "Thanks for the effort",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 14.0);
-    }
-  }
-
-  setUserRating(double rating) {
-    userRating = rating;
-  }
-
   @override
   Widget build(BuildContext context) {
-    String storeName = _shopModel.name;
     SizeConfig().init(context);
     return Scaffold(
       body: Container(
@@ -133,63 +95,10 @@ class VendorDetails extends StatelessWidget {
                   ),
                   UserDealSection(_shopModel.uid),
                   VendorDealSection(_shopModel.uid),
-                  Card(
-                    child: ListTile(
-                      title: Text('Rate this store',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Constants.textColor,
-                              fontWeight: FontWeight.w600)),
-                      subtitle: Column(children: <Widget>[
-                        SliderImpl(this.setUserRating),
-                        GestureDetector(
-                          child: Container(
-                              padding: EdgeInsets.only(
-                                  top: SizeConfig.blockSizeVertical,
-                                  bottom: SizeConfig.blockSizeVertical * 2),
-                              child: Text(
-                                "Submit",
-                                style: TextStyle(fontSize: 16),
-                              )),
-                          onTap: () => _submitUserRating(),
-                        )
-                      ]),
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      title: Text('Review',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Constants.textColor,
-                              fontWeight: FontWeight.w600)),
-                      subtitle: Column(children: <Widget>[
-                        TextField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 2,
-                          onChanged: (text) {
-                            userReview = text;
-                          },
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Write a review for $storeName'),
-                        ),
-                        GestureDetector(
-                          child: Container(
-                              padding: EdgeInsets.only(
-                                  top: SizeConfig.blockSizeVertical,
-                                  bottom: SizeConfig.blockSizeVertical * 2),
-                              child: Text(
-                                "Submit",
-                                style: TextStyle(fontSize: 16),
-                              )),
-                          onTap: () => _submitUserReview(),
-                        )
-                      ]),
-                    ),
-                  ),
+                  ReviewRatingSection(_shopModel),
                   Padding(
-                    padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical*3),
+                    padding: EdgeInsets.only(
+                        bottom: SizeConfig.blockSizeVertical * 3),
                   )
                 ],
               ),
