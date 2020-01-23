@@ -19,6 +19,17 @@ class FeedBack {
       this.createdDate,
       this.updatedDate);
 
+  FeedBack.withID(
+      this.id,
+      this.subject,
+      this.typeOfFeedBack,
+      this.feedbackIntensity,
+      this.content,
+      this.imageUrls,
+      this.feedbackStatus,
+      this.createdDate,
+      this.updatedDate);
+
   FeedBack.fromMap(Map snapshot, String id)
       : this.id = id ?? '',
         this.subject = snapshot['subject'] ?? '',
@@ -27,8 +38,8 @@ class FeedBack {
         this.content = snapshot['content'] ?? '',
         this.imageUrls = snapshot['imageUrls'] ?? '',
         this.feedbackStatus = snapshot['feedbackStatus'] ?? '',
-        this.createdDate = DateTime.fromMillisecondsSinceEpoch(snapshot['createdDate']),
-        this.updatedDate = DateTime.fromMillisecondsSinceEpoch(snapshot['updatedDate']);
+        this.createdDate = snapshot['createdDate'],
+        this.updatedDate = snapshot['updatedDate'];
 
   toJson() {
     return {
@@ -38,8 +49,8 @@ class FeedBack {
       "content": content,
       "imageUrls": imageUrls,
       "feedbackStatus": feedbackStatus,
-      "createdDate": createdDate.millisecondsSinceEpoch,
-      "updatedDate": updatedDate.millisecondsSinceEpoch
+      "createdDate": createdDate,
+      "updatedDate": updatedDate
     };
   }
 }
