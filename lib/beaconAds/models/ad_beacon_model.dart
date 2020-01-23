@@ -9,10 +9,12 @@ class AdBeacon{
   String shopUid;
 
   AdBeacon(DocumentSnapshot snapshot){
-    this.imageUrl = snapshot.data['imageUrl'];
-    this.status = snapshot.data['status'];
-    this.allowedUsers = snapshot.data['allowedUsers'];
-    this.shopUid = snapshot.data['shopUid'];
+    if(snapshot!=null) {
+      this.imageUrl = snapshot.data['imageUrl'];
+      this.status = snapshot.data['status'];
+      this.allowedUsers = snapshot.data['allowedUsers'];
+      this.shopUid = snapshot.data['shopUid'];
+    }
   }
 
   bool isUserAllowed(){

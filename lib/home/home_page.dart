@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void pushAdScreen(AdBeacon adBeacon) {
     showDialog(
         context: context,
-        builder: (BuildContext context) => AdScreen(adBeacon));
+        builder: (BuildContext context) => AdScreen(adBeacon,true));
   }
 
   @override
