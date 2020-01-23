@@ -6,8 +6,9 @@ class FeedBack {
   String content;
   List imageUrls;
   String feedbackStatus;
-  DateTime createdDate;
-  DateTime updatedDate;
+  int createdDate;
+  int updatedDate;
+  String comment;
 
   FeedBack(
       this.subject,
@@ -28,7 +29,8 @@ class FeedBack {
       this.imageUrls,
       this.feedbackStatus,
       this.createdDate,
-      this.updatedDate);
+      this.updatedDate,
+      this.comment);
 
   FeedBack.fromMap(Map snapshot, String id)
       : this.id = id ?? '',
@@ -39,7 +41,8 @@ class FeedBack {
         this.imageUrls = snapshot['imageUrls'] ?? '',
         this.feedbackStatus = snapshot['feedbackStatus'] ?? '',
         this.createdDate = snapshot['createdDate'],
-        this.updatedDate = snapshot['updatedDate'];
+        this.updatedDate = snapshot['updatedDate'],
+        this.comment = snapshot['comment'] ?? '';
 
   toJson() {
     return {
@@ -50,7 +53,8 @@ class FeedBack {
       "imageUrls": imageUrls,
       "feedbackStatus": feedbackStatus,
       "createdDate": createdDate,
-      "updatedDate": updatedDate
+      "updatedDate": updatedDate,
+      "comment": comment,
     };
   }
 }
