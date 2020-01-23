@@ -76,7 +76,7 @@ class _NewFeedBack extends State<NewFeedBack>{
       double feedbackIntensity, String content, List images) async{
     List<String> imageUrls = images.cast<String>();
     FeedBack feedBack = new FeedBack(subject, typeOfFeedBack, feedbackIntensity,
-        content, imageUrls, StatusString.getString(Status.PENDING), DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch);
+        content, imageUrls, StatusString.getString(Status.PENDING), DateTime.now(), DateTime.now());
 
     String feedBackUrl = await feedbackCrudModel.addFeedBack(feedBack);
     if(feedBackUrl != null){
