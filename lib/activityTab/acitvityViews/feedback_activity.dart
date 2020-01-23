@@ -9,7 +9,7 @@ class FeedbackActivity extends StatelessWidget{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-        padding: EdgeInsets.only(top:SizeConfig.blockSizeVertical*0.5,left: SizeConfig.blockSizeHorizontal),
+        padding: EdgeInsets.only(top:SizeConfig.blockSizeVertical*1,left: SizeConfig.blockSizeHorizontal),
         child: GestureDetector(
             onTap: () => {
 
