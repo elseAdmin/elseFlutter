@@ -42,10 +42,8 @@ class FeedBack {
         this.content = snapshot['content'] ?? '',
         this.imageUrls = snapshot['imageUrls'] ?? '',
         this.feedbackStatus = snapshot['feedbackStatus'] ?? '',
-        this.createdDate =
-            DateTime.fromMillisecondsSinceEpoch(snapshot['createdDate']),
-        this.updatedDate =
-            DateTime.fromMillisecondsSinceEpoch(snapshot['updatedDate']);
+        this.createdDate = snapshot['createdDate'],
+        this.updatedDate = snapshot['updatedDate'];
 
   toJson() {
     return {
@@ -55,8 +53,8 @@ class FeedBack {
       "content": content,
       "imageUrls": imageUrls,
       "feedbackStatus": feedbackStatus,
-      "createdDate": createdDate.millisecondsSinceEpoch,
-      "updatedDate": updatedDate.millisecondsSinceEpoch,
+      "createdDate": createdDate,
+      "updatedDate": updatedDate,
       "userUid": StartupData.user.id
     };
   }
