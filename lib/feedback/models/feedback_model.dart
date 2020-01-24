@@ -8,8 +8,9 @@ class FeedBack {
   String content;
   List imageUrls;
   String feedbackStatus;
-  DateTime createdDate;
-  DateTime updatedDate;
+  int createdDate;
+  int updatedDate;
+  String comment;
 
   FeedBack(
       this.subject,
@@ -20,6 +21,18 @@ class FeedBack {
       this.feedbackStatus,
       this.createdDate,
       this.updatedDate);
+
+  FeedBack.withID(
+      this.id,
+      this.subject,
+      this.typeOfFeedBack,
+      this.feedbackIntensity,
+      this.content,
+      this.imageUrls,
+      this.feedbackStatus,
+      this.createdDate,
+      this.updatedDate,
+      this.comment);
 
   FeedBack.fromMap(Map snapshot, String id)
       : this.id = id ?? '',

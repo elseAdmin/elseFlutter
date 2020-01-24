@@ -53,7 +53,7 @@ class FeedBackPreview {
               children: <Widget>[
                 richTextData(
                     'Status', feedBack.feedbackStatus),
-                richTextData('Updated On',feedBack.updatedDate.day.toString()+" "+HelperMethods().getMonthNameForMonth(feedBack.updatedDate.month.toString())),
+                richTextData('Updated On',DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).day.toString()+" "+HelperMethods().getMonthNameForMonth(DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).month.toString())),
                 richTextData('Place', universe),
               ],
             ),
@@ -102,7 +102,7 @@ class FeedBackPreview {
                 children: <Widget>[
                   richTextData(
                       'Status', feedBack.feedbackStatus),
-                  richTextData('Updated On', feedBack.updatedDate.day.toString()+" "+HelperMethods().getMonthNameForMonth(feedBack.updatedDate.month.toString())),
+                  richTextData('Updated On', DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).day.toString()+" "+HelperMethods().getMonthNameForMonth(DateTime.fromMillisecondsSinceEpoch(feedBack.updatedDate).month.toString())),
                   richTextData('Place', universe),
                 ],
               ),
