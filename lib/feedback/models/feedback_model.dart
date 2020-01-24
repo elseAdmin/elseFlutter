@@ -42,6 +42,7 @@ class FeedBack {
         this.content = snapshot['content'] ?? '',
         this.imageUrls = snapshot['imageUrls'] ?? '',
         this.feedbackStatus = snapshot['feedbackStatus'] ?? '',
+        this.comment = snapshot['comment'] ?? '',
         this.createdDate = snapshot['createdDate'],
         this.updatedDate = snapshot['updatedDate'];
 
@@ -53,9 +54,10 @@ class FeedBack {
       "content": content,
       "imageUrls": imageUrls,
       "feedbackStatus": feedbackStatus,
+      "comment": comment,
+      "userUid": StartupData.user.id,
       "createdDate": createdDate,
-      "updatedDate": updatedDate,
-      "userUid": StartupData.user.id
+      "updatedDate": updatedDate
     };
   }
 }
