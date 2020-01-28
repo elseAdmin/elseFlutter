@@ -29,25 +29,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
-
-  @override
   void initState() {
     beaconService = BeaconServiceImpl(pushAdScreen);
     super.initState();
     const nativeMessageReceivingChannel =
-    const MethodChannel('com.else.apis.from.native');
+        const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
-    //_getBridgeStatus();
-    /* List<String> arg = List();
-    arg.add("0");
-    arg.add("1");
-    arg.add("17");
-    arg.add("2");
-    _postBeaconFound(arg);*/
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
@@ -97,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void pushAdScreen(AdBeacon adBeacon) {
     showDialog(
         context: context,
-        builder: (BuildContext context) => AdScreen(adBeacon));
+        builder: (BuildContext context) => AdScreen(adBeacon, true));
   }
 
   @override

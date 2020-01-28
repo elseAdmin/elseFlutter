@@ -1,3 +1,5 @@
+import 'package:else_app_two/utils/app_startup_data.dart';
+
 class FeedBack {
   String id;
   String subject;
@@ -40,9 +42,9 @@ class FeedBack {
         this.content = snapshot['content'] ?? '',
         this.imageUrls = snapshot['imageUrls'] ?? '',
         this.feedbackStatus = snapshot['feedbackStatus'] ?? '',
+        this.comment = snapshot['comment'] ?? '',
         this.createdDate = snapshot['createdDate'],
-        this.updatedDate = snapshot['updatedDate'],
-        this.comment = snapshot['comment'] ?? '';
+        this.updatedDate = snapshot['updatedDate'];
 
   toJson() {
     return {
@@ -52,9 +54,10 @@ class FeedBack {
       "content": content,
       "imageUrls": imageUrls,
       "feedbackStatus": feedbackStatus,
-      "createdDate": createdDate,
-      "updatedDate": updatedDate,
       "comment": comment,
+      "userUid": StartupData.user.id,
+      "createdDate": createdDate,
+      "updatedDate": updatedDate
     };
   }
 }

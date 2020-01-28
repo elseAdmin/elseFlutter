@@ -16,7 +16,7 @@ class TodayActivityState extends State<TodayActivity> {
     if (widget.todayActivities != null) {
       return Container(
           child: ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: widget.todayActivities.length,
             itemBuilder: (context, index) {

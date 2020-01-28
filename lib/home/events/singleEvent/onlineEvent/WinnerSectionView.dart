@@ -5,36 +5,41 @@ import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class WinnerSectionView extends StatefulWidget{
+class WinnerSectionView extends StatefulWidget {
   final String eventUid;
   const WinnerSectionView(this.eventUid);
   @override
-  WinnerSectionViewState createState()=>WinnerSectionViewState();
+  WinnerSectionViewState createState() => WinnerSectionViewState();
 }
-class WinnerSectionViewState extends State<WinnerSectionView>{
+
+class WinnerSectionViewState extends State<WinnerSectionView> {
   List<String> winnerImagesUrls = List();
   @override
-  void initState(){
-    DatabaseManager().getWinnerSubmissionForOnlineEvent(widget.eventUid).then((urls){
-        setState(() {
-          winnerImagesUrls=urls;
-        });
-    });
+  void initState() {
+    DatabaseManager()
+        .getWinnerSubmissionForOnlineEvent(widget.eventUid, winnerFound);
     super.initState();
   }
+
+  winnerFound(List<String> imageUrls) {
+    setState(() {
+      winnerImagesUrls = imageUrls;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return  SliverPadding(
-        padding: EdgeInsets.only(
-            left: SizeConfig.blockSizeHorizontal * 1,
-            right: SizeConfig.blockSizeHorizontal * 1,
-            bottom:SizeConfig.blockSizeVertical*3),
-        sliver: SliverGrid(
-          gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
+    if (winnerImagesUrls.isNotEmpty) {
+      return SliverPadding(
+          padding: EdgeInsets.only(
+              left: SizeConfig.blockSizeHorizontal * 1,
+              right: SizeConfig.blockSizeHorizontal * 1,
+              bottom: SizeConfig.blockSizeVertical * 3),
+          sliver: SliverGrid(
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
                 return Container(
                     padding: EdgeInsets.only(
                         left: SizeConfig.blockSizeHorizontal * 1,
@@ -43,11 +48,21 @@ class WinnerSectionViewState extends State<WinnerSectionView>{
                     color: Constants.mainBackgroundColor,
                     child: CachedNetworkImage(
                         fit: BoxFit.cover, imageUrl: winnerImagesUrls[index]));
-
-            },
-            childCount: winnerImagesUrls.length,
-          ),
-        ));
+              },
+              childCount: winnerImagesUrls.length,
+            ),
+          ));
+    } else {
+      return SliverPadding(
+          padding: EdgeInsets.only(
+          bottom: SizeConfig.blockSizeVertical * 5),
+    sliver:SliverList(
+        delegate: SliverChildListDelegate([
+          Center(
+            child: Text('The winners will be announced anytime soon now')
+          )
+        ]),
+      ));
+    }
   }
-
 }

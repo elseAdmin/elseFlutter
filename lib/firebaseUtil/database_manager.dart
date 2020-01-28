@@ -6,6 +6,7 @@ import 'package:else_app_two/auth/models/user_crud_model.dart';
 import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/beaconAds/models/user_deal_model.dart';
+import 'package:else_app_two/feedback/feedback_preview.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
 import 'package:else_app_two/home/deals/models/deals_model.dart';
@@ -38,11 +39,13 @@ class DatabaseManager {
   static Map activityTimelineMap;
   static List<EventModel> events;
   static List<Map<String, BaseModel>> myEvents;
+  static List<FeedBackPreview> myFeedbacks;
 
   static List<DealModel> deals;
   static HashMap<String, Set<ShopModel>> indexShopMap;
   static Function(List<EventModel>) eventsFound;
   static Function(List<DealModel>) dealsFound;
+
   DatabaseManager() {
     if (storageRef == null) {
       storageRef = FirebaseStorage.instance;
@@ -106,10 +109,10 @@ class DatabaseManager {
           .then((snapshot) {
         if (snapshot.value.length != 0) {
           deals = List();
-          List dealsKey = snapshot.value.keys.toList();
+          //List dealsKey = snapshot.value.keys.toList();
           for (int i = 0; i < snapshot.value.length; i++) {
-            if (snapshot.value[dealsKey[i]] != null) {
-              DealModel deal = DealModel.fromMap(snapshot.value[dealsKey[i]]);
+            if (snapshot.value[i] != null) {
+              DealModel deal = DealModel.fromMap(snapshot.value[i]);
               deals.add(deal);
             }
           }
@@ -148,12 +151,6 @@ class DatabaseManager {
       return events;
     } else {
       return events;
-    }
-  }
-
-  getMyEvents(bool refresh) async {
-    if (myEvents == null || refresh) {
-      myEvents = List();
     }
   }
 
@@ -244,7 +241,116 @@ class DatabaseManager {
     }
   }
 
+  getAllEventsForUser(bool refresh) async {
+    if (myEvents == null || refresh) {
+      List<Map<String, String>> allEventAndSubmissionUrls = List();
+
+      await store
+          .collection(StartupData.userReference)
+          .document(StartupData.user.id)
+          .collection("events")
+          .getDocuments()
+          .then((snapshot) {
+        List<DocumentSnapshot> allEventsOfUser = snapshot.documents;
+        for (var event in allEventsOfUser) {
+          Map<String, String> eventDetails = HashMap();
+          eventDetails.putIfAbsent(
+              "submissionUrl", () => event.data['submissionUrl']);
+          eventDetails.putIfAbsent("eventUrl", () => event.data['eventUrl']);
+          allEventAndSubmissionUrls.add(eventDetails);
+        }
+      });
+
+      myEvents = List();
+
+      for (int i = 0; i < allEventAndSubmissionUrls.length; i++) {
+        Map<String, BaseModel> returnData = HashMap();
+        Map event = allEventAndSubmissionUrls[i];
+        String eUrl = event["eventUrl"];
+        String sUrl = event["submissionUrl"];
+        await FirebaseDatabase.instance
+            .reference()
+            .child(eUrl)
+            .once()
+            .then((receivedEvents) {
+          EventModel event = EventModel(receivedEvents);
+          returnData.putIfAbsent("eventDetails", () => event);
+        }).catchError((error) {
+          logger.e(error);
+        });
+
+        await store.document(sUrl).get().then((snap) {
+          if (snap.data['type'] == 'online') {
+            OnlineEventSubmissionModel submission =
+                OnlineEventSubmissionModel(snap);
+            returnData.putIfAbsent("submissionDetails", () => submission);
+          }
+          if (snap.data['type'] == 'offline') {
+            OfflineEventSubmissionModel submission =
+                OfflineEventSubmissionModel(snap);
+            returnData.putIfAbsent("submissionDetails", () => submission);
+          }
+          if (snap.data['type'] == 'location') {
+            LocationEventSubmissionModel submission =
+                LocationEventSubmissionModel(snap);
+            returnData.putIfAbsent("submissionDetails", () => submission);
+          }
+        });
+        myEvents.add(returnData);
+      }
+      return myEvents;
+    } else {
+      return myEvents;
+    }
+  }
+
+  getFeedbacksByUser(bool refresh) async {
+    if (refresh || myFeedbacks == null) {
+      List<UserFeedBack> userFeedBackList = List();
+
+      await store
+          .collection(StartupData.userReference)
+          .document(StartupData.user.id)
+          .collection("feedbacks")
+          .orderBy('timestamp', descending: true)
+          .getDocuments()
+          .then((snapshot) {
+        List<DocumentSnapshot> feedbacks = snapshot.documents;
+        for (var feedback in feedbacks) {
+          UserFeedBack feed = UserFeedBack.fromMap(feedback.data);
+          userFeedBackList.add(feed);
+        }
+      });
+      myFeedbacks = List();
+
+      for (UserFeedBack feedBack in userFeedBackList) {
+        var feed = await getUserFeedbackDetails(feedBack.url);
+        if (feed != null) {
+          FeedBackPreview feedBackPreview =
+              new FeedBackPreview(feed.id, feedBack.universe, feed, false);
+          myFeedbacks.add(feedBackPreview);
+        }
+      }
+      return myFeedbacks;
+    }
+    return myFeedbacks;
+  }
+
   /// startup data methods  - end
+
+  getUserFeedbackDetails(String path) async {
+    FeedBack feedBack;
+    await store.document(path).get().then((doc) {
+      feedBack = FeedBack.fromMap(doc.data, doc.documentID);
+    });
+    return feedBack;
+  }
+
+  refreshEventsAndDeals(Function() onRefresh) async {
+    await getAllActiveEvents(true);
+    await getAllActiveDeals(true);
+    return onRefresh();
+  }
 
   getUserSpecificDealsForShop(
       String shopUid, Function(List<AdBeacon>) dealsFound) async {
@@ -285,14 +391,6 @@ class DatabaseManager {
       "userUid": StartupData.user.id,
       "storeName": storeName
     });
-  }
-
-  getUserFeedbackDetails(String path) async {
-    FeedBack feedBack;
-    await store.document(path).get().then((doc) {
-      feedBack = FeedBack.fromMap(doc.data, doc.documentID);
-    });
-    return feedBack;
   }
 
   Future getAllFeedbacksForUser() async {
@@ -503,7 +601,6 @@ class DatabaseManager {
   }
 
   Future getLimitedApprovedSubmissionsForOnlineEvent(String eventUid) async {
-    // make this call synchronous
     List<String> imageUrls = List();
     await store
         .collection(StartupData.dbreference)
@@ -511,8 +608,8 @@ class DatabaseManager {
         .collection(eventUid)
         .document("submissions")
         .collection("allSubmissions")
-        .where("status", isEqualTo: "approved")
-        .orderBy("uploaded_at", descending: true)
+        .where("status", isEqualTo: "Approved")
+        .orderBy("participatedAt", descending: true)
         .limit(20)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
@@ -523,7 +620,8 @@ class DatabaseManager {
     return imageUrls;
   }
 
-  Future getWinnerSubmissionForOnlineEvent(String eventUid) async {
+  Future getWinnerSubmissionForOnlineEvent(
+      String eventUid, Function(List<String>) onWinnerFound) async {
     List<String> imageUrls = List();
     await store
         .collection(StartupData.dbreference)
@@ -537,6 +635,7 @@ class DatabaseManager {
         imageUrls.add(doc.data["imageUrl"]);
       });
     });
+    onWinnerFound(imageUrls);
     return imageUrls;
   }
 
@@ -549,8 +648,8 @@ class DatabaseManager {
         .collection(eventUid)
         .document("submissions")
         .collection("allSubmissions")
-        .where("status", isEqualTo: "approved")
-        .orderBy("uploaded_at", descending: true)
+        .where("status", isEqualTo: "Approved")
+        .orderBy("participatedAt", descending: true)
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((doc) {
@@ -795,69 +894,6 @@ class DatabaseManager {
     });
 
     return;
-  }
-
-  Future getAllEventsForUser(bool refresh) async {
-    if (myEvents == null || refresh) {
-      List<Map<String, String>> allEventAndSubmissionUrls = List();
-
-      await store
-          .collection(StartupData.userReference)
-          .document(StartupData.user.id)
-          .collection("events")
-          .getDocuments()
-          .then((snapshot) {
-        List<DocumentSnapshot> allEventsOfUser = snapshot.documents;
-        for (var event in allEventsOfUser) {
-          Map<String, String> eventDetails = HashMap();
-          eventDetails.putIfAbsent(
-              "submissionUrl", () => event.data['submissionUrl']);
-          eventDetails.putIfAbsent("eventUrl", () => event.data['eventUrl']);
-          allEventAndSubmissionUrls.add(eventDetails);
-        }
-      });
-
-      myEvents = List();
-
-      for (int i = 0; i < allEventAndSubmissionUrls.length; i++) {
-        Map<String, BaseModel> returnData = HashMap();
-        Map event = allEventAndSubmissionUrls[i];
-        String eUrl = event["eventUrl"];
-        String sUrl = event["submissionUrl"];
-        await FirebaseDatabase.instance
-            .reference()
-            .child(eUrl)
-            .once()
-            .then((receivedEvents) {
-          EventModel event = EventModel(receivedEvents);
-          returnData.putIfAbsent("eventDetails", () => event);
-        }).catchError((error) {
-          logger.e(error);
-        });
-
-        await store.document(sUrl).get().then((snap) {
-          if (snap.data['type'] == 'online') {
-            OnlineEventSubmissionModel submission =
-                OnlineEventSubmissionModel(snap);
-            returnData.putIfAbsent("submissionDetails", () => submission);
-          }
-          if (snap.data['type'] == 'offline') {
-            OfflineEventSubmissionModel submission =
-                OfflineEventSubmissionModel(snap);
-            returnData.putIfAbsent("submissionDetails", () => submission);
-          }
-          if (snap.data['type'] == 'location') {
-            LocationEventSubmissionModel submission =
-                LocationEventSubmissionModel(snap);
-            returnData.putIfAbsent("submissionDetails", () => submission);
-          }
-        });
-        myEvents.add(returnData);
-      }
-      return myEvents;
-    } else {
-      return myEvents;
-    }
   }
 
   Future getActiveParking() async {

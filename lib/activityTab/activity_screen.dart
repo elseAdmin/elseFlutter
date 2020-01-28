@@ -3,8 +3,6 @@ import 'package:else_app_two/activityTab/today_activity_section.dart';
 import 'package:else_app_two/activityTab/week_activity_section.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
-import 'package:else_app_two/home/events/models/events_model.dart';
-import 'package:else_app_two/home/events/singleEvent/EventStaticData.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
