@@ -1,8 +1,7 @@
 import 'package:else_app_two/activityTab/activity_screen.dart';
+import 'package:else_app_two/basicElements/BallProgressIndicator.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
 
 class NotificationScreen extends StatefulWidget {
   @override
@@ -26,10 +25,7 @@ class NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     if (activities == null) {
-      return Center(
-        child: Loading(
-            indicator: BallPulseIndicator(), size: 60.0, color: Colors.blue),
-      );
+      return BallProgressIndicator();
     } else {
       return ActivityMainScreen(activities);
     }

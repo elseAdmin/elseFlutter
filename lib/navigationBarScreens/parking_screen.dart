@@ -1,3 +1,4 @@
+import 'package:else_app_two/basicElements/BallProgressIndicator.dart';
 import 'package:else_app_two/basicElements/qr_scanner.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
@@ -6,8 +7,6 @@ import 'package:else_app_two/parkingTab/parking_ui_screen.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
 
 class Parking extends StatefulWidget {
   @override
@@ -53,12 +52,7 @@ class ParkingState extends State<Parking> {
       if (parking == null) {
         return Container(
             padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
-            child: Center(
-              child: Loading(
-                  indicator: BallPulseIndicator(),
-                  size: 50.0,
-                  color: Colors.blue),
-            ));
+            child: BallProgressIndicator());
       } else if (parking.sensorName == null) {
         return QrScanner();
       } else {

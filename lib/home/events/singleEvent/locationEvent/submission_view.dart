@@ -1,3 +1,4 @@
+import 'package:else_app_two/basicElements/BallProgressIndicator.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
 import 'package:else_app_two/home/events/models/events_model.dart';
@@ -51,10 +52,7 @@ class SubmissionViewState extends State<SubmissionView> {
   Widget build(BuildContext context) {
     if (submissionDetails == null) {
       //still fetching details
-      return Center(
-        child: Loading(
-            indicator: BallPulseIndicator(), size: 60.0, color: Colors.blue),
-      );
+      return BallProgressIndicator();
     } else if (submissionDetails.participatedAt == null) {
       //user never participated
       return NotParticipatedView(widget.event, onUserParticipated);

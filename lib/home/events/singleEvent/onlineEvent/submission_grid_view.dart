@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:else_app_two/basicElements/BallProgressIndicator.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/home/events/singleEvent/onlineEvent/all_submission_view.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
 
 class SubmissionGridView extends StatefulWidget {
   final String eventUid;
@@ -34,12 +32,7 @@ class SubmissionGridViewState extends State<SubmissionGridView> {
     if (urls == null) {
       return SliverList(
         delegate: SliverChildListDelegate([
-          Center(
-            child: Loading(
-                indicator: BallPulseIndicator(),
-                size: 60.0,
-                color: Colors.blue),
-          )
+          BallProgressIndicator()
         ]),
       );
 

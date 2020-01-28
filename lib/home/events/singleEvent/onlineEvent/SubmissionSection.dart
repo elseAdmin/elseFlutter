@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:else_app_two/basicElements/LoadingDialog.dart';
+import 'package:else_app_two/basicElements/BallProgressIndicator.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/pick_gallery_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
@@ -14,8 +14,6 @@ import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:loading/loading.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
 
 class SubmissionSection extends StatefulWidget {
   final EventModel event;
@@ -115,12 +113,7 @@ class SubmissionSectionState extends State<SubmissionSection> {
           //so you return the loader and wait for this data from firestore to be fetched
           return Container(
               padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
-              child: Center(
-                child: Loading(
-                    indicator: BallPulseIndicator(),
-                    size: 50.0,
-                    color: Colors.blue),
-              ));
+              child: BallProgressIndicator());
         } else {
           // the user has just clicked or picked an image from the gallery so we re-render that image first and then we upload submission data to firestore
           return JustSubmittedView(imageFile, status, likes);

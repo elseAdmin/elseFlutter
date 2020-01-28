@@ -38,13 +38,13 @@ class NavigationScreenState extends State<NavigationScreen> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: _handleRefresh,
-        child: SingleChildScrollView(
-          child: Column(
+        child: ListView(
+          children: <Widget> [Column(
             children: <Widget>[
               SearchScreen(_indexShopMap),
               CategoryScreen(_indexShopMap),
             ],
-          ),
+          )],
         ));
   }
 }

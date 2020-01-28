@@ -19,6 +19,7 @@ class BootstrapState extends State<Bootstrap> {
       if (user != null) {
         DatabaseManager().getAllActivityOfUser(true);
         DatabaseManager().getAllEventsForUser(true);
+        DatabaseManager().getFeedbacksByUser(true);
       }
       DatabaseManager().getAllActiveEvents(true);
       DatabaseManager().getAllActiveDeals(true);
