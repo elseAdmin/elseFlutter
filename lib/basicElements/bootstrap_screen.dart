@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
 import 'package:else_app_two/home/home_page.dart';
+import 'package:else_app_two/service/firebase_notifications.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,9 @@ class BootstrapState extends State<Bootstrap> {
   @override
   void initState() {
     super.initState();
+
+    FirebaseNotifications().setUpFirebase();
+
     FireBaseApi _fireBaseApi = FireBaseApi("shopStaticData");
     _userRelatedStuff().then((user) {
       if (user != null) {
@@ -53,7 +57,6 @@ class BootstrapState extends State<Bootstrap> {
               "Else",
               style: TextStyle(fontSize: 40),
             ),
-            //Container(padding:EdgeInsets.only(top:SizeConfig.blockSizeVertical*7),child:Text("Loading....")),
             Container(
               padding: EdgeInsets.only(
                   top: SizeConfig.blockSizeVertical * 3,

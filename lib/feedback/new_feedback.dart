@@ -190,7 +190,7 @@ class _NewFeedBack extends State<NewFeedBack>{
                   ],
                 ),
                 Text("Rate your experience"),
-                SliderImpl(this.setUserRating),
+                SliderImpl(this.setUserRating,0),
                 TextFormField(
                   maxLines: 8,
                   decoration: const InputDecoration(

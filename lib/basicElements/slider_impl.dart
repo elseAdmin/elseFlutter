@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 
 class SliderImpl extends StatefulWidget{
   final Function(double) callback;
-  SliderImpl(this.callback);
+  final double selectedValue;
+  SliderImpl(this.callback,this.selectedValue);
   @override
   createState() => SliderImplState();
 
 }
 class SliderImplState extends State<SliderImpl>{
-  double selectedValue=0;
+  double selectedValue;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedValue=widget.selectedValue;
+  }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

@@ -346,6 +346,36 @@ class DatabaseManager {
     return feedBack;
   }
 
+  getReviewRatingForStore(String storeName,Function(double,String) callback) async {
+    double rating;
+    String review;
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("rating")
+        .where("storeName", isEqualTo: storeName)
+        .where("userUid", isEqualTo: StartupData.user.id)
+        .getDocuments()
+        .then((snapshot) {
+      snapshot.documents.forEach((doc) {
+        rating = doc.data['rating'];
+      });
+    });
+    await store
+        .collection(Constants.universe)
+        .document("store")
+        .collection("review")
+        .where("storeName", isEqualTo: storeName)
+        .where("userUid", isEqualTo: StartupData.user.id)
+        .getDocuments()
+        .then((snapshot) {
+      snapshot.documents.forEach((doc) {
+        review = doc.data['review'];
+      });
+    });
+    callback(rating,review);
+  }
+
   refreshEventsAndDeals(Function() onRefresh) async {
     await getAllActiveEvents(true);
     await getAllActiveDeals(true);
