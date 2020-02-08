@@ -1,4 +1,5 @@
 import 'package:else_app_two/basicElements/LoginDialog.dart';
+import 'package:else_app_two/basicElements/StarRating.dart';
 import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
@@ -20,13 +21,19 @@ class ReviewRatingSectionState extends State<ReviewRatingSection> {
   double userRating = -1;
   String userReview;
 
+  double previousRating = 0;
+  bool ratingSubmitButtonVisibility = true;
+
+  String previousReview='';
+  bool reviewSubmitButtonVisibility = true;
+
   _submitUserReviewRating() {
-    if(StartupData.user!=null && StartupData.user.id!=null) {
+    if (StartupData.user != null && StartupData.user.id != null) {
       if (userRating != -1) {
-        DatabaseManager().saveUserRatingForStore(widget.shop.name, userRating);
+        DatabaseManager().saveUserRatingForStore(widget.shop.uid, userRating);
       }
       if (userReview != null) {
-        DatabaseManager().saveUserReviewForStore(widget.shop.name, userReview);
+        DatabaseManager().saveUserReviewForStore(widget.shop.uid, userReview);
       }
       Fluttertoast.showToast(
           msg: "Thanks for the effort",
@@ -36,7 +43,7 @@ class ReviewRatingSectionState extends State<ReviewRatingSection> {
           backgroundColor: Colors.black,
           textColor: Colors.white,
           fontSize: 14.0);
-    }else{
+    } else {
       showDialog(
           barrierDismissible: false,
           context: context,
@@ -59,6 +66,29 @@ class ReviewRatingSectionState extends State<ReviewRatingSection> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    DatabaseManager()
+        .getReviewRatingForStore(widget.shop.uid, onReviewRatingFound);
+  }
+
+  onReviewRatingFound(double rating, String review) {
+    if (rating != null) {
+      setState(() {
+        previousRating = rating;
+        ratingSubmitButtonVisibility = false;
+      });
+    }
+    if (review != null) {
+      setState(() {
+        previousReview = review;
+        reviewSubmitButtonVisibility = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     String storeName = widget.shop.name;
@@ -66,24 +96,26 @@ class ReviewRatingSectionState extends State<ReviewRatingSection> {
       children: <Widget>[
         Card(
           child: ListTile(
-            title: Text('Rate this store',
+            title: Text('Rate',
                 style: TextStyle(
                     fontSize: 20,
                     color: Constants.textColor,
                     fontWeight: FontWeight.w600)),
             subtitle: Column(children: <Widget>[
-              SliderImpl(this.setUserRating),
-              GestureDetector(
-                child: Container(
-                    padding: EdgeInsets.only(
-                        top: SizeConfig.blockSizeVertical,
-                        bottom: SizeConfig.blockSizeVertical * 2),
-                    child: Text(
-                      "Submit",
-                      style: TextStyle(fontSize: 16),
-                    )),
-                onTap: () => _submitUserReviewRating(),
-              )
+              StarRating(previousRating, this.setUserRating),
+              Visibility(
+                  visible: ratingSubmitButtonVisibility,
+                  child: GestureDetector(
+                    child: Container(
+                        padding: EdgeInsets.only(
+                            top: SizeConfig.blockSizeVertical,
+                            bottom: SizeConfig.blockSizeVertical * 2),
+                        child: Text(
+                          "Submit",
+                          style: TextStyle(fontSize: 16),
+                        )),
+                    onTap: () => _submitUserReviewRating(),
+                  ))
             ]),
           ),
         ),
@@ -94,29 +126,39 @@ class ReviewRatingSectionState extends State<ReviewRatingSection> {
                     fontSize: 20,
                     color: Constants.textColor,
                     fontWeight: FontWeight.w600)),
-            subtitle: Column(children: <Widget>[
-              TextField(
-                keyboardType: TextInputType.multiline,
-                maxLines: 2,
-                onChanged: (text) {
-                  userReview = text;
-                },
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Write a review for $storeName'),
-              ),
-              GestureDetector(
-                child: Container(
-                    padding: EdgeInsets.only(
-                        top: SizeConfig.blockSizeVertical,
-                        bottom: SizeConfig.blockSizeVertical * 2),
-                    child: Text(
-                      "Submit",
-                      style: TextStyle(fontSize: 16),
-                    )),
-                onTap: () => _submitUserReviewRating(),
-              )
-            ]),
+            subtitle: Column(
+              children: <Widget>[
+                Visibility(
+                  visible: !reviewSubmitButtonVisibility,
+                  child: Text(previousReview),
+                ),
+                Visibility(
+                    visible: reviewSubmitButtonVisibility,
+                    child: Column(children: <Widget>[
+                      TextField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 2,
+                        onChanged: (text) {
+                          userReview = text;
+                        },
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Write a review for $storeName'),
+                      ),
+                      GestureDetector(
+                        child: Container(
+                            padding: EdgeInsets.only(
+                                top: SizeConfig.blockSizeVertical,
+                                bottom: SizeConfig.blockSizeVertical * 2),
+                            child: Text(
+                              "Submit",
+                              style: TextStyle(fontSize: 16),
+                            )),
+                        onTap: () => _submitUserReviewRating(),
+                      )
+                    ]))
+              ],
+            ),
           ),
         ),
       ],
