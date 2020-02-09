@@ -1,5 +1,5 @@
 import 'dart:collection';
-
+import 'dart:math';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -29,10 +29,10 @@ class BeaconServiceImpl {
   DatabaseManager db;
   SqlLiteManager sql;
 
-  handleBeacon(String major, String minor, String distance) async {
+  handleBeacon(String major, String minor, String rssi) async {
     switch (determineBeaconType(major)) {
       case "parking":
-        await postHandlingForParkingBeacons(major, minor, distance);
+        await postHandlingForParkingBeacons(major, minor, rssi);
         break;
       case "advtsmntInt":
         await postHandlingForAdvtsmntBeacon(major, minor);
@@ -81,9 +81,9 @@ class BeaconServiceImpl {
     return false;
   }
 
-  postHandlingForParkingBeacons(String major, String minor, String distance) async {
+  postHandlingForParkingBeacons(String major, String minor, String rssi) async {
     if(Constants.parkingEligibleUser){
-      db.markUserVisitForParkingBeacon(major, minor,distance);
+      db.markUserVisitForParkingBeacon(major, minor,rssi);
 
       Constants.parkingLevel = int.parse(major[0]);
       // TODO @Suhail add callback here on the basis of logic

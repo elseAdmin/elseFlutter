@@ -7,6 +7,7 @@ import 'auth/auth_provider.dart';
 void main() {
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Else',
     home: MyApp(),
   ));

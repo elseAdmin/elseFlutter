@@ -36,6 +36,7 @@ class ParticipatedViewState extends State<ParticipatedView> {
         child: Stepper(
       key: Key(Random.secure().nextDouble().toString()),
       steps: getSteps(),
+      physics: NeverScrollableScrollPhysics(),
       currentStep: _index,
       onStepTapped: (index) {
         setState(() {

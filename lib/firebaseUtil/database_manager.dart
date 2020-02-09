@@ -600,7 +600,7 @@ class DatabaseManager {
   }
 
   markUserVisitForParkingBeacon(
-      String major, String minor, String distance) async {
+      String major, String minor, String rssi) async {
     await store
         .collection(StartupData.dbreference)
         .document("beacons")
@@ -610,7 +610,7 @@ class DatabaseManager {
         .add({
       "timestamp": DateTime.now().millisecondsSinceEpoch,
       "userUid": StartupData.user.id,
-      "distance": double.parse(distance)
+      "rssi": double.parse(rssi)
     });
   }
 
