@@ -48,9 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
   _postBeaconFound(arguments) async {
     await beaconService.handleBeacon(arguments[1], arguments[2], arguments[3]);
 
-    if (Constants.universe.compareTo("Else") == 0 &&
+    if (Constants.universe.compareTo("unityOneRohini") != 0 &&
         arguments[0].compareTo("00000000-0000-0000-0000-000000000000") == 0) {
-      Constants.universe = "UnityOne Rohini";
+      Constants.universe = "unityOneRohini";
+      Constants.universeDisplayName = "UnityOne Rohini";
       if (_appTitle.compareTo(arguments.toString()) == 0) {
         //no need to update as previous title has been called
       } else {
@@ -96,13 +97,14 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(
           _appTitle,
           style: TextStyle(
-            color: Constants.titleBarTextColor,
+            color: Constants.navBarButton,
             fontSize: 18,
           ),
         ),
       ),
       body: handler.getViewForNavigationBarIndex(bottomNavIndex),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Constants.titleBarBackgroundColor,
         currentIndex: bottomNavIndex,
         type: BottomNavigationBarType.fixed,
         items: BottomNavigationBarItemsList().getItems(),

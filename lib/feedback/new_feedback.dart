@@ -11,16 +11,16 @@ import 'package:else_app_two/auth/models/user_crud_model.dart';
 import 'package:else_app_two/feedback/models/user_feedback_crud_model.dart';
 import 'package:else_app_two/feedback/models/user_feedback_model.dart';
 import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 
-class NewFeedBack extends StatefulWidget{
-
+class NewFeedBack extends StatefulWidget {
   @override
-  _NewFeedBack createState() => _NewFeedBack()
-;}
+  _NewFeedBack createState() => _NewFeedBack();
+}
 
-class _NewFeedBack extends State<NewFeedBack>{
+class _NewFeedBack extends State<NewFeedBack> {
   final _formKey = GlobalKey<FormState>();
   bool isLoggedIn = false;
   TextEditingController _subjectController = TextEditingController();
@@ -28,36 +28,41 @@ class _NewFeedBack extends State<NewFeedBack>{
   bool _typeOfFeedBack = true;
   double _intensityValue = 0.0;
   List imageUrls = [];
-  static String pathFeedbackCollection = StartupData.dbreference+'/feedback/allfeedbacks';
-  final FeedbackCrudModel feedbackCrudModel = FeedbackCrudModel(new Api(pathFeedbackCollection));
+  static String pathFeedbackCollection =
+      StartupData.dbreference + '/feedback/allfeedbacks';
+  final FeedbackCrudModel feedbackCrudModel =
+      FeedbackCrudModel(new Api(pathFeedbackCollection));
 
   UserFeedBackCrudModel userFeedBackCrudModel;
   final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
-  final StorageManager _storageManager = StorageManager(StartupData.dbreference+'/feedback/');
+  final StorageManager _storageManager =
+      StorageManager(StartupData.dbreference + '/feedback/');
 
   @override
-  initState(){
-    if(StartupData.user!=null){
-      isLoggedIn=true;
+  initState() {
+    if (StartupData.user != null) {
+      isLoggedIn = true;
     }
     super.initState();
   }
+
   setUserRating(double rating) {
     _intensityValue = rating;
   }
+
   onImageSelectedFromCamera(file) async {
 //    print('Uploading File :: ' + file.toString());
     int id = new DateTime.now().millisecondsSinceEpoch;
-    String path = StartupData.dbreference+'/feedback/$id';
+    String path = StartupData.dbreference + '/feedback/$id';
     _storageManager.addFilePath(path);
     String uploadUrl = await _storageManager.uploadImageUrl(file);
     setState(() {
       imageUrls.add(uploadUrl);
-      print('Values in image url list '+imageUrls.toString());
+      print('Values in image url list ' + imageUrls.toString());
     });
   }
 
-  removeImage(int index) async{
+  removeImage(int index) async {
     String path = imageUrls[index];
 //    _storageManager.addFilePath(path);
 //    await _storageManager.removeImageUrl();
@@ -67,34 +72,36 @@ class _NewFeedBack extends State<NewFeedBack>{
     });
   }
 
-  @override
-  void didChangeDependencies() async{
-    super.didChangeDependencies();
-  }
-
-  _addFeedBack(String subject, bool typeOfFeedBack,
-      double feedbackIntensity, String content, List images) async{
+  _addFeedBack(String subject, bool typeOfFeedBack, double feedbackIntensity,
+      String content, List images) async {
     List<String> imageUrls = images.cast<String>();
-    FeedBack feedBack = new FeedBack(subject, typeOfFeedBack, feedbackIntensity,
-        content, imageUrls, StatusString.getString(Status.PENDING),
-        DateTime.now().millisecondsSinceEpoch, DateTime.now().millisecondsSinceEpoch);
+    FeedBack feedBack = new FeedBack(
+        subject,
+        typeOfFeedBack,
+        feedbackIntensity,
+        content,
+        imageUrls,
+        StatusString.getString(Status.PENDING),
+        DateTime.now().millisecondsSinceEpoch,
+        DateTime.now().millisecondsSinceEpoch);
 
     String feedBackUrl = await feedbackCrudModel.addFeedBack(feedBack);
-    if(feedBackUrl != null){
+    if (feedBackUrl != null) {
       UserFeedBack userFeedBack = new UserFeedBack(feedBackUrl);
       await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
-      showModalBottomSheet(context: context, builder: (context){
-        return getModal();
-      });
+      showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return getModal();
+          });
     }
-
   }
 
-  void _popContext(BuildContext context){
+  void _popContext(BuildContext context) {
     Navigator.pop(context);
   }
 
-  Widget getModal(){
+  Widget getModal() {
     return Container(
       height: MediaQuery.of(context).size.height / 4,
       decoration: BoxDecoration(
@@ -107,7 +114,10 @@ class _NewFeedBack extends State<NewFeedBack>{
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text("Feedback Registered", textAlign: TextAlign.center,),
+            title: Text(
+              "Feedback Registered",
+              textAlign: TextAlign.center,
+            ),
             subtitle: Text("Our team has started working on this......"),
           ),
           Padding(
@@ -115,12 +125,14 @@ class _NewFeedBack extends State<NewFeedBack>{
           ),
           FlatButton(
             color: Colors.white,
-            onPressed: (){
+            onPressed: () {
               Navigator.pop(context);
               _popContext(context);
             },
-            child: Text('Ok', style: TextStyle(fontWeight: FontWeight.bold,
-                fontSize: 20.0),),
+            child: Text(
+              'Ok',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+            ),
           )
         ],
       ),
@@ -131,119 +143,110 @@ class _NewFeedBack extends State<NewFeedBack>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Constants.textColor),
-        backgroundColor: Constants.titleBarBackgroundColor,
-        title: Text(
-          "New Feedback",
-          style: TextStyle(
-            color: Constants.titleBarTextColor,
-            fontSize: 18,
-          ),
-        ),
-      ),
-      body: Card(
-        borderOnForeground: true,
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(
-                      labelText: 'Subject'
-                  ),
-                  controller: _subjectController,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter Name';
-                    }
-                    return null;
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Type Of FeedBack"),
-                    Row(children: <Widget>[
-                      Radio(value: true, groupValue: _typeOfFeedBack,
-                        onChanged: (bool newValue) {
-                          setState(() {
-                            _typeOfFeedBack=newValue;
-                          });
-                        }),
-                      Text("Positive"),
-                    ]),
-                    Row(
-                      children: <Widget>[
-                        Radio(value: false, groupValue: _typeOfFeedBack,
-                          onChanged: (bool newValue) {
-                            setState(() {
-                              _typeOfFeedBack=newValue;
-                            });
-                          }),
-                        Text("Negative")
-                      ],
-                    )
-                  ],
-                ),
-                Text("Rate your experience"),
-                SliderImpl(this.setUserRating,0),
-                TextFormField(
-                  maxLines: 8,
-                  decoration: const InputDecoration(
-                      labelText: 'Content'
-                  ),
-                  controller: _contentController,
-                  keyboardType: TextInputType.text,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Upload Image (If any)"),
-                    CameraImpl(onImageSelectedFromCamera),
-                  ],
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height / 8,
-                  width: MediaQuery.of(context).size.height / 4,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: imageUrls.length,
-                    itemBuilder: (context, index){
-                      return imageCard(index);
-                    }
-                  ),
-                ),
-                FlatButton(
-                  color: Colors.white,
-                  onPressed: _submit,
-                  child: const Text(
-                    'SUBMIT',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0
-                    ),
-                  ),
-                ),
-              ]
+        backgroundColor: Constants.mainBackgroundColor,
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: Constants.navBarButton),
+          backgroundColor: Colors.white,
+          title: Text(
+            "New Feedback",
+            style: TextStyle(
+              color: Constants.navBarButton,
+              fontSize: 18,
             ),
           ),
         ),
-      ),
-    );
+        floatingActionButton: FloatingActionButton(
+          elevation: 10,
+          backgroundColor: Constants.navBarButton,
+          child: Icon(Icons.send),
+          onPressed: _submit,
+        ),
+        body: Container(
+          padding: EdgeInsets.all(SizeConfig.blockSizeVertical),
+          child: Form(
+            key: _formKey,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextFormField(
+                    decoration: const InputDecoration(labelText: 'Subject'),
+                    controller: _subjectController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter Name';
+                      }
+                      return null;
+                    },
+                  ),
+                  Container(
+                      padding:
+                          EdgeInsets.only(top: SizeConfig.blockSizeVertical),
+                      child: Text(
+                        "Emotion",
+                        style: TextStyle(fontSize: 15),
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Row(children: <Widget>[
+                        Radio(
+                            value: true,
+                            groupValue: _typeOfFeedBack,
+                            onChanged: (bool newValue) {
+                              setState(() {
+                                _typeOfFeedBack = newValue;
+                              });
+                            }),
+                        Text("Positive"),
+                      ]),
+                      Row(
+                        children: <Widget>[
+                          Radio(
+                              value: false,
+                              groupValue: _typeOfFeedBack,
+                              onChanged: (bool newValue) {
+                                setState(() {
+                                  _typeOfFeedBack = newValue;
+                                });
+                              }),
+                          Text("Negative")
+                        ],
+                      )
+                    ],
+                  ),
+                  Text("Intensity", style: TextStyle(fontSize: 15)),
+                  SliderImpl(this.setUserRating, 0),
+                  TextFormField(
+                    maxLines: 8,
+                    decoration: const InputDecoration(labelText: 'Content'),
+                    controller: _contentController,
+                    keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  ),
+                  Text("Upload Image"),
+                  CameraImpl(onImageSelectedFromCamera),
+                  Container(
+                    height: MediaQuery.of(context).size.height / 8,
+                    width: MediaQuery.of(context).size.height / 4,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: imageUrls.length,
+                        itemBuilder: (context, index) {
+                          return imageCard(index);
+                        }),
+                  ),
+                ]),
+          ),
+        ));
   }
 
-  _submit() async{
-    if(isLoggedIn) {
+  _submit() async {
+    if (isLoggedIn) {
       String userId = StartupData.user.id;
       String path = 'users/$userId/feedbacks';
       userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
@@ -252,7 +255,7 @@ class _NewFeedBack extends State<NewFeedBack>{
         await _addFeedBack(_subjectController.text, _typeOfFeedBack,
             _intensityValue, _contentController.text, imageUrls);
       }
-    }else{
+    } else {
       showDialog(
           barrierDismissible: false,
           context: context,
@@ -260,8 +263,8 @@ class _NewFeedBack extends State<NewFeedBack>{
     }
   }
 
-  onSignIn(){
-    isLoggedIn=true;
+  onSignIn() {
+    isLoggedIn = true;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -269,8 +272,8 @@ class _NewFeedBack extends State<NewFeedBack>{
       ),
     );
   }
-  
-  Widget imageCard(int index){
+
+  Widget imageCard(int index) {
     return Stack(
       children: <Widget>[
         Card(
@@ -285,9 +288,10 @@ class _NewFeedBack extends State<NewFeedBack>{
             height: 20.0, // height of the button
             width: 20.0,
             decoration: new BoxDecoration(
-              shape: BoxShape.circle,// You can use like this way or like the below line
+              shape: BoxShape
+                  .circle, // You can use like this way or like the below line
               color: Colors.white,
-              border:  Border.all(
+              border: Border.all(
                 color: Constants.textColor,
                 width: 1.0,
               ),
@@ -298,7 +302,9 @@ class _NewFeedBack extends State<NewFeedBack>{
                 iconSize: 18.0,
                 color: Colors.black,
                 icon: Icon(Icons.close),
-                onPressed: (){removeImage(index);},
+                onPressed: () {
+                  removeImage(index);
+                },
               ),
             ),
           ),

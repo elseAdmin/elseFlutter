@@ -50,7 +50,7 @@ class _LoginLogoutSection extends State<LoginLogoutSection> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        //color: Colors.pink,
       ),
       child: userStatusChild(context, widget.isUserLoggedIn),
     );
@@ -62,7 +62,7 @@ class _LoginLogoutSection extends State<LoginLogoutSection> {
         contentPadding:
             const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
         title: FlatButton(
-          color: Colors.white,
+          //color: Colors.white,
           onPressed: () => _signOut(context),
           child: const Text(
             'LOGOUT',

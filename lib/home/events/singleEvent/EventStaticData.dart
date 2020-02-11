@@ -25,10 +25,13 @@ class EventStaticDataState extends State<EventStaticData> {
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Container(height:SizeConfig.blockSizeVertical,color: Colors.white),
           Container(
+            color: Constants.mainBackgroundColor,
               padding: EdgeInsets.only(
                   left: SizeConfig.blockSizeVertical * 2,
-                  top: SizeConfig.blockSizeVertical * 2,
+                  top: SizeConfig.blockSizeVertical * 1,
+                  bottom: SizeConfig.blockSizeVertical * 1,
                   right: SizeConfig.blockSizeVertical * 2),
               child: Text(widget.description,
                   style: TextStyle(

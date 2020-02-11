@@ -22,11 +22,13 @@ class HomeScreenState extends State<HomeScreen> {
     DatabaseManager().refreshEventsAndDeals(onRefresh);
     return null;
   }
-  onRefresh(){
+
+  onRefresh() {
     setState(() {
       refresh = true;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -34,12 +36,44 @@ class HomeScreenState extends State<HomeScreen> {
     return RefreshIndicator(
         onRefresh: _handleRefresh,
         child: ListView(
-          padding: const EdgeInsets.all(3),
+          shrinkWrap: true,
           children: <Widget>[
+            GridView.count(
+                primary: true,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                crossAxisCount: 3,
+                children: <Widget>[
+                  RequestSection(),
+                  FeedbackSection(),
+                  Container(
+                      margin: EdgeInsets.all(SizeConfig.blockSizeVertical * 2),
+                      child: GestureDetector(
+                        child: Container(
+                            padding: EdgeInsets.only(
+                                bottom: SizeConfig.blockSizeHorizontal),
+                            color: Constants.titleBarBackgroundColor,
+                            child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Icon(Icons.poll,
+                                      size: 35, color: Constants.navBarButton),
+                                  Text(
+                                    'Polls',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Constants.navBarButton),
+                                  )
+                                ])),
+                        onTap: () {},
+                      )),
+                ]),
+            //
+            //
             EventSection(),
+            Container(height: SizeConfig.blockSizeVertical,color: Constants.titleBarBackgroundColor,),
             DealSection(),
-            RequestSection(),
-            FeedbackSection()
           ],
         ));
   }

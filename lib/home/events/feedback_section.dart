@@ -8,30 +8,33 @@ class FeedbackSection extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-        padding: EdgeInsets.only(
-            top: SizeConfig.blockSizeVertical * 1,
-            left: SizeConfig.blockSizeHorizontal * 2,
-            bottom: SizeConfig.blockSizeVertical * 7),
+        margin: EdgeInsets.all(SizeConfig.blockSizeVertical * 2),
         child: GestureDetector(
+            child: Container(
+              padding: EdgeInsets.only(
+                  bottom: SizeConfig.blockSizeHorizontal),
+              color: Constants.titleBarBackgroundColor,
+              child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Icon(
+                      Icons.feedback,
+                      size: 35,
+                      color: Constants.navBarButton,
+                    ),
+                    Text(
+                      'Feedback',
+                      style: TextStyle(fontSize: 18,color: Constants.navBarButton),
+                    )
+                  ]),
+            ),
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => NewFeedBack()));
-            },
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "Feedbacks",
-                    style: TextStyle(
-                      fontSize: Constants.homePageHeadingsFontSize,
-                    ),
-                  ),
-                  Divider(
-                      endIndent: SizeConfig.blockSizeHorizontal * 60,
-                      color: Colors.black87,
-                      height: SizeConfig.blockSizeVertical)
-                ])));
+                      builder: (BuildContext context) =>
+                          NewFeedBack()));
+            }));
   }
 }

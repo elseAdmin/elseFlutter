@@ -6,6 +6,7 @@ import 'package:else_app_two/auth/models/user_model.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
 import 'package:else_app_two/requests/models/request_crud_model.dart';
 import 'package:else_app_two/auth/models/user_crud_model.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,19 +96,8 @@ class _RequestCard extends State<RequestCard>{
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      borderOnForeground: true,
-      child: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Container(
-          height: MediaQuery.of(context).size.height / 2,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              color: Colors.white70,
-              width: 1.0,
-            ),
-          ),
+    return Container(
+          padding: EdgeInsets.all(SizeConfig.blockSizeVertical),
           child: Form(
             key: _formKey,
             child: Column(
@@ -198,8 +188,6 @@ class _RequestCard extends State<RequestCard>{
               ],
             ),
           ),
-        ),
-      ),
     );
   }
 

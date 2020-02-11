@@ -1,5 +1,6 @@
 import 'package:else_app_two/models/base_model.dart';
 import 'package:else_app_two/profileTab/myEvents/my_event_card.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class MyEventViewHandler {
       );
     } else {
       return Container(
-          color: Colors.white,
+          color: Constants.mainBackgroundColor,
           child: CustomScrollView(
             slivers: <Widget>[
               SliverList(

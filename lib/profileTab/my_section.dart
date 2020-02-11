@@ -1,7 +1,9 @@
 import 'package:else_app_two/profileTab/profile_my_section_route.dart';
+import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-class MySection extends StatelessWidget{
+class MySection extends StatelessWidget {
   final bool isUserLogged;
 
   MySection(this.isUserLogged);
@@ -14,19 +16,14 @@ class MySection extends StatelessWidget{
   Widget build(BuildContext context) {
     return Visibility(
       child: Container(
-        height: MediaQuery.of(context).size.height / 6,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            color: Colors.white70,
-            width: 1.0,
-          ),
-        ),
+        color: Colors.white,
         child: ListView.separated(
+          physics: NeverScrollableScrollPhysics(),
           separatorBuilder: (context, index) => Divider(
-            color: Colors.black,
+            color: Constants.dividerColor,
+            indent: SizeConfig.blockSizeHorizontal * 5,
+            endIndent: SizeConfig.blockSizeHorizontal * 5,
           ),
-          padding: const EdgeInsets.all(3),
           shrinkWrap: true,
           itemCount: listData.length,
           itemBuilder: (BuildContext context, int index) {
@@ -46,5 +43,4 @@ class MySection extends StatelessWidget{
       visible: isUserLogged,
     );
   }
-
 }
