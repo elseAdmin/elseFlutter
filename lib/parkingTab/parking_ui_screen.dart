@@ -148,6 +148,8 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
             margin: new EdgeInsets.all(10.0),
             child: SectionContainer(_parkedVehicle, _outParking),
           ),
+        )
+      )
     );
   }
 
