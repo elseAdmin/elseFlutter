@@ -1,6 +1,8 @@
 import 'package:else_app_two/auth/models/user_model.dart';
 
 class StartupData {
+  static bool isBluetoothOn=null;
+
   //below code makes this class singleton
   factory StartupData() {
     return _singleton;
