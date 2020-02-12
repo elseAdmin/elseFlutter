@@ -1,4 +1,6 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/navigationBarScreens/home_screen.dart';
+import 'package:else_app_two/navigationBarScreens/parking_screen.dart';
 import 'package:else_app_two/parkingTab/section_container.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
@@ -9,7 +11,8 @@ import 'models/user_parking_model.dart';
 
 class ParkingUIScreen extends StatefulWidget{
   final ParkingModel parkingModel;
-  ParkingUIScreen(this.parkingModel);
+  final VoidCallback outParking;
+  ParkingUIScreen(this.parkingModel, this.outParking);
 
   @override
   _ParkingUIScreen createState() => _ParkingUIScreen();
@@ -21,6 +24,13 @@ class _ParkingUIScreen extends State<ParkingUIScreen>{
   bool _isUserParked = false;
   ParkingModel parking;
 
+  void _outParking(){
+//    Navigator.pop(context);
+    setState(() {
+      parking = ParkingModel(null);
+    });
+    widget.outParking();
+  }
 
   @override
   void initState() {
@@ -130,7 +140,7 @@ class _ParkingUIScreen extends State<ParkingUIScreen>{
           alignment: AlignmentDirectional(0.0, 0.0),
           child: Container(
             margin: new EdgeInsets.all(10.0),
-            child: SectionContainer(_parkedVehicle),
+            child: SectionContainer(_parkedVehicle, _outParking),
           ),
         ),
       ),

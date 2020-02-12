@@ -6,6 +6,7 @@ import 'package:else_app_two/parkingTab/models/user_parking_model.dart';
 import 'package:else_app_two/parkingTab/parking_ui_screen.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/app_startup_data.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
 class Parking extends StatefulWidget {
@@ -46,6 +47,14 @@ class ParkingState extends State<Parking> {
       });
     });
   }
+
+  void _outParking() {
+    setState(() {
+      Constants.hasScannedForParking = false;
+      parking = ParkingModel(null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoggedIn) {
@@ -54,9 +63,9 @@ class ParkingState extends State<Parking> {
             padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
             child: BallProgressIndicator());
       } else if (parking.sensorName == null) {
-        return QrScanner();
+        return QrScanner(_outParking);
       } else {
-        return ParkingUIScreen(parking);
+        return ParkingUIScreen(parking, _outParking);
       }
     } else {
       return Center(
