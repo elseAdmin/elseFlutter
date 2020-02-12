@@ -4,6 +4,7 @@ import 'package:else_app_two/home/events/models/events_model.dart';
 import 'package:else_app_two/home/events/models/loc_submission_model.dart';
 import 'package:else_app_two/home/events/models/offline_submission_model.dart';
 import 'package:else_app_two/home/events/models/online_submission_model.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:else_app_two/utils/helper_methods.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class MyEventCard extends StatelessWidget {
     EventModel eventDetails = details['eventDetails'];
     String displayDate = getDisplayDateForParticipatedAt(eventDetails);
     return Container(
-        color: Colors.grey[200],
+        color: Colors.white,
         //color: Colors.cyan,
         child: Column(
           children: <Widget>[
@@ -79,7 +80,7 @@ class MyEventCard extends StatelessWidget {
                   ],
                 )),
             Container(
-                color: Colors.white,
+                color: Constants.mainBackgroundColor,
                 height: SizeConfig.blockSizeVertical,
                 width: SizeConfig.blockSizeHorizontal * 100)
           ],

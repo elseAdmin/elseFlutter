@@ -94,9 +94,11 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
                         beaconMeta.add(beacon.getId1().toString());
                         beaconMeta.add(beacon.getId2().toString());
                         beaconMeta.add(beacon.getId3().toString());
-                        beaconMeta.add(String.valueOf(beacon.getDistance()));
+                        beaconMeta.add(String.valueOf(beacon.getRssi()));
                         invokingDartMethods.invokeMethod("beaconFound",beaconMeta);
-                        //Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3()+" rssi="+beacon.getRssi()+" distance = "+beacon.getDistance());
+                        /*if(beacon.getId3().toString().compareTo("5")==0){
+                            Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3()+" rssi="+beacon.getRssi()+" distance = "+beacon.getDistance());
+                        }*/
                     }
                 }
             }

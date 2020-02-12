@@ -143,13 +143,13 @@ class AboutUsDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Constants.titleBarBackgroundColor,
+        backgroundColor: Colors.white,
         iconTheme: IconThemeData(
-          color: Constants.textColor, //change your color here
+          color: Constants.navBarButton, //change your color here
         ),
         title: Text('About Us',
             style: TextStyle(
-              color: Constants.titleBarTextColor,
+              color: Constants.navBarButton,
               fontSize: 18,
             )
         ),

@@ -1,4 +1,6 @@
 import 'package:else_app_two/profileTab/profile_screen_route.dart';
+import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
 class GeneralSection extends StatelessWidget{
@@ -9,19 +11,15 @@ class GeneralSection extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        height: MediaQuery.of(context).size.height / 2,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            color: Colors.white70,
-            width: 1.0,
-          ),
-        ),
+    return  Container(
+        color:Colors.white,
         child: ListView.separated(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
           separatorBuilder: (context, index) => Divider(
-            color: Colors.black,
+            color: Constants.dividerColor,
+            indent: SizeConfig.blockSizeHorizontal * 5,
+            endIndent: SizeConfig.blockSizeHorizontal * 5,
           ),
           itemCount: listData.length,
           itemBuilder: (BuildContext context, int index) {
@@ -34,7 +32,6 @@ class GeneralSection extends StatelessWidget{
             );
           },
         ),
-      ),
     );
   }
 

@@ -8,29 +8,29 @@ class RequestSection extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-        padding: EdgeInsets.only(
-            top: SizeConfig.blockSizeVertical * 1,
-            left: SizeConfig.blockSizeHorizontal * 2),
+        margin: EdgeInsets.all(SizeConfig.blockSizeVertical * 1.8),
         child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => RequestsPage()));
-            },
+          child: Container(
+            padding: EdgeInsets.only(bottom: SizeConfig.blockSizeHorizontal),
+            color: Constants.titleBarBackgroundColor,
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
+                  Icon(Icons.record_voice_over,
+                      size: 35, color: Constants.navBarButton),
                   Text(
-                    "Requests",
-                    style: TextStyle(
-                      fontSize: Constants.homePageHeadingsFontSize,
-                    ),
-                  ),
-                  Divider(
-                      endIndent: SizeConfig.blockSizeHorizontal * 60,
-                      color: Colors.black87,
-                      height: SizeConfig.blockSizeVertical)
-                ])));
+                    'Request',
+                    style:
+                        TextStyle(fontSize: 18, color: Constants.navBarButton),
+                  )
+                ]),
+          ),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => RequestsPage()));
+          },
+        ));
   }
 }

@@ -27,9 +27,9 @@ class EventSectionState extends State<EventSection> {
     events = DatabaseManager.events;
   }
 
-  eventsFound(List<EventModel> foundEvents){
+  eventsFound(List<EventModel> foundEvents) {
     setState(() {
-      events=foundEvents;
+      events = foundEvents;
     });
   }
 
@@ -37,102 +37,105 @@ class EventSectionState extends State<EventSection> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     if (events != null) {
-      return Column(
-        children: <Widget>[
-          Container(
-              padding: EdgeInsets.only(
-                  top: SizeConfig.blockSizeVertical * 1,
-                  left: SizeConfig.blockSizeHorizontal * 2),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              EventListPage(events)));
-                },
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        "Events",
-                        style: TextStyle(
-                          fontSize: Constants.homePageHeadingsFontSize,
-                        ),
-                      ),
-                      Divider(
-                          endIndent: SizeConfig.blockSizeHorizontal * 60,
-                          color: Colors.black87,
-                          height: SizeConfig.blockSizeVertical)
-                    ]),
-              )),
-          Container(
-              padding: EdgeInsets.only(
-                  left: SizeConfig.blockSizeHorizontal * 1,
-                  right: SizeConfig.blockSizeHorizontal * 1),
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.30,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      color: Constants.mainBackgroundColor,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.65,
-                      child: Card(
-                          color: Constants.mainBackgroundColor,
-                          child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            SingleEventPageViewHandler()
-                                                .getViewAccordingToEventType(
-                                                events[index])));
-                              },
-                              child: Stack(
-                                fit: StackFit.passthrough,
-                                children: <Widget>[
-                                  Opacity(
-                                      opacity: 0.6,
-                                      child: CachedNetworkImage(
+      return Container(
+          padding: EdgeInsets.only(
+            top: SizeConfig.blockSizeVertical * 1,
+            bottom: SizeConfig.blockSizeVertical * 1,
+          ),
+          color: Constants.titleBarBackgroundColor,
+          child: Column(
+            children: <Widget>[
+              Container(
+                  padding:
+                      EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 1),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  EventListPage(events)));
+                    },
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Events",
+                            style: TextStyle(
+                              fontSize: Constants.homePageHeadingsFontSize,
+                            ),
+                          ),
+                          Divider(
+                              endIndent: SizeConfig.blockSizeHorizontal * 60,
+                              color: Colors.black87,
+                              height: SizeConfig.blockSizeVertical)
+                        ]),
+                  )),
+              Container(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: events.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          child: Card(
+                              shape: RoundedRectangleBorder(),
+                              elevation: 2,
+                              child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                SingleEventPageViewHandler()
+                                                    .getViewAccordingToEventType(
+                                                        events[index])));
+                                  },
+                                  child: Stack(
+                                    fit: StackFit.passthrough,
+                                    children: <Widget>[
+                                      CachedNetworkImage(
+                                        colorBlendMode: BlendMode.luminosity,
                                         fit: BoxFit.cover,
                                         imageUrl: events[index].blurUrl,
-                                      )),
-                                  Align(
-                                      alignment: Alignment.center,
-                                      child: Text(events[index].name,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 20))),
-                                  Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Container(
-                                          padding: EdgeInsets.only(
-                                              bottom:
-                                              SizeConfig.blockSizeVertical,
-                                              right:
-                                              SizeConfig.blockSizeHorizontal *
-                                                  2),
-                                          child: Text(events[index].type,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 13)))),
-                                ],
-                              ))),
-                    );
-                  }))
-        ],
-      );
-    }else{
+                                      ),
+                                      Align(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Container(
+                                              padding: EdgeInsets.only(
+                                                  bottom: SizeConfig
+                                                      .blockSizeVertical,
+                                                  left: SizeConfig
+                                                          .blockSizeHorizontal *
+                                                      2),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(events[index].name,
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          fontSize: 15)),
+                                                  Text(events[index].type,
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 12))
+                                                ],
+                                              ))),
+                                    ],
+                                  ))),
+                        );
+                      }))
+            ],
+          ));
+    } else {
       return Text("No events as such");
     }
   }

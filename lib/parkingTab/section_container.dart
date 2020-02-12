@@ -1,8 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-
-import 'package:else_app_two/auth/auth.dart';
-import 'package:else_app_two/auth/auth_provider.dart';
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
 import 'package:else_app_two/models/sensor_model.dart';
 import 'package:else_app_two/parkingTab/section_a_parking.dart';

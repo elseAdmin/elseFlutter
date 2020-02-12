@@ -19,12 +19,13 @@ class _DealSectionState extends State<DealSection> {
   @override
   void initState() {
     super.initState();
-    DatabaseManager.dealsFound=dealsFound;
+    DatabaseManager.dealsFound = dealsFound;
     deals = DatabaseManager.deals;
   }
-  dealsFound(List<DealModel> foundDeals){
+
+  dealsFound(List<DealModel> foundDeals) {
     setState(() {
-      deals=foundDeals;
+      deals = foundDeals;
     });
   }
 
@@ -32,88 +33,105 @@ class _DealSectionState extends State<DealSection> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     // TODO: implement build
-    if(deals!=null){
-    return Column(
-      children: <Widget>[
-        Container(
-            padding: EdgeInsets.only(
-                top: SizeConfig.blockSizeVertical * 1,
-                left: SizeConfig.blockSizeHorizontal * 2),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            DealListPage(deals)));
-              },
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Deals",
-                      style: TextStyle(
-                        fontSize: Constants.homePageHeadingsFontSize,
-                      ),
-                    ),
-                    Divider(
-                        endIndent: SizeConfig.blockSizeHorizontal * 60,
-                        color: Colors.black87,
-                        height: SizeConfig.blockSizeVertical)
-                  ]),
-            )),
-        Container(
-            padding: EdgeInsets.only(
-                left: SizeConfig.blockSizeHorizontal * 1,
-                right: SizeConfig.blockSizeHorizontal * 1),
-            height: MediaQuery.of(context).size.height * 0.22,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: deals.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                      width: MediaQuery.of(context).size.width * 0.50,
-                      child: Card(
-                        child: GestureDetector(
-                          onTap:  () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        DealsDetails(deals[index], deals[index].tnc.toList(), deals[index].details.toList())));
-                          },
-                          child: Stack(
-                            fit: StackFit.passthrough,
-                            children: <Widget>[
-                              Opacity(
-                                opacity: 0.4,
-                                child:CachedNetworkImage(
-                                  fit: BoxFit.cover,
-                                  imageUrl: deals[index].blurUrl,
+    if (deals != null) {
+      return Container(
+          color: Constants.titleBarBackgroundColor,
+          padding: EdgeInsets.only(
+            top: SizeConfig.blockSizeVertical * 1,
+            bottom: SizeConfig.blockSizeVertical * 1,
+          ),
+          child: Column(
+            children: <Widget>[
+              Container(
+                  padding:
+                      EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 1),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  DealListPage(deals)));
+                    },
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            "Deals",
+                            style: TextStyle(
+                              fontSize: Constants.homePageHeadingsFontSize,
+                            ),
+                          ),
+                          Divider(
+                              endIndent: SizeConfig.blockSizeHorizontal * 60,
+                              color: Colors.black87,
+                              height: SizeConfig.blockSizeVertical)
+                        ]),
+                  )),
+              Container(
+                  height: MediaQuery.of(context).size.height * 0.20,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: deals.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                            width: MediaQuery.of(context).size.width * 0.50,
+                            child: Card(
+                              elevation: 2,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              DealsDetails(
+                                                  deals[index],
+                                                  deals[index].tnc.toList(),
+                                                  deals[index]
+                                                      .details
+                                                      .toList())));
+                                },
+                                child: Stack(
+                                  fit: StackFit.passthrough,
+                                  children: <Widget>[
+                                    CachedNetworkImage(
+                                      colorBlendMode: BlendMode.luminosity,
+                                      fit: BoxFit.cover,
+                                      imageUrl: deals[index].blurUrl,
 //                                    height: MediaQuery.of(context).size.height * 0.15,
+                                    ),
+                                    Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Container(
+                                            padding: EdgeInsets.only(
+                                                bottom: SizeConfig
+                                                    .blockSizeVertical,
+                                                left: SizeConfig
+                                                    .blockSizeHorizontal *
+                                                    2),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(deals[index].shortDetails,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                        FontWeight.w800,
+                                                        fontSize: 15)),
+                                              ],
+                                            )))
+                                  ],
                                 ),
                               ),
-                              Card(
-                                margin: EdgeInsets.all(0.0),
-                                color: Colors.transparent,
-                                child: Center(
-                                  child:  Text(deals[index].shortDetails,
-                                      style: TextStyle(
-                                          color: Constants.mainBackgroundColor,
-                                          fontWeight: FontWeight.w800,
-                                          fontSize: 16)),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ));
-                }))
-      ],
-    );
-  }else{
+                            ));
+                      }))
+            ],
+          ));
+    } else {
       return Text("No deals as such");
     }
   }
-
 }

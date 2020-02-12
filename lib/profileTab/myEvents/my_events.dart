@@ -19,14 +19,16 @@ class MyEventState extends State<MyEvents> {
     super.initState();
     details = DatabaseManager.myEvents;
   }
+
   Future<Null> _handleRefresh() async {
-   DatabaseManager().getAllEventsForUser(true).then((myEvents){
-     setState(() {
-       details=myEvents;
-     });
-   });
+    DatabaseManager().getAllEventsForUser(true).then((myEvents) {
+      setState(() {
+        details = myEvents;
+      });
+    });
     return null;
   }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -36,14 +38,14 @@ class MyEventState extends State<MyEvents> {
           child: Scaffold(
               backgroundColor: Constants.mainBackgroundColor,
               appBar: AppBar(
-                backgroundColor: Constants.titleBarBackgroundColor,
+                backgroundColor: Colors.white,
                 iconTheme: IconThemeData(
-                  color: Constants.textColor, //change your color here
+                  color: Constants.navBarButton, //change your color here
                 ),
                 title: Text(
                   "My Events",
                   style: TextStyle(
-                    color: Constants.titleBarTextColor,
+                    color: Constants.navBarButton,
                     fontSize: 18,
                   ),
                 ),
@@ -53,14 +55,14 @@ class MyEventState extends State<MyEvents> {
     return Scaffold(
         backgroundColor: Constants.mainBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Constants.titleBarBackgroundColor,
+          backgroundColor: Colors.white,
           iconTheme: IconThemeData(
-            color: Constants.textColor, //change your color here
+            color: Constants.navBarButton, //change your color here
           ),
           title: Text(
             "My Events",
             style: TextStyle(
-              color: Constants.titleBarTextColor,
+              color: Constants.navBarButton,
               fontSize: 18,
             ),
           ),

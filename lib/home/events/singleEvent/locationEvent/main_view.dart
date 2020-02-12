@@ -42,13 +42,24 @@ class LocationEventScreenState extends State<LocationEventScreen> {
         onRefresh: _handleRefresh,
         child: Scaffold(
           body: Container(
-            color: Constants.mainBackgroundColor,
+            color: Colors.white,
             child: CustomScrollView(
               slivers: <Widget>[
                 SliverAppBar(
+                  backgroundColor: Constants.titleBarBackgroundColor,
                   expandedHeight: SizeConfig.blockSizeVertical * 30,
                   floating: false,
                   pinned: true,
+                  actions: <Widget>[
+                    new IconButton(
+                      icon: new Icon(
+                        Icons.close,
+                        size: 27,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(context),
+                    ),
+                  ],
+                  leading: Container(),
                   flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
                       title: Text(widget.event.name,
@@ -56,14 +67,13 @@ class LocationEventScreenState extends State<LocationEventScreen> {
                             color: Colors.white,
                             fontSize: 18.0,
                           )),
-                      background: Opacity(
-                          opacity: 0.6,
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            imageUrl: widget.event.url,
-                          ))),
+                      background: CachedNetworkImage(
+                        colorBlendMode: BlendMode.luminosity,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        imageUrl: widget.event.url,
+                      )),
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(

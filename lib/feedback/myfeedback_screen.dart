@@ -48,17 +48,19 @@ class MyFeedbackPageState extends State<MyFeedbackPage> {
           onRefresh: _handleRefresh,
           child: Scaffold(
               appBar: AppBar(
-                iconTheme: IconThemeData(color: Constants.textColor),
+                iconTheme: IconThemeData(color: Constants.navBarButton),
                 backgroundColor: Constants.titleBarBackgroundColor,
                 title: Text(
                   "Feedbacks",
                   style: TextStyle(
-                    color: Constants.titleBarTextColor,
+                    color: Constants.navBarButton,
                     fontSize: 18,
                   ),
                 ),
               ),
               floatingActionButton: FloatingActionButton(
+                elevation: 10,
+                backgroundColor: Constants.navBarButton,
                 child: Icon(Icons.add),
                 onPressed: () {
                   Navigator.push(
@@ -100,6 +102,8 @@ class MyFeedbackPageState extends State<MyFeedbackPage> {
                 ),
               ),
               floatingActionButton: FloatingActionButton(
+                elevation: 10,
+                backgroundColor: Constants.navBarButton,
                 child: Icon(Icons.add),
                 onPressed: () {
                   Navigator.push(
