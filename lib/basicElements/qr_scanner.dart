@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 
 class QrScanner extends StatefulWidget{
+  final VoidCallback outParking;
+  QrScanner(this.outParking);
+
   @override
   createState() => QrScannerState();
 }
@@ -13,6 +16,11 @@ class QrScanner extends StatefulWidget{
 class QrScannerState extends State<QrScanner>{
   String barcodeString = '';
   Uint8List bytes = Uint8List(200);
+
+  void _outParking(){
+    widget.outParking();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (!Constants.hasScannedForParking) {
@@ -32,7 +40,7 @@ class QrScannerState extends State<QrScanner>{
       );
     }else{
       //barcode is now scanned
-      return ParkingUIScreen(null);
+      return ParkingUIScreen(null, _outParking);
     }
   }
   Future _scan() async {

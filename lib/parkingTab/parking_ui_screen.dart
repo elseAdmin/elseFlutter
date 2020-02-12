@@ -1,4 +1,6 @@
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/navigationBarScreens/home_screen.dart';
+import 'package:else_app_two/navigationBarScreens/parking_screen.dart';
 import 'package:else_app_two/parkingTab/section_container.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
@@ -11,7 +13,8 @@ import 'models/user_parking_model.dart';
 
 class ParkingUIScreen extends StatefulWidget {
   final ParkingModel parkingModel;
-  ParkingUIScreen(this.parkingModel);
+  final VoidCallback outParking;
+  ParkingUIScreen(this.parkingModel, this.outParking);
 
   @override
   _ParkingUIScreen createState() => _ParkingUIScreen();
@@ -27,6 +30,14 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
   String _selectedLocation = 'Level 0';
   bool _isUserParked = false;
   ParkingModel parking;
+
+  void _outParking(){
+//    Navigator.pop(context);
+    setState(() {
+      parking = ParkingModel(null);
+    });
+    widget.outParking();
+  }
 
   @override
   void initState() {
@@ -125,20 +136,17 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
         ),
       ),
       body: SlidingUpPanel(
-            backdropEnabled: true,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18.0),
-                topRight: Radius.circular(18.0)),
-            collapsed: collapsedPanelData(),
-            panel: slidingPanelData(),
-            body: Container(
-              color: Colors.white,
-              alignment: AlignmentDirectional(0.0, 0.0),
-              child: Container(
-                margin: new EdgeInsets.all(10.0),
-                child: SectionContainer(_parkedVehicle),
-              ),
-            ),
+        backdropEnabled: true,
+        minHeight: 80.0,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
+        collapsed: collapsedPanelData(),
+        panel: slidingPanelData(),
+        body: Container(
+          color: Colors.white,
+          alignment: AlignmentDirectional(0.0, 0.0),
+          child: Container(
+            margin: new EdgeInsets.all(10.0),
+            child: SectionContainer(_parkedVehicle, _outParking),
           ),
     );
   }

@@ -16,7 +16,8 @@ typedef BoolCallback = void Function(bool);
 
 class SectionContainer extends StatefulWidget{
   final BoolCallback onParkedVehicle;
-  SectionContainer(this.onParkedVehicle);
+  final VoidCallback outParking;
+  SectionContainer(this.onParkedVehicle, this.outParking);
 
   @override
   _SectionContainer createState() => _SectionContainer();
@@ -24,7 +25,7 @@ class SectionContainer extends StatefulWidget{
 
 class _SectionContainer extends State<SectionContainer>{
   int zoomFactor = 1;
-  String currentUser;
+  String currentUser = '';
 
   ScrollController _horizontalController, _verticalController;
   double _windowWidth, _windowHeight;
@@ -56,6 +57,7 @@ class _SectionContainer extends State<SectionContainer>{
       if(sensorModelMap[sensor].userUid == StartupData.user.id){
         userMap[sensor] = true;
         widget.onParkedVehicle(true);
+        currentUser = sensorModelMap[sensor].userUid;
       }
       sensorStream.add(sensor);
     }
@@ -77,11 +79,16 @@ class _SectionContainer extends State<SectionContainer>{
     setState(() {
       if(changeData){
         _sensorModelMap[sensorModel.name] = sensorModel;
-        if(sensorModel.userUid == StartupData.user.id){
+        if(sensorModel.value == 1 && sensorModel.userUid == StartupData.user.id){
           //when parking is stamped for user, do not mark more parking visit.
           Constants.parkingEligibleUser=false;
           _userMap[sensorModel.name] = true;
+          currentUser = _sensorModelMap[sensorModel.name].userUid;
           widget.onParkedVehicle(true);
+        } else if (sensorModel.value == 0 && sensorModel.userUid == currentUser){
+          currentUser = '';
+          _userMap[sensorModel.name] = false;
+          widget.outParking();
         } else{
           _userMap[sensorModel.name] = false;
         }

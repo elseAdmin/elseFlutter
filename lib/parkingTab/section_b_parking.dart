@@ -37,9 +37,9 @@ class _SectionBParking extends State<SectionBParking>{
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  ParkingSlot(1, 'A4', widget.factor, 3, false),
-                  ParkingSlot(1, 'A5', widget.factor, 3, false),
-                  ParkingSlot(1, 'A6', widget.factor, 3, false),
+                  ParkingSlot(widget._sensorModelMap['sensor5'].value, widget._sensorModelMap['sensor5'].slot, widget.factor, 3, widget._userMap['sensor5']),
+                  ParkingSlot(widget._sensorModelMap['sensor6'].value, widget._sensorModelMap['sensor6'].slot, widget.factor, 3, widget._userMap['sensor6']),
+                  ParkingSlot(widget._sensorModelMap['sensor7'].value, widget._sensorModelMap['sensor7'].slot, widget.factor, 3, widget._userMap['sensor7']),
                 ],
               ),
               Container(
@@ -64,7 +64,7 @@ class _SectionBParking extends State<SectionBParking>{
           ),
           Row(
             children: <Widget>[
-              ParkingSlot(1, 'A7', widget.factor, 3, false),
+              ParkingSlot(widget._sensorModelMap['sensor8'].value, widget._sensorModelMap['sensor8'].slot, widget.factor, 3, widget._userMap['sensor8']),
               paddingRightData(),
               ParkingSlot(0, 'B7', widget.factor, 1, false),
               ParkingSlot(0, 'D7', widget.factor, 3, false),
