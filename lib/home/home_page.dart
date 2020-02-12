@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:else_app_two/basicElements/BleOffScreen.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
 import 'package:else_app_two/beaconAds/AdScreen.dart';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
@@ -7,6 +10,7 @@ import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -16,17 +20,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  FlutterBlue _flutterBlue = FlutterBlue.instance;
+
   final logger = Logger();
   int bottomNavIndex = 0;
   BottomNavigatorViewHandler handler = new BottomNavigatorViewHandler();
   BeaconServiceImpl beaconService;
   String _appTitle = Constants.universe;
-
-  @override
-  dispose() {
-    logger.i("app killed");
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -37,7 +37,28 @@ class _MyHomePageState extends State<MyHomePage> {
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    logger.i("did depe called");
+    StreamBuilder<BluetoothState>(
+        stream: FlutterBlue.instance.state,
+        initialData: BluetoothState.unknown,
+        builder: (c, snapshot) {
+          logger.i("inside builder");
+          final state = snapshot.data;
+          if (state != BluetoothState.on) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (BuildContext context) => BleOffDialog());
+          }
+          return null;
+        });
+  }
+
   Future<dynamic> _handleMethod(MethodCall call) async {
+    BluetoothState.unknown;
     switch (call.method) {
       case "beaconFound":
         await _postBeaconFound(call.arguments);
