@@ -135,22 +135,22 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
             ),
           ),
         ),
-        body: SlidingUpPanel(
-            backdropEnabled: true,
-            minHeight: 80.0,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18.0),
-                topRight: Radius.circular(18.0)),
-            collapsed: collapsedPanelData(),
-            panel: slidingPanelData(),
-            body: Container(
-              color: Colors.white,
-              alignment: AlignmentDirectional(0.0, 0.0),
-              child: Container(
-                margin: new EdgeInsets.all(10.0),
-                child: SectionContainer(_parkedVehicle, _outParking),
-              ),
-            )));
+      body: SlidingUpPanel(
+        backdropEnabled: true,
+        minHeight: 80.0,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
+        collapsed: collapsedPanelData(),
+        panel: slidingPanelData(),
+        body: Container(
+          color: Colors.white,
+          alignment: AlignmentDirectional(0.0, 0.0),
+          child: Container(
+            margin: new EdgeInsets.all(10.0),
+            child: SectionContainer(_parkedVehicle, _outParking),
+          ),
+        )
+      )
+    );
   }
 
   Widget collapsedPanelData() {
