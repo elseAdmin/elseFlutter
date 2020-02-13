@@ -31,7 +31,7 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
   bool _isUserParked = false;
   ParkingModel parking;
 
-  void _outParking(){
+  void _outParking() {
 //    Navigator.pop(context);
     setState(() {
       parking = ParkingModel(null);
@@ -66,89 +66,91 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        textTheme: Typography.blackMountainView,
-        title: Container(
-          margin: EdgeInsets.all(0.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              DropdownButton(
-                hint: Text('Level 0'), // Not necessary for Option 1
-                value: _selectedLocation,
-                //TODO floor has been fixed as we don't have many floor map
-                /*onChanged: (newValue) {
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          textTheme: Typography.blackMountainView,
+          title: Container(
+            margin: EdgeInsets.all(0.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                DropdownButton(
+                  hint: Text('Level 0'), // Not necessary for Option 1
+                  value: _selectedLocation,
+                  //TODO floor has been fixed as we don't have many floor map
+                  /*onChanged: (newValue) {
                   setState(() {
                     _selectedLocation = newValue;
                   });
                 },*/
-                items: _floorLevel.map((location) {
-                  return DropdownMenuItem(
-                    child: new Text(location),
-                    value: location,
-                  );
-                }).toList(),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        height: 16.0,
-                        width: 16.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white70,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1.0,
+                  items: _floorLevel.map((location) {
+                    return DropdownMenuItem(
+                      child: new Text(location),
+                      value: location,
+                    );
+                  }).toList(),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          height: 16.0,
+                          width: 16.0,
+                          decoration: BoxDecoration(
+                            color: Colors.white70,
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1.0,
+                            ),
                           ),
+                          margin: EdgeInsets.only(right: 10.0, top: 5.0),
                         ),
-                        margin: EdgeInsets.only(right: 10.0, top: 5.0),
-                      ),
-                      Text('Empty '),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        height: 16.0,
-                        width: 16.0,
-                        decoration: BoxDecoration(
-                          color: Colors.deepOrange[200],
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1.0,
+                        Text('Empty '),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          height: 16.0,
+                          width: 16.0,
+                          decoration: BoxDecoration(
+                            color: Colors.deepOrange[200],
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1.0,
+                            ),
                           ),
+                          margin: EdgeInsets.only(right: 10.0, top: 5.0),
                         ),
-                        margin: EdgeInsets.only(right: 10.0, top: 5.0),
-                      ),
-                      Text('Filled '),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                        Text('Filled '),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      body: SlidingUpPanel(
-        backdropEnabled: true,
-        minHeight: 80.0,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        collapsed: collapsedPanelData(),
-        panel: slidingPanelData(),
-        body: Container(
-          color: Colors.white,
-          alignment: AlignmentDirectional(0.0, 0.0),
-          child: Container(
-            margin: new EdgeInsets.all(10.0),
-            child: SectionContainer(_parkedVehicle, _outParking),
-          ),
-    );
+        body: SlidingUpPanel(
+            backdropEnabled: true,
+            minHeight: 80.0,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(18.0),
+                topRight: Radius.circular(18.0)),
+            collapsed: collapsedPanelData(),
+            panel: slidingPanelData(),
+            body: Container(
+              color: Colors.white,
+              alignment: AlignmentDirectional(0.0, 0.0),
+              child: Container(
+                margin: new EdgeInsets.all(10.0),
+                child: SectionContainer(_parkedVehicle, _outParking),
+              ),
+            )));
   }
 
   Widget collapsedPanelData() {
