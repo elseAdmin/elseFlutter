@@ -346,7 +346,8 @@ class DatabaseManager {
     return feedBack;
   }
 
-  getReviewRatingForStore(String storeName,Function(double,String) callback) async {
+  getReviewRatingForStore(
+      String storeName, Function(double, String) callback) async {
     double rating;
     String review;
     await store
@@ -373,7 +374,7 @@ class DatabaseManager {
         review = doc.data['review'];
       });
     });
-    callback(rating,review);
+    callback(rating, review);
   }
 
   refreshEventsAndDeals(Function() onRefresh) async {
@@ -399,28 +400,43 @@ class DatabaseManager {
 
   saveUserRatingForStore(String storeName, double rating) async {
     await store
-        .collection(Constants.universe)
+        .collection(StartupData.dbreference)
         .document("store")
-        .collection("rating")
+        .collection(storeName)
         .add({
       "rating": rating,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
       "userUid": StartupData.user.id,
-      "storeName": storeName
     });
+    await store
+        .collection(StartupData.dbreference)
+        .document("store")
+        .collection(storeName)
+        .document("avg")
+        .setData(<String, dynamic>{
+      'count': FieldValue.increment(1),
+      'totalValue': FieldValue.increment(rating)
+    }, merge: true);
   }
 
   void saveUserReviewForStore(String storeName, String userReview) async {
     await store
-        .collection(Constants.universe)
+        .collection(StartupData.dbreference)
         .document("store")
-        .collection("review")
+        .collection(storeName)
         .add({
       "review": userReview,
       "timestamp": DateTime.now().millisecondsSinceEpoch,
-      "userUid": StartupData.user.id,
-      "storeName": storeName
+      "userUid": StartupData.user.id
     });
+    await store
+        .collection(StartupData.dbreference)
+        .document("store")
+        .collection(storeName)
+        .document("avg")
+        .setData(<String, dynamic>{
+      'count': FieldValue.increment(1),
+    }, merge: true);
   }
 
   Future getAllFeedbacksForUser() async {
@@ -599,8 +615,7 @@ class DatabaseManager {
         .add({"timestamp": DateTime.now().millisecondsSinceEpoch});
   }
 
-  markUserVisitForParkingBeacon(
-      String major, String minor, String rssi) async {
+  markUserVisitForParkingBeacon(String major, String minor, String rssi) async {
     await store
         .collection(StartupData.dbreference)
         .document("beacons")

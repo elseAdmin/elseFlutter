@@ -40,7 +40,7 @@ class OnlineEventScreenState extends State<OnlineEventScreen> {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                backgroundColor: Constants.titleBarBackgroundColor,
+                backgroundColor: Constants.navBarButton,
                 expandedHeight: SizeConfig.blockSizeVertical * 30,
                 floating: false,
                 pinned: true,

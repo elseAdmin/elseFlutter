@@ -19,19 +19,29 @@ class VendorDetails extends StatelessWidget {
         child: CustomScrollView(
           slivers: <Widget>[
             SliverAppBar(
+              backgroundColor: Constants.titleBarBackgroundColor,
               expandedHeight: SizeConfig.blockSizeVertical * 25,
               floating: false,
               pinned: true,
+              actions: <Widget>[
+                new IconButton(
+                  icon: new Icon(
+                    Icons.close,
+                    size: 27,
+                    color: Constants.navBarButton,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(context),
+                ),
+              ],
+              leading: Container(),
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  background: Opacity(
-                      opacity: 0.6,
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(),
-                        imageUrl: _shopModel.imageUrl,
-                      ))),
+                  background: CachedNetworkImage(
+                    colorBlendMode: BlendMode.luminosity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl: _shopModel.imageUrl,
+                  )),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
@@ -42,11 +52,10 @@ class VendorDetails extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 20,
                               color: Constants.textColor,
-                              fontWeight: FontWeight.w900)),
+                              fontWeight: FontWeight.w500)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          paddingData(),
                           paddingData(),
                           Text('${_shopModel.about}',
                               style: TextStyle(
@@ -63,10 +72,11 @@ class VendorDetails extends StatelessWidget {
                           style: TextStyle(
                               fontSize: 20,
                               color: Constants.textColor,
-                              fontWeight: FontWeight.w600)),
+                              fontWeight: FontWeight.w500)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+                          paddingData(),
                           richTextData("Shop No", _shopModel.shopNo),
                           richTextData("Floor", _shopModel.floor.toString()),
                           richTextData(

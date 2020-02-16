@@ -10,8 +10,7 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: TextFormField(
+    return TextFormField(
         decoration: const InputDecoration(
           labelText: 'Search for category or brand',
         ),
@@ -22,7 +21,7 @@ class SearchScreen extends StatelessWidget {
               delegate:
                   VendorSearch(_indexShopMap.keys.toList(), _indexShopMap));
         },
-      ),
-    );
+      )
+    ;
   }
 }
