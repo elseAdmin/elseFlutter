@@ -19,8 +19,8 @@ class PastSubmissionView extends StatelessWidget {
         child: (Column(
           children: <Widget>[
             Container(
-                width: SizeConfig.blockSizeHorizontal * 80,
-                height: SizeConfig.blockSizeVertical * 28,
+                width: SizeConfig.blockSizeHorizontal * 89,
+                height: SizeConfig.blockSizeVertical * 27,
                 child: CachedNetworkImage(
                   fit: BoxFit.cover,
                   imageUrl: imageUrl,

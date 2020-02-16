@@ -111,7 +111,7 @@ class _SectionContainer extends State<SectionContainer>{
           curve: Curves.linear);
       _horizontalController.animateTo(_windowWidth * 1, duration: Duration(milliseconds: 500),
           curve: Curves.linear);
-      zoomFactor = 2;
+      zoomFactor = 1;
     }
     else {
       double height = _windowHeight * (sectionValue/2);
@@ -120,7 +120,7 @@ class _SectionContainer extends State<SectionContainer>{
           curve: Curves.linear);
       _horizontalController.animateTo(_windowWidth * 0, duration: Duration(milliseconds: 500),
           curve: Curves.linear);
-      zoomFactor = 2;
+      zoomFactor = 1;
     }
     setState(() {
 

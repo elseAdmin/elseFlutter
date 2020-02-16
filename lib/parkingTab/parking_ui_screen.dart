@@ -30,9 +30,10 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
   ]; // Option 2
   String _selectedLocation = 'Level 0';
   bool _isUserParked = false;
+  bool _isScanned = true;
   ParkingModel parking;
 
-  void _outParking(){
+  void _outParking() {
 //    Navigator.pop(context);
     setState(() {
       parking = ParkingModel(null);
@@ -48,6 +49,9 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
       isUserParked = true;
     } else {
       isUserParked = false;
+    }
+    if(Constants.hasScannedForParking){
+      _isScanned = true;
     }
     setState(() {
       _isUserParked = isUserParked;
@@ -65,97 +69,104 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
   }
 
   _redirectToQRScan(){
-    return QrScanner(_outParking);
+    setState(() {
+      _isScanned = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        textTheme: Typography.blackMountainView,
-        title: SizedBox(
+    if(_isScanned){
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            textTheme: Typography.blackMountainView,
+            title: SizedBox(
 //          margin: EdgeInsets.all(0.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              DropdownButton(
-                hint: Text('Level 0'), // Not necessary for Option 1
-                value: _selectedLocation,
-                //TODO floor has been fixed as we don't have many floor map
-                /*onChanged: (newValue) {
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  DropdownButton(
+                    hint: Text('Level 0'), // Not necessary for Option 1
+                    value: _selectedLocation,
+                    //TODO floor has been fixed as we don't have many floor map
+                    /*onChanged: (newValue) {
                   setState(() {
                     _selectedLocation = newValue;
                   });
                 },*/
-                items: _floorLevel.map((location) {
-                  return DropdownMenuItem(
-                    child: new Text(location),
-                    value: location,
-                  );
-                }).toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    height: 16.0,
-                    width: 16.0,
-                    decoration: BoxDecoration(
-                      color: Constants.vacantSpace,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1.0,
+                    items: _floorLevel.map((location) {
+                      return DropdownMenuItem(
+                        child: new Text(location),
+                        value: location,
+                      );
+                    }).toList(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        height: 16.0,
+                        width: 16.0,
+                        decoration: BoxDecoration(
+                          color: Constants.vacantSpace,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
                       ),
+                      Text(' Empty '),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        height: 16.0,
+                        width: 16.0,
+                        decoration: BoxDecoration(
+                          color: Constants.parkedVehicle,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      Text(' Filled '),
+                    ],
+                  ),
+                  FlatButton(
+                    onPressed: Constants.inRangeForParking && !Constants.hasScannedForParking ? _redirectToQRScan : null,
+                    child: Text(
+                      'SCAN',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
                   ),
-                  Text(' Empty '),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    height: 16.0,
-                    width: 16.0,
-                    decoration: BoxDecoration(
-                      color: Constants.parkedVehicle,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                  Text(' Filled '),
-                ],
-              ),
-              FlatButton(
-                onPressed: Constants.inRangeForParking ? _redirectToQRScan : null,
-                child: Text(
-                  'SCAN',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+          ),
+          body: SlidingUpPanel(
+              backdropEnabled: true,
+              minHeight: 80.0,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
+              collapsed: collapsedPanelData(),
+              panel: slidingPanelData(),
+              body: Container(
+                color: Colors.white,
+                alignment: AlignmentDirectional(0.0, 0.0),
+                child: Container(
+                  margin: new EdgeInsets.all(10.0),
+                  child: SectionContainer(_parkedVehicle, _outParking),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SlidingUpPanel(
-        backdropEnabled: true,
-        minHeight: 80.0,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
-        collapsed: collapsedPanelData(),
-        panel: slidingPanelData(),
-        body: Container(
-          color: Colors.white,
-          alignment: AlignmentDirectional(0.0, 0.0),
-          child: Container(
-            margin: new EdgeInsets.all(10.0),
-            child: SectionContainer(_parkedVehicle, _outParking),
-          ),
-        )
-      )
-    );
+              )
+          )
+      );
+    } else {
+      return QrScanner(_outParking);
+    }
+
   }
 
   Widget collapsedPanelData() {

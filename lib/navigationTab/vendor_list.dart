@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/navigationTab/vendor_details.dart';
 import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
 class VendorList extends StatefulWidget {
@@ -12,23 +13,20 @@ class VendorList extends StatefulWidget {
   VendorList(this._indexShopMap, this.listKey);
 
   _VendorList createState() => _VendorList();
-
 }
 
-class _VendorList extends State<VendorList>{
-
+class _VendorList extends State<VendorList> {
   List<ShopModel> _shopModelList = new List();
 
-  List<ShopModel> getShopModelList(String key){
-    if(key.isEmpty){
+  List<ShopModel> getShopModelList(String key) {
+    if (key.isEmpty) {
       Set<ShopModel> shopModelSet = new Set();
-      for(Set<ShopModel> setShop in widget._indexShopMap.values){
+      for (Set<ShopModel> setShop in widget._indexShopMap.values) {
         shopModelSet.addAll(setShop);
       }
       return shopModelSet.toList();
-    }
-    else{
-      if(widget._indexShopMap[key] == null){
+    } else {
+      if (widget._indexShopMap[key] == null) {
         return List();
       }
       return widget._indexShopMap[key].toList();
@@ -48,63 +46,52 @@ class _VendorList extends State<VendorList>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
         backgroundColor: Constants.titleBarBackgroundColor,
         iconTheme: IconThemeData(
-          color: Constants.textColor, //change your color here
+          color: Constants.navBarButton, //change your color here
         ),
-        title: Text(widget.listKey.toUpperCase(),
+        title: Text(
+          widget.listKey.toUpperCase(),
           style: TextStyle(
-            color: Constants.titleBarTextColor,
+            color: Constants.navBarButton,
             fontSize: 18,
           ),
         ),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height * 0.9,
-        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical),
         child: GridView.builder(
             itemCount: _shopModelList.length,
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3),
-            itemBuilder: (BuildContext context, int index){
+            itemBuilder: (BuildContext context, int index) {
               return Card(
-                color: Constants.mainBackgroundColor,
+                elevation: 2,
                 child: GestureDetector(
                   onTap: () {
-                    return Navigator.push(context,
+                    return Navigator.push(
+                      context,
                       MaterialPageRoute(
-                        builder: (context) => VendorDetails(_shopModelList[index]),
+                        builder: (context) =>
+                            VendorDetails(_shopModelList[index]),
                       ),
                     );
                   },
                   child: Stack(
                     fit: StackFit.passthrough,
                     children: <Widget>[
-                      Opacity(
-                        opacity: 0.8,
-                        child: CachedNetworkImage(
-                          fit: BoxFit.fill,
-                          imageUrl: _shopModelList[index].imageUrl,
-                        ),
-                      ),
-                      Card(
-                        margin: EdgeInsets.all(0.0),
-                        color: Colors.transparent,
-                        child: Center(
-                          child:  Text(_shopModelList[index].name,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 18)),
-                        ),
+                      CachedNetworkImage(
+                        fit: BoxFit.fill,
+                        colorBlendMode: BlendMode.luminosity,
+                        imageUrl: _shopModelList[index].imageUrl,
                       ),
                     ],
                   ),
                 ),
               );
-            }
-        ),
+            }),
       ),
     );
   }

@@ -36,7 +36,7 @@ class AllSubmissionWidgetState extends State<AllSubmissionWidget> {
               color: Constants.mainBackgroundColor,
               child: CustomScrollView(slivers: <Widget>[
                 SliverAppBar(
-                  backgroundColor: Constants.mainBackgroundColor,
+                  backgroundColor: Constants.navBarButton,
                   expandedHeight: SizeConfig.blockSizeVertical * 10,
                   floating: false,
                   pinned: true,

@@ -58,12 +58,14 @@ class CategoryGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
-          left: SizeConfig.blockSizeHorizontal * 1,
-          right: SizeConfig.blockSizeHorizontal * 1,
-          bottom: SizeConfig.blockSizeVertical * 20),
-      height: MediaQuery.of(context).size.height * 0.9,
+      color: Constants.mainBackgroundColor,
       child: GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          padding: EdgeInsets.only(
+              left: SizeConfig.blockSizeHorizontal * 1,
+              right: SizeConfig.blockSizeHorizontal * 1,
+              bottom: SizeConfig.blockSizeVertical * 10),
           itemCount: categoryList.length,
           gridDelegate:
               new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
@@ -83,23 +85,24 @@ class CategoryGrid extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.passthrough,
                   children: <Widget>[
-                    Opacity(
-                      opacity: 0.5,
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: imageUrls[index],
-                      ),
+                    CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: imageUrls[index],
                     ),
                     Card(
                       margin: EdgeInsets.all(0.0),
                       color: Colors.transparent,
-                      child: Center(
-                        child: Text(categoryList[index],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 18)),
-                      ),
+                      child: Container(
+                          padding: EdgeInsets.only(
+                              left: SizeConfig.blockSizeHorizontal),
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(categoryList[index],
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 20)),
+                          )),
                     ),
                   ],
                 ),

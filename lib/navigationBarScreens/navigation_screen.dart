@@ -2,9 +2,10 @@ import 'dart:collection';
 
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
+import 'package:else_app_two/navigationTab/category_grid.dart';
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
-import 'package:else_app_two/navigationTab/category_screen.dart';
-import 'package:else_app_two/navigationTab/search_screen.dart';
+import 'package:else_app_two/navigationTab/vendor_search.dart';
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
 class NavigationScreen extends StatefulWidget {
@@ -38,13 +39,39 @@ class NavigationScreenState extends State<NavigationScreen> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
         onRefresh: _handleRefresh,
-        child: ListView(
+        child: Scaffold(
+          backgroundColor: Constants.mainBackgroundColor,
+          floatingActionButton: FloatingActionButton(
+            elevation: 10,
+            backgroundColor: Constants.navBarButton,
+            child: Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                  context: context,
+                  delegate:
+                      VendorSearch(_indexShopMap.keys.toList(), _indexShopMap));
+            },
+          ),
+          body: Container(
+              child: ListView(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  //SearchScreen(_indexShopMap),
+                  CategoryGrid(_indexShopMap),
+                ],
+              )
+            ],
+          )),
+        ));
+  }
+}
+/*
+ListView(
           children: <Widget> [Column(
             children: <Widget>[
               SearchScreen(_indexShopMap),
               CategoryScreen(_indexShopMap),
             ],
           )],
-        ));
-  }
-}
+        )*/

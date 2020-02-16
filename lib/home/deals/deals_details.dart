@@ -30,15 +30,21 @@ class _DealsDetails extends State<DealsDetails>{
               expandedHeight: SizeConfig.blockSizeVertical * 25,
               floating: false,
               pinned: true,
+              actions: <Widget>[
+                new IconButton(
+                  icon: new Icon(Icons.close,size: 27,),
+                  onPressed: () => Navigator.of(context).pop(context),
+                ),
+              ],
+              leading: Container(),
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  background:Opacity(
-                      opacity: 0.6,
-                      child:  CachedNetworkImage(
+                  background: CachedNetworkImage(
+                    colorBlendMode: BlendMode.luminosity,
                     fit: BoxFit.cover,
                     placeholder: (context, url) => CircularProgressIndicator(),
                     imageUrl: widget.deals.url,
-                  ))),
+                  )),
             ),
             SliverList(
               delegate: SliverChildListDelegate(
