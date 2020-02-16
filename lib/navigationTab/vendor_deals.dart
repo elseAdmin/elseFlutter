@@ -36,7 +36,7 @@ class VendorDealSectionState extends State<VendorDealSection> {
           child: ListTile(
             title: Text(
               'Deals',
-              style: TextStyle(fontSize: 17),
+              style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600),
             ),
               subtitle: ListView(
                   physics: NeverScrollableScrollPhysics(),

@@ -57,6 +57,7 @@ class _SectionContainer extends State<SectionContainer>{
       if(sensorModelMap[sensor].userUid == StartupData.user.id){
         userMap[sensor] = true;
         widget.onParkedVehicle(true);
+        Constants.parkingEligibleUser=false;
         currentUser = sensorModelMap[sensor].userUid;
       }
       sensorStream.add(sensor);

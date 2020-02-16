@@ -1,3 +1,4 @@
+import 'package:else_app_two/basicElements/qr_scanner.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/navigationBarScreens/home_screen.dart';
 import 'package:else_app_two/navigationBarScreens/parking_screen.dart';
@@ -63,16 +64,20 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
     });
   }
 
+  _redirectToQRScan(){
+    return QrScanner(_outParking);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         textTheme: Typography.blackMountainView,
-        title: Container(
-          margin: EdgeInsets.all(0.0),
+        title: SizedBox(
+//          margin: EdgeInsets.all(0.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               DropdownButton(
                 hint: Text('Level 0'), // Not necessary for Option 1
@@ -90,46 +95,46 @@ class _ParkingUIScreen extends State<ParkingUIScreen> {
                   );
                 }).toList(),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        height: 16.0,
-                        width: 16.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white70,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1.0,
-                          ),
-                        ),
-                        margin: EdgeInsets.only(right: 10.0, top: 5.0),
+                  Container(
+                    height: 16.0,
+                    width: 16.0,
+                    decoration: BoxDecoration(
+                      color: Constants.vacantSpace,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1.0,
                       ),
-                      Text('Empty '),
-                    ],
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        height: 16.0,
-                        width: 16.0,
-                        decoration: BoxDecoration(
-                          color: Colors.deepOrange[200],
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1.0,
-                          ),
-                        ),
-                        margin: EdgeInsets.only(right: 10.0, top: 5.0),
-                      ),
-                      Text('Filled '),
-                    ],
-                  ),
+                  Text(' Empty '),
                 ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    height: 16.0,
+                    width: 16.0,
+                    decoration: BoxDecoration(
+                      color: Constants.parkedVehicle,
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                  Text(' Filled '),
+                ],
+              ),
+              FlatButton(
+                onPressed: Constants.inRangeForParking ? _redirectToQRScan : null,
+                child: Text(
+                  'SCAN',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
               ),
             ],
           ),

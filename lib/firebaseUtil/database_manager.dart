@@ -73,6 +73,15 @@ class DatabaseManager {
     return user;
   }
 
+  getAllUniverseConfiguration() async {
+    await getMetaConfDBRef().once()
+        .then((snapshot){
+      if(snapshot.value.length != 0){
+        StartupData.parkingBeaconIntervalInMillis = snapshot.value['parkingBeaconIntervalMillis'];
+      }
+    });
+  }
+
   getAllShops(bool refresh, FireBaseApi fireBaseApi) async {
     if (indexShopMap == null || refresh) {
       indexShopMap = HashMap();
@@ -1103,6 +1112,10 @@ class DatabaseManager {
 
   DatabaseReference getShopsDBRef() {
     return baseDatabase.child('shopStaticData');
+  }
+
+  DatabaseReference getMetaConfDBRef() {
+    return baseDatabase.child("metaConf");
   }
 
   DatabaseReference getBaseDBRef() {

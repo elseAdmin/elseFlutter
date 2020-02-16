@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 
 class Constants {
@@ -24,9 +26,14 @@ class Constants {
    //below have to go into mysql, how and who will set these back to false logically?
    static bool parkingEligibleUser = false;
    static bool hasScannedForParking = false;
+   static bool inRangeForParking = false;
+   static Color parkedVehicle = Colors.deepOrange[200];
+   static Color vacantSpace = Colors.white70;
 
    static int parkingLevel=-1;
    static int section=-1;
 
-  static String universeDisplayName = "Else";
+   static String universeDisplayName = "Else";
+
+   static Map beaconTimeStampMap = new HashMap<String, int>();
 }

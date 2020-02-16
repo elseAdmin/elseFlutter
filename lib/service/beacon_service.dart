@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/utils/Contants.dart';
+import 'package:else_app_two/utils/app_startup_data.dart';
 import 'package:else_app_two/utils/sql_lite.dart';
 import 'package:logger/logger.dart';
 import 'package:synchronized/synchronized.dart';
@@ -81,9 +82,29 @@ class BeaconServiceImpl {
     return false;
   }
 
+  bool parkingBeaconTimePassVisit(time){
+    if(DateTime.now().millisecondsSinceEpoch - time >
+        StartupData.parkingBeaconIntervalInMillis) {
+      return true;
+    }
+    return false;
+  }
+
   postHandlingForParkingBeacons(String major, String minor, String rssi) async {
+    Constants.inRangeForParking = true;
     if(Constants.parkingEligibleUser){
-      db.markUserVisitForParkingBeacon(major, minor,rssi);
+      bool parkingBeaconCheck = true;
+      if(Constants.beaconTimeStampMap.containsKey(major+minor)){
+        int previousTimeStamp = Constants.beaconTimeStampMap[major+minor];
+        if (!parkingBeaconTimePassVisit(previousTimeStamp)){
+          parkingBeaconCheck = false;
+        }
+      }
+      if(parkingBeaconCheck){
+        db.markUserVisitForParkingBeacon(major, minor,rssi);
+        Constants.beaconTimeStampMap[major+minor] =
+            DateTime.now().millisecondsSinceEpoch;
+      }
 
       Constants.parkingLevel = int.parse(major[0]);
       // TODO @Suhail add callback here on the basis of logic

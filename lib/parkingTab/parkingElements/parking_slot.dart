@@ -1,3 +1,4 @@
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
 class ParkingSlot extends StatefulWidget{
@@ -25,9 +26,9 @@ class _ParkingSlot extends State<ParkingSlot>{
       return Colors.green;
     }
     if(colorValue == 0){
-      return Colors.white70;
+      return Constants.vacantSpace;
     }
-    return Colors.deepOrange[200];
+    return Constants.parkedVehicle;
   }
 
 

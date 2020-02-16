@@ -63,8 +63,12 @@ class ParkingState extends State<Parking> {
             padding: EdgeInsets.only(top: SizeConfig.blockSizeVertical * 2),
             child: BallProgressIndicator());
       } else if (parking.sensorName == null) {
+        if(Constants.inRangeForParking) {
+          return ParkingUIScreen(null, _outParking);
+        }
         return QrScanner(_outParking);
-      } else {
+      }
+      else {
         return ParkingUIScreen(parking, _outParking);
       }
     } else {
