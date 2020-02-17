@@ -77,7 +77,7 @@ class HomeScreenState extends State<HomeScreen> {
             EventSection(),
             Container(
               height: SizeConfig.blockSizeVertical,
-              color: Constants.titleBarBackgroundColor,
+              color: Constants.mainBackgroundColor,
             ),
             DealSection(),
           ],

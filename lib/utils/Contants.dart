@@ -6,7 +6,8 @@ class Constants {
    static Color mainBackgroundColor = Colors.grey[100];
    static Color titleBarBackgroundColor =Colors.white;
    static Color dividerColor = Colors.grey[500];
-
+   static double appbarTitleSize = 26;
+   static const double editTextSize=19;
    static final Color navBarButton =Color.fromRGBO(7, 51, 159, 1.0);
    static Color titleBarTextColor = Colors.white;
    static Color horizontalListBackgroundColor = Colors.grey[0];
@@ -16,7 +17,7 @@ class Constants {
    static Color test = Colors.grey[600];
 
 
-   static double homePageHeadingsFontSize=18;
+   static double homePageHeadingsFontSize=20;
 
 
    static String pendingStatusMessage = "Your submssion is pending approval";

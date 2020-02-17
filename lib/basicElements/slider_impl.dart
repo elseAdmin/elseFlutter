@@ -1,3 +1,4 @@
+import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
 
 class SliderImpl extends StatefulWidget{
@@ -30,8 +31,8 @@ class SliderImplState extends State<SliderImpl>{
         });
           widget.callback(selectedValue);
       },
-      activeColor: Colors.blue,
-      inactiveColor: Colors.black45,
+      activeColor: Constants.navBarButton,
+      inactiveColor: Colors.blue,
       label: selectedValue.toString(),
     );
   }
