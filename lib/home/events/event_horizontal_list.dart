@@ -44,6 +44,7 @@ class EventSectionState extends State<EventSection> {
           ),
           color: Constants.titleBarBackgroundColor,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
                   padding:
@@ -56,20 +57,12 @@ class EventSectionState extends State<EventSection> {
                               builder: (BuildContext context) =>
                                   EventListPage(events)));
                     },
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "Events",
-                            style: TextStyle(
-                              fontSize: Constants.homePageHeadingsFontSize,
-                            ),
-                          ),
-                          Divider(
-                              endIndent: SizeConfig.blockSizeHorizontal * 60,
-                              color: Colors.black87,
-                              height: SizeConfig.blockSizeVertical)
-                        ]),
+                    child: Text(
+                      "Events",
+                      style: TextStyle(
+                        fontSize: Constants.homePageHeadingsFontSize,
+                      ),
+                    ),
                   )),
               Container(
                   height: MediaQuery.of(context).size.height * 0.25,

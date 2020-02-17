@@ -39,66 +39,6 @@ class RequestPageState extends State<RequestsPage> {
     }
   }
 
-  void _popContext(BuildContext context) {
-    Navigator.pop(context);
-  }
-
-  void _addRequest(
-      BuildContext context, String name, String phone, String message) async {
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => LoadingDialog());
-    Request request = new Request(phone, name, message, _userIdController.text);
-    String requestFuture = await requestCrudModel.addRequest(request);
-    if (requestFuture != null) {
-      await DatabaseManager().saveUserRequest(requestFuture);
-      //closes the loading dialog box
-      Navigator.of(context, rootNavigator: true).pop();
-
-      showModalBottomSheet(
-          isDismissible: false,
-          context: context,
-          builder: (context) {
-            return getModal();
-          });
-    }
-  }
-
-  Widget getModal() {
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-              padding: EdgeInsets.all(SizeConfig.blockSizeVertical),
-              child: Text(
-                "Request placed",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22),
-              )),
-          Container(
-              padding: EdgeInsets.only(
-                  right: SizeConfig.blockSizeVertical,
-                  left: SizeConfig.blockSizeVertical),
-              child: Text(
-                  "We have received your request, you will be served shortly. Our team might contact you on the given Phone number to serve you in the best manner.  ")),
-          FlatButton(
-            padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 2),
-            onPressed: () {
-              Navigator.pop(context);
-              _popContext(context);
-            },
-            child: Text(
-              'Ok',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +52,7 @@ class RequestPageState extends State<RequestsPage> {
           "Request",
           style: TextStyle(
             color: Constants.navBarButton,
-            fontSize: 26,
+            fontSize: Constants.appbarTitleSize,
           ),
         ),
       ),
@@ -144,7 +84,7 @@ class RequestPageState extends State<RequestsPage> {
                     TextFormField(
                       decoration: const InputDecoration(
                           labelText: 'Name',
-                          labelStyle: TextStyle(fontSize: 19),
+                          labelStyle: TextStyle(fontSize: Constants.editTextSize),
                           icon: Icon(Icons.account_circle)),
                       controller: _nameController,
                       keyboardType: TextInputType.text,
@@ -232,6 +172,66 @@ class RequestPageState extends State<RequestsPage> {
                   ),
                 ),
               ))
+        ],
+      ),
+    );
+  }
+
+  void _popContext(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void _addRequest(
+      BuildContext context, String name, String phone, String message) async {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) => LoadingDialog());
+    Request request = new Request(phone, name, message, _userIdController.text);
+    String requestFuture = await requestCrudModel.addRequest(request);
+    if (requestFuture != null) {
+      await DatabaseManager().saveUserRequest(requestFuture);
+      //closes the loading dialog box
+      Navigator.of(context, rootNavigator: true).pop();
+
+      showModalBottomSheet(
+          isDismissible: false,
+          context: context,
+          builder: (context) {
+            return getModal();
+          });
+    }
+  }
+
+  Widget getModal() {
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.all(SizeConfig.blockSizeVertical),
+              child: Text(
+                "Request placed",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 22),
+              )),
+          Container(
+              padding: EdgeInsets.only(
+                  right: SizeConfig.blockSizeVertical,
+                  left: SizeConfig.blockSizeVertical),
+              child: Text(
+                  "We have received your request, you will be served shortly. Our team might contact you on the given Phone number to serve you in the best manner.  ")),
+          FlatButton(
+            padding: EdgeInsets.only(bottom: SizeConfig.blockSizeVertical * 2),
+            onPressed: () {
+              Navigator.pop(context);
+              _popContext(context);
+            },
+            child: Text(
+              'Ok',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+            ),
+          )
         ],
       ),
     );

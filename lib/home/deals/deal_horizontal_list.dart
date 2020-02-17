@@ -41,6 +41,7 @@ class _DealSectionState extends State<DealSection> {
             bottom: SizeConfig.blockSizeVertical * 1,
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
                   padding:
@@ -53,20 +54,12 @@ class _DealSectionState extends State<DealSection> {
                               builder: (BuildContext context) =>
                                   DealListPage(deals)));
                     },
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            "Deals",
-                            style: TextStyle(
-                              fontSize: Constants.homePageHeadingsFontSize,
-                            ),
-                          ),
-                          Divider(
-                              endIndent: SizeConfig.blockSizeHorizontal * 60,
-                              color: Colors.black87,
-                              height: SizeConfig.blockSizeVertical)
-                        ]),
+                    child: Text(
+                      "Deals",
+                      style: TextStyle(
+                        fontSize: Constants.homePageHeadingsFontSize,
+                      ),
+                    ),
                   )),
               Container(
                   height: MediaQuery.of(context).size.height * 0.20,
@@ -107,19 +100,19 @@ class _DealSectionState extends State<DealSection> {
                                                 bottom: SizeConfig
                                                     .blockSizeVertical,
                                                 left: SizeConfig
-                                                    .blockSizeHorizontal *
+                                                        .blockSizeHorizontal *
                                                     2),
                                             child: Column(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                                  MainAxisAlignment.end,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 Text(deals[index].shortDetails,
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontWeight:
-                                                        FontWeight.w800,
+                                                            FontWeight.w800,
                                                         fontSize: 15)),
                                               ],
                                             )))

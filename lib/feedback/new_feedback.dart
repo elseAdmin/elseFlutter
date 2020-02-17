@@ -143,53 +143,68 @@ class _NewFeedBack extends State<NewFeedBack> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        backgroundColor: Constants.mainBackgroundColor,
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Constants.navBarButton),
-          backgroundColor: Colors.white,
-          title: Text(
-            "New Feedback",
-            style: TextStyle(
-              color: Constants.navBarButton,
-              fontSize: 18,
-            ),
+      backgroundColor: Constants.mainBackgroundColor,
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Constants.navBarButton),
+        backgroundColor: Colors.white,
+        title: Text(
+          "Feedback",
+          style: TextStyle(
+            color: Constants.navBarButton,
+            fontSize: Constants.appbarTitleSize,
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          elevation: 10,
-          backgroundColor: Constants.navBarButton,
-          child: Icon(Icons.send),
-          onPressed: _submit,
-        ),
-        body: Container(
-          padding: EdgeInsets.all(SizeConfig.blockSizeVertical),
-          child: Form(
-            key: _formKey,
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+      floatingActionButton: FloatingActionButton(
+        elevation: 10,
+        backgroundColor: Constants.navBarButton,
+        child: Icon(Icons.send),
+        onPressed: _submit,
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(children: <Widget>[
+          Card(
+              elevation: 2,
+              margin: EdgeInsets.all(SizeConfig.blockSizeHorizontal * 1.5),
+              child: Column(
                 children: <Widget>[
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Subject'),
-                    controller: _subjectController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter Name';
-                      }
-                      return null;
-                    },
-                  ),
                   Container(
-                      padding:
-                          EdgeInsets.only(top: SizeConfig.blockSizeVertical),
-                      child: Text(
-                        "Emotion",
-                        style: TextStyle(fontSize: 15),
+                      padding: EdgeInsets.only(
+                          right: SizeConfig.blockSizeHorizontal * 3,
+                          left: SizeConfig.blockSizeHorizontal * 3),
+                      child: TextFormField(
+                        maxLength: 150,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        decoration: const InputDecoration(
+                          labelText: 'Subject',
+                          labelStyle:
+                              TextStyle(fontSize: Constants.editTextSize),
+                        ),
+                        controller: _subjectController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter a subject';
+                          }
+                          return null;
+                        },
                       )),
+                  Container(
+                      padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 3),
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Emotion",
+                            style: TextStyle(fontSize: Constants.editTextSize),
+                          ))),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       Row(children: <Widget>[
                         Radio(
+                            activeColor: Constants.navBarButton,
                             value: true,
                             groupValue: _typeOfFeedBack,
                             onChanged: (bool newValue) {
@@ -202,6 +217,7 @@ class _NewFeedBack extends State<NewFeedBack> {
                       Row(
                         children: <Widget>[
                           Radio(
+                              activeColor: Constants.navBarButton,
                               value: false,
                               groupValue: _typeOfFeedBack,
                               onChanged: (bool newValue) {
@@ -214,35 +230,78 @@ class _NewFeedBack extends State<NewFeedBack> {
                       )
                     ],
                   ),
-                  Text("Intensity", style: TextStyle(fontSize: 15)),
-                  SliderImpl(this.setUserRating, 0),
-                  TextFormField(
-                    maxLines: 8,
-                    decoration: const InputDecoration(labelText: 'Content'),
-                    controller: _contentController,
-                    keyboardType: TextInputType.text,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                  ),
-                  Text("Upload Image"),
-                  CameraImpl(onImageSelectedFromCamera),
                   Container(
-                    height: MediaQuery.of(context).size.height / 8,
-                    width: MediaQuery.of(context).size.height / 4,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: imageUrls.length,
-                        itemBuilder: (context, index) {
-                          return imageCard(index);
-                        }),
-                  ),
-                ]),
+                      padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 3),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("Intensity",
+                            style: TextStyle(fontSize: Constants.editTextSize)),
+                      )),
+                  SliderImpl(this.setUserRating, 0),
+                ],
+              )),
+          Card(
+            elevation: 2,
+            margin: EdgeInsets.only(
+                bottom: SizeConfig.blockSizeHorizontal * 1.5,
+                left: SizeConfig.blockSizeHorizontal * 1.5,
+                right: SizeConfig.blockSizeHorizontal * 1.5),
+            child: Column(
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.only(
+                      right: SizeConfig.blockSizeHorizontal * 3,
+                      left: SizeConfig.blockSizeHorizontal * 3,
+                      bottom: SizeConfig.blockSizeHorizontal * 3,
+                    ),
+                    child: TextFormField(
+                      maxLength: 500,
+                      maxLines: null,
+                      decoration: const InputDecoration(
+                        labelText: 'Content',
+                        labelStyle: TextStyle(fontSize: Constants.editTextSize),
+                      ),
+                      controller: _contentController,
+                      keyboardType: TextInputType.multiline,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                        padding: EdgeInsets.only(
+                            left: SizeConfig.blockSizeHorizontal * 3,
+                            bottom: SizeConfig.blockSizeVertical),
+                        child: Text("Upload Image",style: TextStyle(fontSize: Constants.editTextSize),)),
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: SizeConfig.blockSizeHorizontal * 3,
+                          right: SizeConfig.blockSizeHorizontal * 3,
+                          bottom: SizeConfig.blockSizeVertical),
+                      child: CameraImpl(onImageSelectedFromCamera))
+                  ],
+                ),
+              ],
+            ),
           ),
-        ));
+          GridView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
+              itemCount: imageUrls.length,
+              itemBuilder: (context, index) {
+                return imageCard(index);
+              }),
+        ]),
+      ),
+    );
   }
 
   _submit() async {
@@ -278,6 +337,7 @@ class _NewFeedBack extends State<NewFeedBack> {
       children: <Widget>[
         Card(
           child: Image(
+            fit: BoxFit.fill,
             image: NetworkImage('${imageUrls[index]}'),
           ),
         ),
@@ -285,8 +345,6 @@ class _NewFeedBack extends State<NewFeedBack> {
           right: 0.0,
           top: 0.0,
           child: Container(
-            height: 20.0, // height of the button
-            width: 20.0,
             decoration: new BoxDecoration(
               shape: BoxShape
                   .circle, // You can use like this way or like the below line
@@ -298,7 +356,6 @@ class _NewFeedBack extends State<NewFeedBack> {
             ),
             child: Center(
               child: IconButton(
-                padding: EdgeInsets.all(0.0),
                 iconSize: 18.0,
                 color: Colors.black,
                 icon: Icon(Icons.close),
