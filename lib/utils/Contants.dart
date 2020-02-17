@@ -7,7 +7,7 @@ class Constants {
    static Color titleBarBackgroundColor =Colors.white;
    static Color dividerColor = Colors.grey[500];
 
-   static Color navBarButton =Color.fromRGBO(7, 51, 159, 1.0);
+   static final Color navBarButton =Color.fromRGBO(7, 51, 159, 1.0);
    static Color titleBarTextColor = Colors.white;
    static Color horizontalListBackgroundColor = Colors.grey[0];
 
@@ -34,4 +34,6 @@ class Constants {
    static int section=-1;
 
    static Map beaconTimeStampMap = new HashMap<String, int>();
+
+   static List requestExampleList = List();
 }
