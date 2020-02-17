@@ -16,21 +16,22 @@ class BootstrapState extends State<Bootstrap> {
   @override
   void initState() {
     super.initState();
-
-    Constants constants = new Constants();
+    //initializing Class variables
+     Constants constants = new Constants();
 
     FirebaseNotifications().setUpFirebase();
 
-    FireBaseApi _fireBaseApi = FireBaseApi("shopStaticData");
+    FireBaseApi shopPath = FireBaseApi("shopStaticData");
     _userRelatedStuff().then((user) {
       if (user != null) {
         DatabaseManager().getAllActivityOfUser(true);
         DatabaseManager().getAllEventsForUser(true);
         DatabaseManager().getFeedbacksByUser(true);
       }
+      DatabaseManager().getRequestMeta();
       DatabaseManager().getAllActiveEvents(true);
       DatabaseManager().getAllActiveDeals(true);
-      DatabaseManager().getAllShops(true, _fireBaseApi);
+      DatabaseManager().getAllShops(true, shopPath);
       DatabaseManager().getAllUniverseConfiguration();
     });
     var _duration = new Duration(milliseconds: 2200);
@@ -59,7 +60,7 @@ class BootstrapState extends State<Bootstrap> {
           children: <Widget>[
             Text(
               "Else",
-              style: TextStyle(fontSize: 40),
+              style: TextStyle(fontSize: 42),
             ),
             Container(
               padding: EdgeInsets.only(

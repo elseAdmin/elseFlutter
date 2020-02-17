@@ -82,6 +82,12 @@ class DatabaseManager {
     });
   }
 
+  getRequestMeta() async {
+    FireBaseApi requestMetaPath = FireBaseApi("requestsStaticData/requestsExamples");
+    var results = await requestMetaPath.getDataSnapshot();
+    Constants.requestExampleList = results.value.toList();
+  }
+
   getAllShops(bool refresh, FireBaseApi fireBaseApi) async {
     if (indexShopMap == null || refresh) {
       indexShopMap = HashMap();

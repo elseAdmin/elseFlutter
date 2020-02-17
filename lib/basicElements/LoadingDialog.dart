@@ -1,3 +1,4 @@
+import 'package:else_app_two/basicElements/BallProgressIndicator.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,10 @@ class LoadingDialog extends StatelessWidget {
     // TODO: implement build
 
     return SimpleDialog(
-        elevation: 20,
         children: <Widget>[
           Container(
-              height: SizeConfig.blockSizeVertical * 30,
-              width: SizeConfig.blockSizeHorizontal * 60,
-              child: CircularProgressIndicator())
+              height: SizeConfig.blockSizeVertical * 20,
+              child: BallProgressIndicator())
         ]);
   }
 }
