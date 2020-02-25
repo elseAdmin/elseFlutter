@@ -190,6 +190,7 @@ class RequestPageState extends State<RequestsPage> {
     Request request = new Request(phone, name, message, _userIdController.text);
     String requestFuture = await requestCrudModel.addRequest(request);
     if (requestFuture != null) {
+
       await DatabaseManager().saveUserRequest(requestFuture);
       //closes the loading dialog box
       Navigator.of(context, rootNavigator: true).pop();

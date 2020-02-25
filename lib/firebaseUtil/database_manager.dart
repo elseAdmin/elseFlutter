@@ -74,16 +74,17 @@ class DatabaseManager {
   }
 
   getAllUniverseConfiguration() async {
-    await getMetaConfDBRef().once()
-        .then((snapshot){
-      if(snapshot.value.length != 0){
-        StartupData.parkingBeaconIntervalInMillis = snapshot.value['parkingBeaconIntervalMillis'];
+    await getMetaConfDBRef().once().then((snapshot) {
+      if (snapshot.value.length != 0) {
+        StartupData.parkingBeaconIntervalInMillis =
+            snapshot.value['parkingBeaconIntervalMillis'];
       }
     });
   }
 
   getRequestMeta() async {
-    FireBaseApi requestMetaPath = FireBaseApi("requestsStaticData/requestsExamples");
+    FireBaseApi requestMetaPath =
+        FireBaseApi("requestsStaticData/requestsExamples");
     var results = await requestMetaPath.getDataSnapshot();
     Constants.requestExampleList = results.value.toList();
   }
@@ -352,6 +353,13 @@ class DatabaseManager {
   }
 
   /// startup data methods  - end
+  incrementFeedbackCount() async {
+    await store
+        .collection(StartupData.dbreference)
+        .document('feedback')
+        .setData(<String, dynamic>{'count': FieldValue.increment(1)},
+            merge: true);
+  }
 
   getUserFeedbackDetails(String path) async {
     FeedBack feedBack;
@@ -625,9 +633,10 @@ class DatabaseManager {
         .collection("monitoring")
         .document(major)
         .collection(minor)
-        .document("user")
-        .collection(StartupData.user.id)
-        .add({"timestamp": DateTime.now().millisecondsSinceEpoch});
+        .add({
+      "userUid": StartupData.user.id,
+      "timestamp": DateTime.now().millisecondsSinceEpoch
+    });
   }
 
   markUserVisitForParkingBeacon(String major, String minor, String rssi) async {
@@ -1073,6 +1082,12 @@ class DatabaseManager {
       "timestamp": DateTime.now().millisecondsSinceEpoch,
       "universe": Constants.universe
     });
+
+    await store
+        .collection(StartupData.dbreference)
+        .document('requests')
+        .setData(<String, dynamic>{'count': FieldValue.increment(1)},
+            merge: true);
   }
 
   Future getRequestsForUser() async {

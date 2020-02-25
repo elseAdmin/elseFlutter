@@ -19,7 +19,7 @@ class Request{
     return{
       "name":name,
       "phoneNumber":phoneNumber,
-      "messsage":message,
+      "message":message,
       "uid":uid,
       "timestamp":DateTime.now().millisecondsSinceEpoch
     };

@@ -1,8 +1,10 @@
+import 'package:else_app_two/basicElements/LoadingDialog.dart';
 import 'package:else_app_two/basicElements/LoginDialog.dart';
 import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/feedback/FeedbackStatus.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
 import 'package:else_app_two/firebaseUtil/storage_manager.dart';
 import 'package:else_app_two/feedback/models/feedback_crud_model.dart';
@@ -86,6 +88,7 @@ class _NewFeedBack extends State<NewFeedBack> {
         DateTime.now().millisecondsSinceEpoch);
 
     String feedBackUrl = await feedbackCrudModel.addFeedBack(feedBack);
+    await DatabaseManager().incrementFeedbackCount();
     if (feedBackUrl != null) {
       UserFeedBack userFeedBack = new UserFeedBack(feedBackUrl);
       await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
@@ -118,7 +121,7 @@ class _NewFeedBack extends State<NewFeedBack> {
               "Feedback Registered",
               textAlign: TextAlign.center,
             ),
-            subtitle: Text("Our team has started working on this......"),
+            subtitle: Text("You kow how much we love to hear from you, thanks for writing to us."),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
@@ -278,13 +281,16 @@ class _NewFeedBack extends State<NewFeedBack> {
                         padding: EdgeInsets.only(
                             left: SizeConfig.blockSizeHorizontal * 3,
                             bottom: SizeConfig.blockSizeVertical),
-                        child: Text("Upload Image",style: TextStyle(fontSize: Constants.editTextSize),)),
+                        child: Text(
+                          "Upload Image",
+                          style: TextStyle(fontSize: Constants.editTextSize),
+                        )),
                     Container(
-                      padding: EdgeInsets.only(
-                          left: SizeConfig.blockSizeHorizontal * 3,
-                          right: SizeConfig.blockSizeHorizontal * 3,
-                          bottom: SizeConfig.blockSizeVertical),
-                      child: CameraImpl(onImageSelectedFromCamera))
+                        padding: EdgeInsets.only(
+                            left: SizeConfig.blockSizeHorizontal * 3,
+                            right: SizeConfig.blockSizeHorizontal * 3,
+                            bottom: SizeConfig.blockSizeVertical),
+                        child: CameraImpl(onImageSelectedFromCamera))
                   ],
                 ),
               ],
@@ -306,13 +312,17 @@ class _NewFeedBack extends State<NewFeedBack> {
 
   _submit() async {
     if (isLoggedIn) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) => LoadingDialog());
       String userId = StartupData.user.id;
       String path = 'users/$userId/feedbacks';
       userFeedBackCrudModel = UserFeedBackCrudModel(new Api(path));
       if (_formKey.currentState.validate()) {
-        print("Inside Data");
         await _addFeedBack(_subjectController.text, _typeOfFeedBack,
             _intensityValue, _contentController.text, imageUrls);
+        Navigator.of(context, rootNavigator: true).pop();
       }
     } else {
       showDialog(
