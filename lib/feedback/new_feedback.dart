@@ -3,6 +3,7 @@ import 'package:else_app_two/basicElements/camera_impl.dart';
 import 'package:else_app_two/basicElements/slider_impl.dart';
 import 'package:else_app_two/feedback/FeedbackStatus.dart';
 import 'package:else_app_two/firebaseUtil/api.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/oauth_manager.dart';
 import 'package:else_app_two/firebaseUtil/storage_manager.dart';
 import 'package:else_app_two/feedback/models/feedback_crud_model.dart';
@@ -86,6 +87,7 @@ class _NewFeedBack extends State<NewFeedBack> {
         DateTime.now().millisecondsSinceEpoch);
 
     String feedBackUrl = await feedbackCrudModel.addFeedBack(feedBack);
+    await DatabaseManager().incrementFeedbackCount();
     if (feedBackUrl != null) {
       UserFeedBack userFeedBack = new UserFeedBack(feedBackUrl);
       await userFeedBackCrudModel.addUserFeedBack(userFeedBack);
