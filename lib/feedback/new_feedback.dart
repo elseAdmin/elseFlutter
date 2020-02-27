@@ -144,7 +144,6 @@ class _NewFeedBack extends State<NewFeedBack> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
@@ -266,13 +265,7 @@ class _NewFeedBack extends State<NewFeedBack> {
                         labelStyle: TextStyle(fontSize: Constants.editTextSize),
                       ),
                       controller: _contentController,
-                      keyboardType: TextInputType.multiline,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
+                      keyboardType: TextInputType.multiline
                     )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

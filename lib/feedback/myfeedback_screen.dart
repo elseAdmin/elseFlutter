@@ -32,10 +32,9 @@ class MyFeedbackPageState extends State<MyFeedbackPage> {
   }
 
   Future<Null> _handleRefresh() async {
-    DatabaseManager().getFeedbacksByUser(true).then((newFeedbacks){
-      setState(() {
-        _feedBackPreviewMap = newFeedbacks;
-      });
+    List newFeedbacks = await DatabaseManager().getFeedbacksByUser(true);
+    setState(() {
+      _feedBackPreviewMap = newFeedbacks;
     });
     return null;
   }
