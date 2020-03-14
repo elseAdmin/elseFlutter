@@ -1,4 +1,4 @@
-import 'package:else_app_two/basicElements/bootstrap_screen.dart';
+import 'package:else_app_two/bootstrap_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'auth/auth.dart';

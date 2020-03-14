@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -13,6 +12,8 @@ class BeaconServiceImpl {
   Function(AdBeacon) adScreenCallback;
   Map<String, int> visitMap = HashMap();
   Map<String, AdBeacon> adMap = HashMap();
+  var lock = new Lock();
+
   BeaconServiceImpl(Function(AdBeacon) callback) {
     this.adScreenCallback = callback;
     if (db == null) db = DatabaseManager();
@@ -25,7 +26,6 @@ class BeaconServiceImpl {
   }
   int previousSection = -100;
 
-  var lock = new Lock();
   int timeBeforeMarkingNextVisit = 120000; //time is in milisecs;
   DatabaseManager db;
   SqlLiteManager sql;

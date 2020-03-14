@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
 import 'package:else_app_two/beaconAds/AdScreen.dart';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
+import 'package:else_app_two/offPremise/offPremiseScreen.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -26,13 +29,40 @@ class _MyHomePageState extends State<MyHomePage> {
   String _appTitle = Constants.universe;
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+  @override
   void initState() {
+    var isOffPremiseScreenActive = false;
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      Constants.universe="else";
+    });
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      //method of average can be used to cancel the noise in readings
+      if(Constants.universe.compareTo("else")==0){
+        print("else universe");
+        if(!isOffPremiseScreenActive) {
+          isOffPremiseScreenActive = true;
+          Navigator.push(context, MaterialPageRoute(
+              builder: (BuildContext context) => OffPremiseScreen()));
+        }
+      }else if(Constants.universe.compareTo("unityOneRohini")==0){
+        print("unityone");
+        if(isOffPremiseScreenActive){
+          isOffPremiseScreenActive=false;
+          Navigator.pop(context);
+        }
+      }
+    });
     beaconService = BeaconServiceImpl(pushAdScreen);
     super.initState();
     const nativeMessageReceivingChannel =
         const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
   }
+
 
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
@@ -43,12 +73,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _postBeaconFound(arguments) async {
+    determineUniverse(arguments[0]);
     await beaconService.handleBeacon(arguments[1], arguments[2], arguments[3]);
+  }
 
-    if (Constants.universe.compareTo("unityOneRohini") != 0 &&
-        arguments[0].compareTo("00000000-0000-0000-0000-000000000000") == 0) {
+  void determineUniverse(String uuid){
+    if (uuid.compareTo("00000000-0000-0000-0000-000000000000") == 0) {
       Constants.universe = "unityOneRohini";
-      if (_appTitle.compareTo(arguments.toString()) == 0) {
+      if (_appTitle.compareTo(uuid) == 0) {
         //no need to update as previous title has been called
       } else {
         setState(() {

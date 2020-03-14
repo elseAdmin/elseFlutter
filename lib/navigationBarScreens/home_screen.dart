@@ -31,7 +31,26 @@ class HomeScreenState extends State<HomeScreen> {
       refresh = true;
     });
   }
-
+  OverlayEntry _overlayEntry;
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(
+        builder: (context) =>  Material(
+          elevation: 4.0,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            children: <Widget>[
+              ListTile(
+                title: Text('Syria'),
+              ),
+              ListTile(
+                title: Text('Lebanon'),
+              )
+            ],
+          ),
+        )
+    );
+  }
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);

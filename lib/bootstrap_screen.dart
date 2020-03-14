@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
 import 'package:else_app_two/firebaseUtil/firebase_api.dart';
 import 'package:else_app_two/home/home_page.dart';
+import 'package:else_app_two/offPremise/offPremiseScreen.dart';
 import 'package:else_app_two/service/firebase_notifications.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
@@ -16,8 +17,9 @@ class BootstrapState extends State<Bootstrap> {
   @override
   void initState() {
     super.initState();
+
     //initializing Class variables
-     Constants constants = new Constants();
+    Constants constants = new Constants();
 
     FirebaseNotifications().setUpFirebase();
 
@@ -34,7 +36,19 @@ class BootstrapState extends State<Bootstrap> {
       DatabaseManager().getAllShops(true, shopPath);
       DatabaseManager().getAllUniverseConfiguration();
     });
-    var _duration = new Duration(milliseconds: 2200);
+
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      Constants.universe="else";
+    });
+    Timer.periodic(Duration(seconds: 3), (timer) {
+      //method of average can be used to cancel the noise in readings
+      if(Constants.universe.compareTo("else")==0){
+        print("else universe");
+      }else if(Constants.universe.compareTo("unityOneRohini")==0){
+        print("unityone");
+      }
+    });
+    var _duration = new Duration(milliseconds: 2400);
     Timer(_duration, navigationPage);
   }
 
