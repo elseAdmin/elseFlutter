@@ -8,7 +8,7 @@ class OffPremiseScreen extends StatefulWidget {
 class OffPremiseScreenState extends State<OffPremiseScreen> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    print("building off page");
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(

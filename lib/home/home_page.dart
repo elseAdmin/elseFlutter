@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:else_app_two/basicElements/LoadingDialog.dart';
 import 'package:else_app_two/basicElements/bottomNavigationBarItemsList.dart';
 import 'package:else_app_two/beaconAds/AdScreen.dart';
 import 'package:else_app_two/beaconAds/models/ad_beacon_model.dart';
-import 'package:else_app_two/offPremise/offPremiseScreen.dart';
+import 'package:else_app_two/firebaseUtil/database_manager.dart';
+import 'package:else_app_two/firebaseUtil/firebase_api.dart';
+import 'package:else_app_two/multiUniverse/helper.dart';
+import 'package:else_app_two/multiUniverse/offPremiseScreen.dart';
 import 'package:else_app_two/service/beacon_service.dart';
 import 'package:else_app_two/service/bottom_navigator_view_handler.dart';
 import 'package:else_app_two/utils/Contants.dart';
@@ -15,8 +19,7 @@ import 'package:logger/logger.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -24,70 +27,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final logger = Logger();
   int bottomNavIndex = 0;
+  bool dataLoading = true;
   BottomNavigatorViewHandler handler = new BottomNavigatorViewHandler();
-  BeaconServiceImpl beaconService;
-  String _appTitle = Constants.universe;
+
+  @override
+  void initState() {
+    print("init home page");
+    super.initState();
+    DatabaseManager().initialiseUniverseData(dismissLoader);
+  }
+
+  dismissLoader() {
+    //dataLoading = false;
+    //Navigator.of(context, rootNavigator: true).pop();
+  }
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-  }
-  @override
-  void initState() {
-    var isOffPremiseScreenActive = false;
-    Timer.periodic(Duration(seconds: 5), (timer) {
-      Constants.universe="else";
-    });
-    Timer.periodic(Duration(seconds: 3), (timer) {
-      //method of average can be used to cancel the noise in readings
-      if(Constants.universe.compareTo("else")==0){
-        print("else universe");
-        if(!isOffPremiseScreenActive) {
-          isOffPremiseScreenActive = true;
-          Navigator.push(context, MaterialPageRoute(
-              builder: (BuildContext context) => OffPremiseScreen()));
-        }
-      }else if(Constants.universe.compareTo("unityOneRohini")==0){
-        print("unityone");
-        if(isOffPremiseScreenActive){
-          isOffPremiseScreenActive=false;
-          Navigator.pop(context);
-        }
-      }
-    });
-    beaconService = BeaconServiceImpl(pushAdScreen);
-    super.initState();
-    const nativeMessageReceivingChannel =
-        const MethodChannel('com.else.apis.from.native');
-    nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
-  }
-
-
-  Future<dynamic> _handleMethod(MethodCall call) async {
-    switch (call.method) {
-      case "beaconFound":
-        await _postBeaconFound(call.arguments);
-        return new Future.value("");
-    }
-  }
-
-  _postBeaconFound(arguments) async {
-    determineUniverse(arguments[0]);
-    await beaconService.handleBeacon(arguments[1], arguments[2], arguments[3]);
-  }
-
-  void determineUniverse(String uuid){
-    if (uuid.compareTo("00000000-0000-0000-0000-000000000000") == 0) {
-      Constants.universe = "unityOneRohini";
-      if (_appTitle.compareTo(uuid) == 0) {
-        //no need to update as previous title has been called
-      } else {
-        setState(() {
-          _appTitle = Constants.universe;
-        });
-      }
-    }
   }
 
   //invoking native methods from dart code.
@@ -110,21 +67,16 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }*/
 
-  void pushAdScreen(AdBeacon adBeacon) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AdScreen(adBeacon, true));
-  }
-
   @override
   Widget build(BuildContext context) {
+    print("building home page");
     return Scaffold(
       backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
         actions: <Widget>[getIconForBleStatus()],
         backgroundColor: Constants.titleBarBackgroundColor,
         title: Text(
-          _appTitle,
+          Constants.universe,
           style: TextStyle(
             color: Constants.navBarButton,
             fontSize: 18,

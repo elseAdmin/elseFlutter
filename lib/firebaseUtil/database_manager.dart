@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
@@ -35,6 +36,9 @@ class DatabaseManager {
   DatabaseReference baseDatabase, eventDatabase, dealsDatabase;
 
   FirebaseStorage storageRef;
+
+  static Map<String, String> universeUUIDmap = HashMap();
+
   Map<String, List> universeVsParticipatedEvents = HashMap();
   static Map activityTimelineMap;
   static List<EventModel> events;
@@ -58,8 +62,44 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
+  initializeOffPremiseData() async {
+  }
+  getUniversesForElse() async {
+    await store
+        .collection('else')
+        .document('meta')
+        .collection('universe')
+        .getDocuments()
+        .then((snapshot) {
+      snapshot.documents.forEach((doc) {
+        universeUUIDmap.putIfAbsent(doc.data['UUID'], () => doc.data['name']);
+      });
+    });
+  }
 
-  /// startup data methods  - start
+  initialiseUniverseData(Function() callback) async {
+    await initialiseCurrentUser();
+
+    if (StartupData.user != null) {
+      await DatabaseManager().getAllActivityOfUser(true);
+      await DatabaseManager().getAllEventsForUser(true);
+      await DatabaseManager().getFeedbacksByUser(true);
+    }
+    await DatabaseManager().getRequestMeta();
+    await DatabaseManager().getAllActiveEvents(true);
+    await DatabaseManager().getAllActiveDeals(true);
+    await DatabaseManager().getAllShops(true,  FireBaseApi("shopStaticData"));
+    await DatabaseManager().getAllUniverseConfiguration();
+    callback();
+  }
+
+  initializeData(Function() callback) async {
+    await getUniversesForElse();
+    await initializeOffPremiseData();
+    callback();
+  }
+
+  /// Universe data initialization methods  - start
 
   Future initialiseCurrentUser() async {
     final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));

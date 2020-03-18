@@ -29,7 +29,6 @@ class UserCrudModel extends ChangeNotifier{
       return null;
     }
     var doc = await _api.getDocumentById(id);
-    print(doc);
     if(doc.data == null){
       return null;
     }
