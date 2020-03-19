@@ -7,12 +7,84 @@
     [GeneratedPluginRegistrant registerWithRegistry:self];
     
     [self initializeCoreLocationSpecificVariables];
+    [self detectBluetooth];
     [self handleUserPermissionForCoreLocation];
     [self handleBeaconService];
     [self initializeBridgingSpecificVariables];
     [self handleBridgingService];
     
     return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+//- (void)centralManagerDidUpdateState:(CBCentralManager*)aManager
+//{
+//    if( aManager.state == CBManagerStatePoweredOn )
+//    {
+//        //Do what you intend to do
+//        NSLog(@"Bluetooth is powered on");
+//    }
+//    else if( aManager.state == CBManagerStatePoweredOff )
+//    {
+//        //Bluetooth is disabled. ios pops-up an alert automatically
+//        NSLog(@"Bluetooth is off switch to settings for info");
+//    }
+//}
+
+- (void)detectBluetooth
+{
+    if(!self.bluetoothManager)
+    {
+        // Put on main queue so we can call UIAlertView from delegate callbacks.
+        self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
+    }
+    [self centralManagerDidUpdateState:self.bluetoothManager]; // Show initial state
+}
+
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+{
+    NSLog(@"Bluetooth checking");
+    NSString *stateString = nil;
+    if (self.bluetoothManager.state == CBCentralManagerStatePoweredOn) {
+        NSLog(@"Bluetooth is Powered on");
+        stateString = @"Bluetooth is Powered on";
+    } else {
+        NSLog(@"Bluetooth is Powered Off");
+        stateString = @"Bluetooth is Powered off. Power On bluetooth";
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bluetooth state"
+                                                         message:stateString
+                                                        delegate:self
+                                              cancelButtonTitle:@"OK" otherButtonTitles: nil];
+        [alert show];
+    }
+    
+//    switch(self.bluetoothManager.state)
+//    {
+//        case CBCentralManagerStateResetting: stateString = @"The connection with the system service was momentarily lost, update imminent."; break;
+//        case CBCentralManagerStateUnsupported: stateString = @"The platform doesn't support Bluetooth Low Energy."; break;
+//        case CBCentralManagerStateUnauthorized: stateString = @"The app is not authorized to use Bluetooth Low Energy."; break;
+//        case CBCentralManagerStatePoweredOff: stateString = @"Bluetooth is currently powered off."; break;
+//        case CBCentralManagerStatePoweredOn: stateString = @"Bluetooth is currently powered on and available to use."; break;
+//        default: stateString = @"State unknown, update imminent."; break;
+//    }
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bluetooth state"
+//                                                     message:stateString
+//                                                    delegate:nil
+//                                          cancelButtonTitle:@"ok" otherButtonTitles: nil];
+//    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    // the user clicked OK
+    NSLog(@"User clicked ok switch to settings");
+    if (buttonIndex == 0) {
+        // do something here...
+        NSLog(@"Button Pressed");
+        
+        NSURL *url = [NSURL URLWithString:@"App-prefs:root=Bluetooth"];
+        if ([[UIApplication sharedApplication] canOpenURL:url]) {
+            [[UIApplication sharedApplication] openURL:url];
+        }
+    }
 }
 
 - (void)handleBridgingService{

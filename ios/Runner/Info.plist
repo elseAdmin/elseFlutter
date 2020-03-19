@@ -2,20 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSLocalizedDescription</key>
-    <string>dede bhai</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>loc3</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>loc2</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>loc1</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>photo reqrd</string>
-	<key>NSCameraUsageDescription</key>
-	<string>camera access</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>mic access</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -32,10 +18,43 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.872110279011-e8bn8rss9d1ec8hmog6fpdrq07epel70</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>prefs</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>camera access</string>
+	<key>NSLocalizedDescription</key>
+	<string>dede bhai</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>loc1</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>loc2</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>loc3</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>mic access</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>photo reqrd</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -53,18 +72,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <!-- Insert your reversed client ID here -->
-                <string>com.googleusercontent.apps.872110279011-e8bn8rss9d1ec8hmog6fpdrq07epel70</string>
-            </array>
-        </dict>
-    </array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>
