@@ -1,6 +1,7 @@
 package com.example.else_app_two;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -49,9 +50,17 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
         GeneratedPluginRegistrant.registerWith(this);
 
         handleUserPermission();
+        enableBluetooth();
         handleBeaconServices();
         handleBridgingServices();
 
+    }
+
+    private void enableBluetooth() {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            mBluetoothAdapter.enable();
+        }
     }
 
     private void handleBeaconServices(){
