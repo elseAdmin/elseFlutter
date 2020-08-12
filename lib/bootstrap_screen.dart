@@ -21,7 +21,7 @@ class BootstrapState extends State<Bootstrap> {
     Constants constants = new Constants();
     FirebaseNotifications().setUpFirebase();
 
-    DatabaseManager().initializeData(navigationPage);
+    DatabaseManager().initializeDataForElseUniverse(navigationPage);
   }
 
   @override

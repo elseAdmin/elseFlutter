@@ -20,6 +20,7 @@ class UniverseAdapterState extends State<UniverseAdapter> {
   BeaconServiceImpl beaconService;
   bool offPremise = true;
   UniverseHelper helper;
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +30,7 @@ class UniverseAdapterState extends State<UniverseAdapter> {
     const nativeMessageReceivingChannel =
         const MethodChannel('com.else.apis.from.native');
     nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
+
     Timer.periodic(Duration(seconds: 5), (timer) {
       Constants.universe = "else";
     });
@@ -60,6 +62,7 @@ class UniverseAdapterState extends State<UniverseAdapter> {
         offPremise = false;
       });
     }
+
     await beaconService.handleBeacon(arguments[1], arguments[2], arguments[3]);
   }
 

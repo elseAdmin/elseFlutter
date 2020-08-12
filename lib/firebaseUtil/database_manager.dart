@@ -62,8 +62,15 @@ class DatabaseManager {
           FirebaseDatabase.instance.reference().child(StartupData.dbreference);
     }
   }
+
   initializeOffPremiseData() async {
+    if (StartupData.user != null) {
+      await DatabaseManager().getAllActivityOfUser(true);
+      await DatabaseManager().getAllEventsForUser(true);
+      await DatabaseManager().getFeedbacksByUser(true);
+    }
   }
+
   getUniversesForElse() async {
     await store
         .collection('else')
@@ -88,13 +95,15 @@ class DatabaseManager {
     await DatabaseManager().getRequestMeta();
     await DatabaseManager().getAllActiveEvents(true);
     await DatabaseManager().getAllActiveDeals(true);
-    await DatabaseManager().getAllShops(true,  FireBaseApi("shopStaticData"));
+    await DatabaseManager().getAllShops(true, FireBaseApi("shopStaticData"));
     await DatabaseManager().getAllUniverseConfiguration();
     callback();
   }
 
-  initializeData(Function() callback) async {
+  initializeDataForElseUniverse(Function() callback) async {
     await getUniversesForElse();
+    await initialiseCurrentUser();
+    ///@Rishabh do we really need to load off premise data synchronously ? can it be async ?
     await initializeOffPremiseData();
     callback();
   }
@@ -102,15 +111,18 @@ class DatabaseManager {
   /// Universe data initialization methods  - start
 
   Future initialiseCurrentUser() async {
-    final UserCrudModel userProvider = UserCrudModel('users', new Api('users'));
-    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
-    User user;
-    if (firebaseUser != null && firebaseUser.uid != null) {
-      user = await userProvider.getUserById(firebaseUser.uid);
+    if (StartupData.user == null) {
+      final UserCrudModel userProvider =
+          UserCrudModel('users', new Api('users'));
+      final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+      final FirebaseUser firebaseUser = await _firebaseAuth.currentUser();
+      User user;
+      if (firebaseUser != null && firebaseUser.uid != null) {
+        user = await userProvider.getUserById(firebaseUser.uid);
+      }
+      StartupData.user = user;
+      return user;
     }
-    StartupData.user = user;
-    return user;
   }
 
   getAllUniverseConfiguration() async {
