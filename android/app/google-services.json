@@ -8,6 +8,78 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:872110279011:android:3af069983c958d26522b56",
+        "android_client_info": {
+          "package_name": "com.elsesocialdistancing.soDi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872110279011-plf8u5rpc8f03jomher2jsrfurc1m3ni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHtVnR0iCi0yF-jkhuu0FMuESTRKz-SZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872110279011-plf8u5rpc8f03jomher2jsrfurc1m3ni.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "872110279011-as6s717dcv5thn2beqptvc97m5uuhqtv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.elseAdminTwo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:872110279011:android:93c568739ceb93b7522b56",
+        "android_client_info": {
+          "package_name": "com.example.else_admin_two"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "872110279011-plf8u5rpc8f03jomher2jsrfurc1m3ni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHtVnR0iCi0yF-jkhuu0FMuESTRKz-SZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "872110279011-plf8u5rpc8f03jomher2jsrfurc1m3ni.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "872110279011-as6s717dcv5thn2beqptvc97m5uuhqtv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.elseAdminTwo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:872110279011:android:96815c6265bfdd40522b56",
         "android_client_info": {
           "package_name": "com.example.else_app_two"
@@ -32,10 +104,10 @@
               "client_type": 3
             },
             {
-              "client_id": "872110279011-e8bn8rss9d1ec8hmog6fpdrq07epel70.apps.googleusercontent.com",
+              "client_id": "872110279011-as6s717dcv5thn2beqptvc97m5uuhqtv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.elseAppTwo"
+                "bundle_id": "com.example.elseAdminTwo"
               }
             }
           ]

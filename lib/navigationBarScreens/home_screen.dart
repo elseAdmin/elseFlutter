@@ -41,6 +41,22 @@ class HomeScreenState extends State<HomeScreen> {
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
+            TextField(
+              style: TextStyle(fontSize: 25.0),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: Icon(Icons.search),
+                hintText: "Search",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0)
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0)
+                ),
+              ),
+            ),
             GridView.count(
                 primary: true,
                 shrinkWrap: true,
@@ -53,9 +69,10 @@ class HomeScreenState extends State<HomeScreen> {
                       margin: EdgeInsets.all(SizeConfig.blockSizeVertical * 2),
                       child: GestureDetector(
                         child: Container(
+                          decoration: myDecor(),
                             padding: EdgeInsets.only(
                                 bottom: SizeConfig.blockSizeHorizontal),
-                            color: Constants.titleBarBackgroundColor,
+//                            color: Constants.titleBarBackgroundColor,
                             child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -65,7 +82,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     'Polls',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 14,
                                         color: Constants.navBarButton),
                                   )
                                 ])),
@@ -82,6 +99,19 @@ class HomeScreenState extends State<HomeScreen> {
             DealSection(),
           ],
         ));
+  }
+
+  BoxDecoration myDecor() {
+    return BoxDecoration(
+      color: Constants.titleBarBackgroundColor,
+      border: Border.all(
+        color: Constants.navBarButton,
+        width: 1.0,
+      ),
+      borderRadius: BorderRadius.all(
+        Radius.circular(20.0),
+      ),
+    );
   }
 
 }

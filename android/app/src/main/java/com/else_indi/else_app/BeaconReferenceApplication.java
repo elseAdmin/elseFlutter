@@ -1,4 +1,4 @@
-package com.example.else_app_two;
+package com.else_indi.else_app;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

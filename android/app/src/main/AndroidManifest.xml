@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.else_app_two">
+    package="com.else_indi.else_app">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -16,8 +16,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name="com.example.else_app_two.BeaconReferenceApplication"
-        android:label="else_app_two"
+        android:name="com.else_indi.else_app.BeaconReferenceApplication"
+        android:label="Else"
         android:icon="@mipmap/ic_launcher">
         <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>
         <activity
