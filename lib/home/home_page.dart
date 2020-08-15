@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       backgroundColor: Constants.mainBackgroundColor,
       appBar: AppBar(
-        actions: <Widget>[getIconForBleStatus()],
+        //actions: <Widget>[getIconForBleStatus()],
         backgroundColor: Constants.titleBarBackgroundColor,
         title: Text(
           _appTitle,

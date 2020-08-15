@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:else_app_two/basicElements/BleOffScreen.dart';
 import 'package:else_app_two/feedback/new_feedback.dart';
 import 'package:else_app_two/firebaseUtil/database_manager.dart';
@@ -5,6 +7,9 @@ import 'package:else_app_two/home/deals/deal_horizontal_list.dart';
 import 'package:else_app_two/home/events/event_horizontal_list.dart';
 import 'package:else_app_two/home/events/feedback_section.dart';
 import 'package:else_app_two/home/request_section.dart';
+import 'package:else_app_two/navigationBarScreens/navigation_screen.dart';
+import 'package:else_app_two/navigationTab/category_grid.dart';
+import 'package:else_app_two/navigationTab/models/shop_model.dart';
 import 'package:else_app_two/requests/request_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
@@ -24,6 +29,15 @@ class HomeScreenState extends State<HomeScreen> {
   Future<Null> _handleRefresh() async {
     DatabaseManager().refreshEventsAndDeals(onRefresh);
     return null;
+  }
+
+  HashMap<String, Set<ShopModel>> _indexShopMap = new HashMap();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _indexShopMap = DatabaseManager.indexShopMap;
   }
 
   onRefresh() {
@@ -97,6 +111,20 @@ class HomeScreenState extends State<HomeScreen> {
               color: Constants.mainBackgroundColor,
             ),
             DealSection(),
+            Container(
+              height: SizeConfig.blockSizeVertical,
+              color: Constants.mainBackgroundColor,
+            ),
+            Container(
+              padding:
+              EdgeInsets.only(left: SizeConfig.blockSizeHorizontal * 1),
+    child: Text(
+              "Categories",
+              style: TextStyle(
+                fontSize: Constants.homePageHeadingsFontSize,
+              ),
+            )),
+            CategoryGrid(_indexShopMap),
           ],
         ));
   }
