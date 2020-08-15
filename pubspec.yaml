@@ -30,7 +30,6 @@ dependencies:
   loading:
   cached_network_image: ^2.0.0-rc.1
   fluttertoast:
-  barcode_scan:
   sqflite:
   rxdart:
   firebase_crashlytics: ^0.1.2+4

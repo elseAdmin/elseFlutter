@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:else_app_two/parkingTab/parking_ui_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:flutter/material.dart';
-import 'package:barcode_scan/barcode_scan.dart';
+//import 'package:barcode_scan/barcode_scan.dart';
 
 class QrScanner extends StatefulWidget{
   final VoidCallback outParking;
@@ -44,20 +44,21 @@ class QrScannerState extends State<QrScanner>{
     }
   }
   Future _scan() async {
+    /*
     Constants.parkingEligibleUser=true;
     Constants.hasScannedForParking = true;
     try {
-      String barcode = await BarcodeScanner.scan();
+      String barcode = (await BarcodeScanner.scan()) as String;
       setState(() => this.barcodeString = barcode);
     } catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
+      if (e.code == BarcodeScanner.cameraAccessDenied) {
         setState(() {
           this.barcodeString = 'The user did not grant the camera permission!';
         });
       } else {
         setState(() => this.barcodeString = 'Unknown error: $e');
       }
-    }
+    }*/
   }
 }
 

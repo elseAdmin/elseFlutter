@@ -16,10 +16,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name="com.else_indi.else_app.BeaconReferenceApplication"
+        android:name="io.flutter.app.FlutterApplication"
         android:label="Else"
         android:icon="@mipmap/ic_launcher">
-        <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

@@ -24,7 +24,14 @@ class BottomNavigatorViewHandler {
         return home;
         break;
       case 1:
-        myTrace.incrementMetric("nav_explore", 1);
+        myTrace.incrementMetric("nav_profile", 1);
+        return profile;
+        break;
+    }
+  }
+}
+/*
+*     myTrace.incrementMetric("nav_explore", 1);
         return navigation;
         break;
       case 2:
@@ -36,9 +43,4 @@ class BottomNavigatorViewHandler {
         return notification;
         break;
       case 4:
-        myTrace.incrementMetric("nav_profile", 1);
-        return profile;
-        break;
-    }
-  }
-}
+* */

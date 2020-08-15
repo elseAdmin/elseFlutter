@@ -1,32 +1,19 @@
 package com.else_indi.else_app;
 
-import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.RemoteException;
 
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconConsumer;
-import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import io.flutter.app.FlutterActivity;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
-public class MainActivity extends FlutterActivity implements BeaconConsumer {
-    private static final String TAG = "MainActivity";
+public class MainActivity extends FlutterActivity {// implements BeaconConsumer {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        GeneratedPluginRegistrant.registerWith(this);
+
+    }
+  /*  private static final String TAG = "MainActivity";
     private static final int PERMISSION_REQUEST_FINE_LOCATION = 1;
     private static final int PERMISSION_REQUEST_BLUETOOTH = 2;
     private BeaconManager beaconManager = null;
@@ -105,9 +92,7 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
                         beaconMeta.add(beacon.getId3().toString());
                         beaconMeta.add(String.valueOf(beacon.getRssi()));
                         invokingDartMethods.invokeMethod("beaconFound",beaconMeta);
-                        /*if(beacon.getId3().toString().compareTo("5")==0){
-                            Log.i(TAG,"beacon details: id1="+beacon.getId1()+" id2="+beacon.getId2()+" id3="+beacon.getId3()+" rssi="+beacon.getRssi()+" distance = "+beacon.getDistance());
-                        }*/
+
                     }
                 }
             }
@@ -155,5 +140,5 @@ public class MainActivity extends FlutterActivity implements BeaconConsumer {
     protected void onResume() {
         super.onResume();
         beaconManager.bind(this);
-    }
+    }*/
 }
