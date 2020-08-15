@@ -78,6 +78,7 @@ class DatabaseManager {
       if (snapshot.value.length != 0) {
         StartupData.parkingBeaconIntervalInMillis =
             snapshot.value['parkingBeaconIntervalMillis'];
+
       }
     });
   }
