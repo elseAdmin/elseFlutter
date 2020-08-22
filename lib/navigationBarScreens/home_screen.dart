@@ -10,6 +10,8 @@ import 'package:else_app_two/home/request_section.dart';
 import 'package:else_app_two/navigationBarScreens/navigation_screen.dart';
 import 'package:else_app_two/navigationTab/category_grid.dart';
 import 'package:else_app_two/navigationTab/models/shop_model.dart';
+import 'package:else_app_two/navigationTab/vendor_search.dart';
+import 'package:else_app_two/navigationTab/vendor_staggered_view.dart';
 import 'package:else_app_two/requests/request_screen.dart';
 import 'package:else_app_two/utils/Contants.dart';
 import 'package:else_app_two/utils/SizeConfig.dart';
@@ -37,7 +39,14 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    DatabaseManager.indexShopFound = shopDataFound;
     _indexShopMap = DatabaseManager.indexShopMap;
+  }
+
+  shopDataFound(HashMap<String, Set<ShopModel>> indexShopMap) {
+    setState(() {
+      _indexShopMap = indexShopMap;
+    });
   }
 
   onRefresh() {
@@ -50,9 +59,21 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     // TODO: implement build
-    return RefreshIndicator(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        elevation: 10,
+        backgroundColor: Constants.navBarButton,
+        child: Icon(Icons.search),
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => NavigationScreen(),
+          ));
+        },
+      ),
+      body: RefreshIndicator(
         onRefresh: _handleRefresh,
-        child: ListView(
+        child: VendorStaggeredView(_indexShopMap),
+        /*ListView(
           shrinkWrap: true,
           children: <Widget>[
             TextField(
@@ -123,10 +144,13 @@ class HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: Constants.homePageHeadingsFontSize,
               ),
-            )),
-            CategoryGrid(_indexShopMap),
+            )),*//*
+//            CategoryGrid(_indexShopMap),
+            VendorStaggeredView(_indexShopMap),
           ],
-        ));
+        ),*/
+      ),
+    );
   }
 
   BoxDecoration myDecor() {

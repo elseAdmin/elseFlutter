@@ -45,6 +45,7 @@ class DatabaseManager {
   static HashMap<String, Set<ShopModel>> indexShopMap;
   static Function(List<EventModel>) eventsFound;
   static Function(List<DealModel>) dealsFound;
+  static Function(HashMap<String, Set<ShopModel>>) indexShopFound;
 
   DatabaseManager() {
     if (storageRef == null) {
@@ -101,7 +102,7 @@ class DatabaseManager {
         Set<ShopModel> shopModelList = new Set();
         ShopModel shopModel = ShopModel.fromMap(values[shop]);
         shopModelList.add(shopModel);
-        indexShopMap[shop] = shopModelList;
+        indexShopMap[shopModel.nameIdentifier] = shopModelList;
         for (String category in shopModel.category) {
           Set<ShopModel> shopModelsCategory = indexShopMap[category];
           if (shopModelsCategory == null) {
@@ -110,6 +111,9 @@ class DatabaseManager {
           shopModelsCategory.add(shopModel);
           indexShopMap[category] = shopModelsCategory;
         }
+      }
+      if(indexShopFound != null) {
+        indexShopFound(indexShopMap);
       }
       return indexShopMap;
     } else {
@@ -404,6 +408,7 @@ class DatabaseManager {
   refreshEventsAndDeals(Function() onRefresh) async {
     await getAllActiveEvents(true);
     await getAllActiveDeals(true);
+    await getAllShops(true, FireBaseApi("shopStaticData"));
     return onRefresh();
   }
 
@@ -1167,11 +1172,11 @@ class DatabaseManager {
     return storageRef;
   }
 
-  getDealsForShop(String shopName, Function(List<DealModel>) dealsFound) {
+  getDealsForShop(String shopUid, Function(List<DealModel>) dealsFound) {
     List<DealModel> result = List();
     if (deals != null) {
       for (DealModel deal in deals) {
-        if (deal.shopName.compareTo(shopName) == 0) {
+        if (deal.shopUid.compareTo(shopUid) == 0) {
           result.add(deal);
         }
       }

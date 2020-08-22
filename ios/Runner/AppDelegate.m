@@ -7,11 +7,11 @@
     [GeneratedPluginRegistrant registerWithRegistry:self];
     
     [self initializeCoreLocationSpecificVariables];
-    [self detectBluetooth];
-    [self handleUserPermissionForCoreLocation];
-    [self handleBeaconService];
-    [self initializeBridgingSpecificVariables];
-    [self handleBridgingService];
+//    [self detectBluetooth];
+//    [self handleUserPermissionForCoreLocation];
+//    [self handleBeaconService];
+//    [self initializeBridgingSpecificVariables];
+//    [self handleBridgingService];
     
     return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

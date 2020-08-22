@@ -31,10 +31,10 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     const nativeMessageReceivingChannel =
         const MethodChannel('com.else.apis.from.native');
-    nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
+//    nativeMessageReceivingChannel.setMethodCallHandler(_handleMethod);
   }
 
-  Future<dynamic> _handleMethod(MethodCall call) async {
+  /*Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
       case "beaconFound":
         await _postBeaconFound(call.arguments);
@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         });
       }
     }
-  }
+  }*/
 
   //invoking native methods from dart code.
   /* String _bridgeStatus = 'native bridge not verified yet.';

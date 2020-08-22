@@ -12,10 +12,11 @@ class DealModel {
   String status;
   String uid;
   String couponCode;
+  String shopUid;
 
   DealModel(this.tnc, this.validity, this.shopName, this.url,
       this.blurUrl, this.name, this.shortDetails, this.details, this.status,
-      this.uid, this.couponCode);
+      this.uid, this.couponCode, this.shopUid);
 
   DealModel.fromMap(Map snapshot)
       : this.tnc = snapshot['tnc'],
@@ -28,7 +29,8 @@ class DealModel {
         this.status = snapshot['status'],
         this.blurUrl = snapshot['blurUrl'],
         this.uid = snapshot['uid'],
-        this.couponCode = snapshot['couponCode'];
+        this.couponCode = snapshot['couponCode'],
+        this.shopUid = snapshot['shopUid'];
 
   DealModel.fromSnapshot(DataSnapshot snapshot) {
     this.tnc = snapshot.value['tnc'];
@@ -42,6 +44,7 @@ class DealModel {
     this.blurUrl = snapshot.value['blurUrl'];
     this.uid = snapshot.value['uid'];
     this.couponCode = snapshot.value['couponCode'];
+    this.shopUid = snapshot.value['shopUid'];
   }
 
   toJson(){
@@ -57,6 +60,7 @@ class DealModel {
       "blurUrl":blurUrl,
       "uid":uid,
       "couponCode":couponCode,
+      "shopUid":shopUid,
     };
   }
 }

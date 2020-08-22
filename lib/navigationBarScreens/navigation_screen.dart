@@ -41,6 +41,19 @@ class NavigationScreenState extends State<NavigationScreen> {
         onRefresh: _handleRefresh,
         child: Scaffold(
           backgroundColor: Constants.mainBackgroundColor,
+          appBar: AppBar(
+            backgroundColor: Constants.titleBarBackgroundColor,
+            iconTheme: IconThemeData(
+              color: Constants.navBarButton, //change your color here
+            ),
+            title: Text(
+              "Search",
+              style: TextStyle(
+                color: Constants.navBarButton,
+                fontSize: 18,
+              ),
+            ),
+          ),
           floatingActionButton: FloatingActionButton(
             elevation: 10,
             backgroundColor: Constants.navBarButton,
@@ -57,7 +70,7 @@ class NavigationScreenState extends State<NavigationScreen> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  //SearchScreen(_indexShopMap),
+//                  SearchScreen(_indexShopMap),
                   CategoryGrid(_indexShopMap),
                 ],
               )
